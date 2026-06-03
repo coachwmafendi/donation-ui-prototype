@@ -146,24 +146,29 @@
         >
             {{-- Vertical Tabs --}}
             <nav class="lg:col-span-3 space-y-1">
-                @foreach([
-                    ['id' => 'general', 'label' => 'General'],
-                    ['id' => 'payment', 'label' => 'Payment Method'],
-                    ['id' => 'currency', 'label' => 'Currency'],
-                    ['id' => 'frequency', 'label' => 'Frequency'],
-                    ['id' => 'amounts', 'label' => 'Suggested Amounts'],
-                    ['id' => 'minimum', 'label' => 'Minimum Amount'],
-                    ['id' => 'cost', 'label' => 'Transaction Cost'],
-                ] as $item)
+                @php
+                    $settingTabs = [
+                        ['id' => 'general', 'label' => 'General', 'icon' => '<svg class=\"size-4\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/></svg>'],
+                        ['id' => 'payment', 'label' => 'Payment Method', 'icon' => '<svg class=\"size-4\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><rect width=\"20\" height=\"14\" x=\"2\" y=\"5\" rx=\"2\"/><line x1=\"2\" y1=\"10\" x2=\"22\" y2=\"10\"/></svg>'],
+                        ['id' => 'currency', 'label' => 'Currency', 'icon' => '<svg class=\"size-4\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><line x1=\"12\" x2=\"12\" y1=\"2\" y2=\"22\"/><path d=\"M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6\"/></svg>'],
+                        ['id' => 'frequency', 'label' => 'Frequency', 'icon' => '<svg class=\"size-4\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8\"/><path d=\"M21 3v5h-5\"/><path d=\"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16\"/><path d=\"M8 16H3v5\"/></svg>'],
+                        ['id' => 'amounts', 'label' => 'Suggested Amounts', 'icon' => '<svg class=\"size-4\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><line x1=\"8\" y1=\"6\" x2=\"21\" y2=\"6\"/><line x1=\"8\" y1=\"12\" x2=\"21\" y2=\"12\"/><line x1=\"8\" y1=\"18\" x2=\"21\" y2=\"18\"/><line x1=\"3\" y1=\"6\" x2=\"3.01\" y2=\"6\"/><line x1=\"3\" y1=\"12\" x2=\"3.01\" y2=\"12\"/><line x1=\"3\" y1=\"18\" x2=\"3.01\" y2=\"18\"/></svg>'],
+                        ['id' => 'minimum', 'label' => 'Minimum Amount', 'icon' => '<svg class=\"size-4\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"m19 9-5 5-5-5\"/><path d=\"M12 4v10\"/></svg>'],
+                        ['id' => 'cost', 'label' => 'Transaction Cost', 'icon' => '<svg class=\"size-4\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><line x1=\"19\" x2=\"5\" y1=\"5\" y2=\"19\"/><circle cx=\"6.5\" cy=\"6.5\" r=\"2.5\"/><circle cx=\"17.5\" cy=\"17.5\" r=\"2.5\"/></svg>'],
+                    ];
+                @endphp
+
+                @foreach($settingTabs as $item)
                     <button
                         type="button"
                         @click="settingTab = '{{ $item['id'] }}'"
-                        class="w-full text-left rounded-lg px-4 py-3 text-sm font-medium transition"
+                        class="w-full text-left rounded-lg px-4 py-3 text-sm font-medium transition flex items-center gap-3"
                         :class="settingTab === '{{ $item['id'] }}'
                             ? 'bg-slate-100 text-slate-900'
                             : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'"
                     >
-                        {{ $item['label'] }}
+                        {!! $item['icon'] !!}
+                        <span>{{ $item['label'] }}</span>
                     </button>
                 @endforeach
             </nav>
@@ -244,21 +249,40 @@
                 {{-- Frequency --}}
                 <div x-show="settingTab === 'frequency'" class="rounded-xl border border-slate-200 bg-white overflow-hidden" x-cloak>
                     <div class="border-b border-slate-200 px-6 py-4">
-                        <h2 class="text-lg font-semibold">Frequency</h2>
+                        <h2 class="text-lg font-semibold">Frequencies</h2>
                     </div>
                     <div class="px-6 py-5 space-y-4">
-                        <label class="flex items-center gap-3 rounded-lg border-2 border-slate-200 px-4 py-3 cursor-pointer">
-                            <input type="checkbox" checked class="size-4 rounded border-slate-300 text-slate-900">
-                            <span class="text-sm font-medium text-slate-700">One-time</span>
-                        </label>
-                        <label class="flex items-center gap-3 rounded-lg border-2 border-slate-200 px-4 py-3 cursor-pointer">
-                            <input type="checkbox" checked class="size-4 rounded border-slate-300 text-slate-900">
-                            <span class="text-sm font-medium text-slate-700">Monthly</span>
-                        </label>
-                        <label class="flex items-center gap-3 rounded-lg border-2 border-slate-200 px-4 py-3 cursor-pointer">
-                            <input type="checkbox" class="size-4 rounded border-slate-300 text-slate-900">
-                            <span class="text-sm font-medium text-slate-700">Yearly</span>
-                        </label>
+
+                        @foreach([
+                            ['value' => 'monthly', 'label' => 'Monthly'],
+                            ['value' => 'one-time', 'label' => 'Once'],
+                        ] as $freq)
+                            <div class="flex items-center gap-3">
+                                <div class="flex-1 relative">
+                                    <select class="block w-full appearance-none rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 pr-10 text-base text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100 transition cursor-pointer">
+                                        <option value="{{ $freq['value'] }}" selected>{{ $freq['label'] }}</option>
+                                        <option value="one-time">Once</option>
+                                        <option value="monthly">Monthly</option>
+                                        <option value="yearly">Yearly</option>
+                                        <option value="weekly">Weekly</option>
+                                    </select>
+                                    <svg class="absolute right-3 top-1/2 -translate-y-1/2 size-5 text-slate-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                                </div>
+                                <button type="button" class="p-2.5 text-slate-400 hover:text-red-600 transition" title="Remove frequency">
+                                    <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="3 6 5 6 21 6"/>
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                        <line x1="10" y1="11" x2="10" y2="17"/>
+                                        <line x1="14" y1="11" x2="14" y2="17"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        @endforeach
+
+                        <button type="button" class="w-full rounded-xl border-2 border-dashed border-slate-300 px-4 py-3 text-sm font-medium text-slate-500 hover:border-slate-400 hover:text-slate-700 transition">
+                            + Add frequency
+                        </button>
+
                         <div class="flex justify-end pt-2">
                             <button class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition">Save Changes</button>
                         </div>
@@ -266,16 +290,82 @@
                 </div>
 
                 {{-- Suggested Amounts --}}
-                <div x-show="settingTab === 'amounts'" class="rounded-xl border border-slate-200 bg-white overflow-hidden" x-cloak>
+                <div
+                    x-show="settingTab === 'amounts'"
+                    x-data="{ amountsFreq: 'one-time', impactEnabled: false }"
+                    class="rounded-xl border border-slate-200 bg-white overflow-hidden"
+                    x-cloak
+                >
                     <div class="border-b border-slate-200 px-6 py-4">
                         <h2 class="text-lg font-semibold">Suggested Amounts</h2>
                     </div>
-                    <div class="px-6 py-5 space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700">Preset amounts (comma separated)</label>
-                            <input type="text" value="10, 25, 50, 100, 250, 500" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200">
-                            <p class="mt-1 text-xs text-slate-500">Default preset buttons shown to donors.</p>
+                    <div class="px-6 py-5 space-y-6">
+
+                        {{-- Frequency sub-tabs --}}
+                        <div class="flex gap-4 border-b border-slate-200">
+                            @foreach([
+                                ['id' => 'one-time', 'label' => 'ONE-TIME'],
+                                ['id' => 'monthly', 'label' => 'MONTHLY'],
+                            ] as $freq)
+                                <button
+                                    type="button"
+                                    @click="amountsFreq = '{{ $freq['id'] }}'"
+                                    class="pb-3 text-sm font-semibold tracking-wide border-b-2 transition -mb-px"
+                                    :class="amountsFreq === '{{ $freq['id'] }}'
+                                        ? 'border-blue-600 text-blue-600'
+                                        : 'border-transparent text-slate-500 hover:text-slate-700'"
+                                >
+                                    {{ $freq['label'] }}
+                                </button>
+                            @endforeach
                         </div>
+
+                        {{-- Impact descriptions toggle --}}
+                        <label class="flex items-start gap-3 cursor-pointer">
+                            <input type="checkbox" x-model="impactEnabled" class="mt-1 size-4 rounded border-slate-300 text-slate-900">
+                            <div>
+                                <span class="text-sm font-medium text-slate-900">Enable impact descriptions</span>
+                                <p class="mt-1 text-sm text-slate-500 leading-relaxed">
+                                    Boost supporters' engagement and generosity by telling them how their funds might be used (e.g. “$30 can buy school supplies for one child”).
+                                </p>
+                            </div>
+                        </label>
+
+                        <hr class="border-slate-200">
+
+                        {{-- Preset inputs --}}
+                        <div>
+                            <p class="text-sm text-slate-600 mb-4">Fill in suggested donation amount presets for our AI to adjust them for each supporter.</p>
+                            <h3 class="text-base font-semibold text-slate-900 mb-3">Suggested donation amount presets</h3>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                @foreach([200, 100, 50, 30, 10, 5] as $preset)
+                                    <div class="relative">
+                                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">$</span>
+                                        <input
+                                            type="number"
+                                            value="{{ $preset }}"
+                                            class="block w-full rounded-lg border border-slate-300 bg-white pl-7 pr-3 py-2.5 text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"
+                                            placeholder="0"
+                                        >
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        {{-- Default amount (monthly only) --}}
+                        <div x-show="amountsFreq === 'monthly'" x-cloak>
+                            <h3 class="text-base font-semibold text-slate-900 mb-3">Default monthly suggested amount</h3>
+                            <div class="relative max-w-xs">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">$</span>
+                                <input
+                                    type="number"
+                                    value="25"
+                                    class="block w-full rounded-lg border border-slate-300 bg-white pl-7 pr-3 py-2.5 text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"
+                                    placeholder="0"
+                                >
+                            </div>
+                        </div>
+
                         <div class="flex justify-end pt-2">
                             <button class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition">Save Changes</button>
                         </div>
