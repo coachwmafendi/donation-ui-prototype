@@ -76,8 +76,10 @@
                 >
                     <div class="flex items-center justify-between border-b border-slate-200 px-6 py-5">
                         <div class="flex items-center gap-3">
-                            <span class="text-xl">$</span>
-                            <h2 class="text-xl font-semibold">Donation</h2>
+                        <span class="text-slate-500">
+                            <x-icon name="banknote" />
+                        </span>
+                        <h2 class="text-xl font-semibold">Donation</h2>
                         </div>
                         <button class="text-sm text-slate-400 hover:text-slate-700">Edit</button>
                     </div>
@@ -138,8 +140,10 @@
                 >
                     <div class="border-b border-slate-200 px-6 py-5">
                         <div class="flex items-center gap-3">
-                            <span class="text-xl">%</span>
-                            <h2 class="text-xl font-semibold">Payment & fees</h2>
+                        <span class="text-slate-500">
+                            <x-icon name="percent" />
+                        </span>
+                        <h2 class="text-xl font-semibold">Payment & fees</h2>
                         </div>
                     </div>
 
@@ -170,7 +174,7 @@
 
                 {{-- Recurring Plan Section --}}
                 @if($donationModel->frequency !== 'one-time')
-                <x-simple-section id="recurring-plan" title="Recurring plan" icon="↻">
+                <x-simple-section id="recurring-plan" title="Recurring plan" icon="<x-icon name='refresh-cw' />">
                     <x-detail-row label="Plan">
                         {{ ucfirst($donationModel->frequency) }} giving
                     </x-detail-row>
@@ -182,7 +186,7 @@
 
                 {{-- Personal Information Section --}}
                 @if($donationModel->profile)
-                <x-simple-section id="personal-information" title="Personal information" icon="👤">
+                <x-simple-section id="personal-information" title="Personal information" icon="<x-icon name='user' />">
                     <x-detail-row label="Full name">
                         {{ $donationModel->profile->full_name }}
                     </x-detail-row>
@@ -218,7 +222,7 @@
                 @endif
 
                 {{-- Tribute Section --}}
-                <x-simple-section id="tribute" title="Tribute" icon="♡">
+                <x-simple-section id="tribute" title="Tribute" icon="<x-icon name='heart' />">
                     @if($donationModel->tribute_info)
                         <p class="text-slate-700">{{ $donationModel->tribute_info }}</p>
                     @else
@@ -227,7 +231,7 @@
                 </x-simple-section>
 
                 {{-- Comment Section --}}
-                <x-simple-section id="comment" title="Comment" icon="💬">
+                <x-simple-section id="comment" title="Comment" icon="<x-icon name='message-square' />">
                     @if($donationModel->comment)
                         <p class="text-slate-700">{{ $donationModel->comment }}</p>
                     @else
@@ -236,7 +240,7 @@
                 </x-simple-section>
 
                 {{-- Source Section --}}
-                <x-simple-section id="source" title="Source" icon="↗">
+                <x-simple-section id="source" title="Source" icon="<x-icon name='external-link' />">
                     <x-detail-row label="Source">
                         {{ $donationModel->source ? ucfirst(str_replace('_', ' ', $donationModel->source)) : '—' }}
                     </x-detail-row>
@@ -251,7 +255,7 @@
                 </x-simple-section>
 
                 {{-- Insights Section --}}
-                <x-simple-section id="insights" title="Insights" icon="⌁">
+                <x-simple-section id="insights" title="Insights" icon="<x-icon name='zap' />">
                     <x-detail-row label="Donor type">
                         {{ $donationModel->donor_type ? ucfirst(str_replace('_', ' ', $donationModel->donor_type)) : '—' }}
                     </x-detail-row>
@@ -259,7 +263,7 @@
 
                 {{-- UTM Parameters Section --}}
                 @if($donationModel->utm_source || $donationModel->utm_campaign)
-                <x-simple-section id="utm-parameters" title="UTM parameters" icon="#">
+                <x-simple-section id="utm-parameters" title="UTM parameters" icon="<x-icon name='hash' />">
                     @if($donationModel->utm_source)
                     <x-detail-row label="utm_source">
                         {{ $donationModel->utm_source }}
@@ -275,7 +279,7 @@
                 @endif
 
                 {{-- Custom Fields Section --}}
-                <x-simple-section id="custom-fields" title="Custom fields" icon="⚙">
+                <x-simple-section id="custom-fields" title="Custom fields" icon="<x-icon name='settings' />">
                     @if($donationModel->custom_fields && count($donationModel->custom_fields) > 0)
                         @foreach($donationModel->custom_fields as $key => $value)
                         <x-detail-row label="{{ $key }}">
@@ -288,7 +292,7 @@
                 </x-simple-section>
 
                 {{-- Emails Section --}}
-                <x-simple-section id="emails" title="Emails" icon="✉">
+                <x-simple-section id="emails" title="Emails" icon="<x-icon name='mail' />">
                     <x-detail-row label="Receipt email">
                         {{ $donationModel->receipt_email_sent ? 'Sent' : 'Not sent' }}
                     </x-detail-row>
@@ -307,22 +311,15 @@
                     {{-- Action Box --}}
                     <div class="overflow-hidden rounded-xl border border-slate-200 bg-white">
                         <button class="flex w-full items-center gap-3 border-b border-slate-200 px-5 py-4 text-left text-sm font-medium text-slate-700 hover:bg-slate-50">
-                            <svg class="size-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                <polyline points="7 10 12 15 17 10"/>
-                                <line x1="12" y1="15" x2="12" y2="3"/>
-                            </svg>
+                            <x-icon name="download" class="size-4 text-slate-500" />
                             <span>Download receipt</span>
                         </button>
 
-                        <button 
+                        <button
                             @click="showRefundModal = true"
                             class="flex w-full items-center gap-3 px-5 py-4 text-left text-sm font-medium text-red-600 hover:bg-red-50"
                         >
-                            <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="1 4 1 10 7 10"/>
-                                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
-                            </svg>
+                            <x-icon name="corner-up-left" class="size-4" />
                             <span>Refund donation</span>
                         </button>
                     </div>
@@ -338,7 +335,9 @@
                                     ? 'bg-slate-100 font-semibold text-slate-900'
                                     : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'"
                             >
-                                <span class="w-5 text-center">{{ $section['icon'] }}</span>
+                                <span class="w-5 text-center flex items-center justify-center">
+                                    <x-icon name="{{ $section['icon'] }}" />
+                                </span>
                                 <span>{{ $section['label'] }}</span>
                             </button>
                         @endforeach
@@ -375,10 +374,7 @@
             <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
                 <h3 class="text-lg font-semibold text-slate-900">Refund donation</h3>
                 <button @click="showRefundModal = false" class="text-slate-400 hover:text-slate-600">
-                    <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="18" y1="6" x2="6" y2="18"/>
-                        <line x1="6" y1="6" x2="18" y2="18"/>
-                    </svg>
+                    <x-icon name="x" class="size-5" />
                 </button>
             </div>
 
@@ -409,11 +405,7 @@
 
                 <a href="#" class="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800">
                     Learn more about refunds
-                    <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                        <polyline points="15 3 21 3 21 9"/>
-                        <line x1="10" y1="14" x2="21" y2="3"/>
-                    </svg>
+                    <x-icon name="external-link" class="size-3.5" />
                 </a>
             </div>
 

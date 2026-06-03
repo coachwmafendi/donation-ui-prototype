@@ -14,17 +14,17 @@ class DonationShow extends Component
     public string $refundReason = '';
     
     public array $sections = [
-        ['id' => 'donation', 'label' => 'Donation', 'icon' => '$'],
-        ['id' => 'payment-fees', 'label' => 'Payment & fees', 'icon' => '%'],
-        ['id' => 'recurring-plan', 'label' => 'Recurring plan', 'icon' => '↻'],
-        ['id' => 'personal-information', 'label' => 'Personal information', 'icon' => '👤'],
-        ['id' => 'tribute', 'label' => 'Tribute', 'icon' => '♡'],
-        ['id' => 'comment', 'label' => 'Comment', 'icon' => '💬'],
-        ['id' => 'source', 'label' => 'Source', 'icon' => '↗'],
-        ['id' => 'insights', 'label' => 'Insights', 'icon' => '⌁'],
-        ['id' => 'utm-parameters', 'label' => 'UTM parameters', 'icon' => '#'],
-        ['id' => 'custom-fields', 'label' => 'Custom fields', 'icon' => '⚙'],
-        ['id' => 'emails', 'label' => 'Emails', 'icon' => '✉'],
+        ['id' => 'donation', 'label' => 'Donation', 'icon' => 'banknote'],
+        ['id' => 'payment-fees', 'label' => 'Payment & fees', 'icon' => 'percent'],
+        ['id' => 'recurring-plan', 'label' => 'Recurring plan', 'icon' => 'refresh-cw'],
+        ['id' => 'personal-information', 'label' => 'Personal information', 'icon' => 'user'],
+        ['id' => 'tribute', 'label' => 'Tribute', 'icon' => 'heart'],
+        ['id' => 'comment', 'label' => 'Comment', 'icon' => 'message-square'],
+        ['id' => 'source', 'label' => 'Source', 'icon' => 'external-link'],
+        ['id' => 'insights', 'label' => 'Insights', 'icon' => 'zap'],
+        ['id' => 'utm-parameters', 'label' => 'UTM parameters', 'icon' => 'hash'],
+        ['id' => 'custom-fields', 'label' => 'Custom fields', 'icon' => 'settings'],
+        ['id' => 'emails', 'label' => 'Emails', 'icon' => 'mail'],
     ];
 
     public function mount(Donation $donation)

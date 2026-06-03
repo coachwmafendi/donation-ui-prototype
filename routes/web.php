@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileSettingsController;
+use App\Livewire\CampaignIndex;
+use App\Livewire\CampaignShow;
 use App\Livewire\DonationIndex;
 use App\Livewire\DonationShow;
 use App\Livewire\UserIndex;
@@ -16,6 +18,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/donations/{donation:public_id}', DonationShow::class);
     Route::get('/users', UserIndex::class);
     Route::get('/users/{user}', UserShow::class);
+    Route::get('/campaigns', CampaignIndex::class);
+    Route::get('/campaigns/{campaign:public_id}', CampaignShow::class);
     
     Route::get('/settings', [ProfileSettingsController::class, 'show'])->name('settings');
     Route::put('/settings/profile', [ProfileSettingsController::class, 'updateProfile'])->name('settings.profile');

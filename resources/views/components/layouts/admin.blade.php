@@ -45,28 +45,30 @@
 
                 {{-- Navigation --}}
                 <nav class="flex-1 px-4 py-4 space-y-1">
-                    <a 
-                        href="/donations" 
+                    <a
+                        href="/donations"
                         wire:navigate
                         class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition {{ request()->is('donations') ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}"
                     >
-                        <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                        </svg>
+                        <x-icon name="dollar-sign" />
                         Donations
                     </a>
 
-                    <a 
-                        href="/users" 
+                    <a
+                        href="/campaigns"
+                        wire:navigate
+                        class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition {{ request()->is('campaigns*') ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}"
+                    >
+                        <x-icon name="target" />
+                        Campaigns
+                    </a>
+
+                    <a
+                        href="/users"
                         wire:navigate
                         class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition {{ request()->is('users') ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}"
                     >
-                        <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                            <circle cx="9" cy="7" r="4"/>
-                            <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                        </svg>
+                        <x-icon name="users" />
                         Users
                     </a>
                 </nav>
@@ -86,11 +88,7 @@
                     <form action="{{ route('logout') }}" method="POST" class="mt-2 px-4">
                         @csrf
                         <button type="submit" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-600 hover:bg-red-50 hover:text-red-600 transition">
-                            <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                                <polyline points="16 17 21 12 16 7"/>
-                                <line x1="21" y1="12" x2="9" y2="12"/>
-                            </svg>
+                            <x-icon name="log-out" class="size-4" />
                             Sign out
                         </button>
                     </form>
@@ -102,13 +100,11 @@
         <div class="flex-1 flex flex-col min-w-0 lg:ml-64">
             {{-- Top bar --}}
             <header class="bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between">
-                <button 
+                <button
                     @click="sidebarOpen = true"
                     class="lg:hidden p-2 rounded-lg hover:bg-slate-100"
                 >
-                    <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M3 12h18M3 6h18M3 18h18"/>
-                    </svg>
+                    <x-icon name="menu" class="size-6" />
                 </button>
 
                 {{-- User menu --}}
@@ -124,9 +120,7 @@
                         <div class="hidden sm:block text-left">
                             <p class="text-sm font-medium text-slate-900">{{ auth()->user()->name ?? 'Guest' }}</p>
                         </div>
-                        <svg class="size-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="6 9 12 15 18 9"/>
-                        </svg>
+                        <x-icon name="chevron-down" class="size-4 text-slate-400" />
                     </button>
 
                     {{-- Dropdown --}}

@@ -20,6 +20,7 @@ class Donation extends Model
         'converted_amount_cents',
         'converted_currency',
         'status',
+        'campaign_id',
         'campaign',
         'designation',
         'frequency',
@@ -68,6 +69,11 @@ class Donation extends Model
     public function profile(): BelongsTo
     {
         return $this->belongsTo(Profile::class);
+    }
+
+    public function campaign(): BelongsTo
+    {
+        return $this->belongsTo(Campaign::class);
     }
 
     public function getAmountAttribute(): string

@@ -17,10 +17,7 @@
             <div class="flex-1">
                 <label class="sr-only">Search</label>
                 <div class="relative">
-                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"/>
-                        <path d="m21 21-4.3-4.3"/>
-                    </svg>
+                    <x-icon name="search" class="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-slate-400" />
                     <input 
                         wire:model.live.debounce.300ms="search"
                         type="text" 
