@@ -297,6 +297,22 @@
                             + Add frequency
                         </button>
 
+                        <hr class="border-slate-200">
+
+                        <div>
+                            <h3 class="text-sm font-semibold text-slate-900 mb-3">Default frequency</h3>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-3 rounded-lg border-2 border-slate-200 px-4 py-3 cursor-pointer">
+                                    <input type="radio" name="default_frequency" value="monthly" checked class="size-4 text-slate-900 focus:ring-slate-500">
+                                    <span class="text-sm font-medium text-slate-700">Monthly</span>
+                                </label>
+                                <label class="flex items-center gap-3 rounded-lg border-2 border-slate-200 px-4 py-3 cursor-pointer">
+                                    <input type="radio" name="default_frequency" value="one-time" class="size-4 text-slate-900 focus:ring-slate-500">
+                                    <span class="text-sm font-medium text-slate-700">Once</span>
+                                </label>
+                            </div>
+                        </div>
+
                         <div class="flex justify-end pt-2">
                             <button class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition">Save Changes</button>
                         </div>
