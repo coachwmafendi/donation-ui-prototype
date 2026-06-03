@@ -175,7 +175,7 @@
                             <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">iframe code</label>
                             <button onclick="navigator.clipboard.writeText(document.getElementById('embed-code').innerText).then(() => alert('Copied!'))" class="text-xs font-medium text-blue-600 hover:text-blue-800">Copy</button>
                         </div>
-                        <pre id="embed-code" class="rounded-lg bg-slate-900 text-slate-200 p-4 text-xs overflow-x-auto whitespace-pre-wrap">&lt;iframe
+                        <pre id="embed-code" class="rounded-lg bg-slate-50 border border-slate-200 text-slate-700 p-4 text-xs overflow-x-auto whitespace-pre-wrap">&lt;iframe
   src="{{ config('app.url') }}/embed/{{ $campaign->slug }}"
   width="100%"
   height="650"
