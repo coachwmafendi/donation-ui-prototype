@@ -4,11 +4,16 @@ use App\Http\Controllers\ProfileSettingsController;
 use App\Livewire\CampaignCreate;
 use App\Livewire\CampaignEdit;
 use App\Livewire\CampaignIndex;
+use App\Livewire\CampaignPublic;
 use App\Livewire\CampaignShow;
 use App\Livewire\Dashboard;
 use App\Livewire\DonationForm;
 use App\Livewire\DonationIndex;
 use App\Livewire\DonationShow;
+use App\Livewire\HomePage;
+use App\Livewire\RecurringIndex;
+use App\Livewire\SupporterIndex;
+use App\Livewire\SupporterShow;
 use App\Livewire\UserIndex;
 use App\Livewire\UserShow;
 use Illuminate\Support\Facades\Route;
@@ -18,14 +23,16 @@ Route::get('/', function () {
         return redirect('/dashboard');
     }
 
-    return view('welcome');
+    return redirect('/welcome');
 });
 
+Route::get('/welcome', HomePage::class)->name('welcome');
+Route::get('/c/{campaign:slug}', CampaignPublic::class)->name('campaigns.public');
 Route::get('/donate', DonationForm::class)->name('donate');
 Route::get('/donate/{campaign}', DonationForm::class)->name('donate.campaign');
 
-use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Donation;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
@@ -34,11 +41,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/donations/{donation:public_id}/receipt', function (Donation $donation) {
         $pdf = Pdf::loadView('receipts.donation', ['donation' => $donation->load('profile')])
             ->setPaper('a4', 'portrait');
-        
+
         return $pdf->download("receipt-{$donation->public_id}.pdf");
     })->name('donations.receipt');
     Route::get('/users', UserIndex::class);
     Route::get('/users/{user}', UserShow::class);
+    Route::get('/supporters', SupporterIndex::class)->name('supporters.index');
+    Route::get('/supporters/{supporter:public_id}', SupporterShow::class)->name('supporters.show');
+    Route::get('/recurring', RecurringIndex::class)->name('recurring.index');
     Route::get('/campaigns', CampaignIndex::class)->name('campaigns.index');
     Route::get('/campaigns/create', CampaignCreate::class)->name('campaigns.create');
     Route::get('/campaigns/{campaign:public_id}', CampaignShow::class)->name('campaigns.show');
