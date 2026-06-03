@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\PublicId;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +13,7 @@ class Profile extends Model
     use HasFactory, HasUlids;
 
     protected $fillable = [
+        'public_id',
         'user_id',
         'first_name',
         'last_name',
@@ -24,6 +26,22 @@ class Profile extends Model
         'state',
         'postal_code',
     ];
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->public_id)) {
+                $model->public_id = PublicId::generateFor(self::class);
+            }
+        });
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'public_id';
+    }
 
     public function donations(): HasMany
     {

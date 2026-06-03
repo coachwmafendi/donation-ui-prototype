@@ -24,7 +24,7 @@
                     <input 
                         wire:model.live.debounce.300ms="search"
                         type="text" 
-                        placeholder="Search by donor, email, or campaign..."
+                        placeholder="Search by ID, donor, email, or campaign..."
                         class="w-full rounded-lg border border-slate-300 bg-white pl-10 pr-4 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"
                     >
                 </div>
@@ -62,7 +62,7 @@
                     @forelse ($donations as $donation)
                         <tr class="hover:bg-slate-50 transition-colors">
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="font-mono text-sm text-slate-600">{{ Str::limit($donation->id, 8) }}</span>
+                                <span class="font-mono text-sm text-slate-600">{{ $donation->public_id }}</span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
@@ -92,7 +92,7 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right">
                                 <a 
-                                    href="/donations/{{ $donation->id }}" 
+                                    href="/donations/{{ $donation->public_id }}" 
                                     wire:navigate
                                     class="text-sm font-medium text-blue-600 hover:text-blue-800"
                                 >

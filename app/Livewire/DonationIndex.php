@@ -28,11 +28,15 @@ class DonationIndex extends Component
         $query = Donation::query()
             ->with('profile')
             ->when($this->search, function ($query) {
-                $query->whereHas('profile', function ($q) {
-                    $q->where('first_name', 'like', '%' . $this->search . '%')
-                      ->orWhere('last_name', 'like', '%' . $this->search . '%')
-                      ->orWhere('email', 'like', '%' . $this->search . '%');
-                })->orWhere('campaign', 'like', '%' . $this->search . '%');
+                $query->where(function ($q) {
+                    $q->whereHas('profile', function ($sq) {
+                        $sq->where('first_name', 'like', '%' . $this->search . '%')
+                           ->orWhere('last_name', 'like', '%' . $this->search . '%')
+                           ->orWhere('email', 'like', '%' . $this->search . '%');
+                    })
+                    ->orWhere('campaign', 'like', '%' . $this->search . '%')
+                    ->orWhere('public_id', 'like', '%' . $this->search . '%');
+                });
             })
             ->when($this->statusFilter, function ($query) {
                 $query->where('status', $this->statusFilter);

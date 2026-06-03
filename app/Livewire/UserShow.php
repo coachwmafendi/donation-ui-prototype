@@ -16,9 +16,9 @@ class UserShow extends Component
         ['id' => 'activity', 'label' => 'Activity', 'icon' => '⚡'],
     ];
 
-    public function mount(int $id): void
+    public function mount(User $user): void
     {
-        $this->user = User::with('profile')->findOrFail($id);
+        $this->user = $user->load('profile');
     }
 
     public function render()

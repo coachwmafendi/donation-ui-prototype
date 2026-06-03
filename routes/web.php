@@ -13,9 +13,9 @@ Route::get('/', function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/donations', DonationIndex::class);
-    Route::get('/donations/{id}', DonationShow::class);
+    Route::get('/donations/{donation:public_id}', DonationShow::class);
     Route::get('/users', UserIndex::class);
-    Route::get('/users/{id}', UserShow::class);
+    Route::get('/users/{user}', UserShow::class);
     
     Route::get('/settings', [ProfileSettingsController::class, 'show'])->name('settings');
     Route::put('/settings/profile', [ProfileSettingsController::class, 'updateProfile'])->name('settings.profile');

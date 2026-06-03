@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\PublicId;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +13,7 @@ class Donation extends Model
     use HasFactory, HasUlids;
 
     protected $fillable = [
+        'public_id',
         'profile_id',
         'amount_cents',
         'currency',
@@ -46,6 +48,22 @@ class Donation extends Model
         'thank_you_email_sent' => 'boolean',
         'custom_fields' => 'array',
     ];
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->public_id)) {
+                $model->public_id = PublicId::generateFor(self::class);
+            }
+        });
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'public_id';
+    }
 
     public function profile(): BelongsTo
     {

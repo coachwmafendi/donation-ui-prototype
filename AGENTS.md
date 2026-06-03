@@ -621,4 +621,3 @@ Every page should feel:
 * Fast to use
 
 The UI should help users understand information quickly and take action confidently.
-1
