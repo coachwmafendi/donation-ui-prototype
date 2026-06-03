@@ -261,28 +261,44 @@
                 </div>
 
                 {{-- Frequency --}}
-                <div x-show="settingTab === 'frequency'" class="rounded-xl border border-slate-200 bg-white overflow-hidden" x-cloak>
+                <div
+                    x-show="settingTab === 'frequency'"
+                    x-data="{
+                        frequencies: [
+                            { id: 'one-time', label: 'Once' },
+                            { id: 'monthly', label: 'Monthly' },
+                        ],
+                        defaultFreq: 'monthly',
+
+                        removeFrequency(id) {
+                            this.frequencies = this.frequencies.filter(f => f.id !== id)
+                            if (this.defaultFreq === id && this.frequencies.length > 0) {
+                                this.defaultFreq = this.frequencies[0].id
+                            }
+                        },
+                    }"
+                    class="rounded-xl border border-slate-200 bg-white overflow-hidden"
+                    x-cloak
+                >
                     <div class="border-b border-slate-200 px-6 py-4">
                         <h2 class="text-lg font-semibold">Frequencies</h2>
                     </div>
                     <div class="px-6 py-5 space-y-4">
 
-                        @foreach([
-                            ['value' => 'monthly', 'label' => 'Monthly'],
-                            ['value' => 'one-time', 'label' => 'Once'],
-                        ] as $freq)
+                        <template x-for="freq in frequencies" :key="freq.id">
                             <div class="flex items-center gap-3">
                                 <div class="flex-1 relative">
-                                    <select class="block w-full appearance-none rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 pr-10 text-base text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100 transition cursor-pointer">
-                                        <option value="{{ $freq['value'] }}" selected>{{ $freq['label'] }}</option>
-                                        <option value="one-time">Once</option>
-                                        <option value="monthly">Monthly</option>
-                                        <option value="yearly">Yearly</option>
-                                        <option value="weekly">Weekly</option>
-                                    </select>
-                                    <svg class="absolute right-3 top-1/2 -translate-y-1/2 size-5 text-slate-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                                    <div
+                                        class="block w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 text-base text-slate-900 transition select-none"
+                                        x-text="freq.label"
+                                    ></div>
                                 </div>
-                                <button type="button" class="p-2.5 text-slate-400 hover:text-red-600 transition" title="Remove frequency">
+                                <button
+                                    type="button"
+                                    @click="removeFrequency(freq.id)"
+                                    class="p-2.5 text-slate-400 hover:text-red-600 transition"
+                                    title="Remove frequency"
+                                >
                                     <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <polyline points="3 6 5 6 21 6"/>
                                         <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
@@ -291,25 +307,25 @@
                                     </svg>
                                 </button>
                             </div>
-                        @endforeach
+                        </template>
 
-                        <button type="button" class="w-full rounded-xl border-2 border-dashed border-slate-300 px-4 py-3 text-sm font-medium text-slate-500 hover:border-slate-400 hover:text-slate-700 transition">
-                            + Add frequency
-                        </button>
+                        <template x-if="frequencies.length === 0">
+                            <p class="text-sm text-slate-500 py-4">No frequencies selected.</p>
+                        </template>
 
                         <hr class="border-slate-200">
 
                         <div>
                             <h3 class="text-sm font-semibold text-slate-900 mb-3">Default frequency</h3>
                             <div class="space-y-2">
-                                <label class="flex items-center gap-3 rounded-lg border-2 border-slate-200 px-4 py-3 cursor-pointer">
-                                    <input type="radio" name="default_frequency" value="monthly" checked class="size-4 text-slate-900 focus:ring-slate-500">
-                                    <span class="text-sm font-medium text-slate-700">Monthly</span>
-                                </label>
-                                <label class="flex items-center gap-3 rounded-lg border-2 border-slate-200 px-4 py-3 cursor-pointer">
-                                    <input type="radio" name="default_frequency" value="one-time" class="size-4 text-slate-900 focus:ring-slate-500">
-                                    <span class="text-sm font-medium text-slate-700">Once</span>
-                                </label>
+                                <template x-for="freq in frequencies" :key="freq.id">
+                                    <label class="flex items-center gap-3 rounded-lg border-2 px-4 py-3 cursor-pointer transition"
+                                        :class="defaultFreq === freq.id ? 'border-slate-900 bg-slate-50' : 'border-slate-200'"
+                                    >
+                                        <input type="radio" x-model="defaultFreq" :value="freq.id" class="size-4 text-slate-900 focus:ring-slate-500">
+                                        <span class="text-sm font-medium text-slate-700" x-text="freq.label"></span>
+                                    </label>
+                                </template>
                             </div>
                         </div>
 
