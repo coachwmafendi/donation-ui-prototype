@@ -350,15 +350,6 @@
                             </div>
                         </template>
 
-                        <button
-                            type="button"
-                            @click="addFrequency"
-                            x-show="frequencies.length < allOptions.length"
-                            class="w-full rounded-xl border-2 border-dashed border-slate-300 px-4 py-3 text-sm font-medium text-slate-500 hover:border-slate-400 hover:text-slate-700 transition"
-                        >
-                            + Add frequency
-                        </button>
-
                         <template x-if="frequencies.length === 0">
                             <p class="text-sm text-slate-500 py-4">No frequencies selected.</p>
                         </template>

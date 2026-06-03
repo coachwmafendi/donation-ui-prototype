@@ -67,11 +67,14 @@ class DonationForm extends Component
 
     public ?string $donationPublicId = null;
 
-    public function mount(?string $campaign = null): void
+    public bool $embed = false;
+
+    public function mount(?string $campaign = null, bool $embed = false): void
     {
         if ($campaign) {
             $this->campaignId = $campaign;
         }
+        $this->embed = $embed;
     }
 
     public function selectPreset(float $amount): void
@@ -219,8 +222,14 @@ class DonationForm extends Component
             ->orderBy('name')
             ->get(['id', 'name', 'goal_amount_cents', 'raised_amount_cents', 'currency']);
 
-        return view('livewire.donation-form', [
+        $view = view('livewire.donation-form', [
             'campaigns' => $campaigns,
-        ])->layout('components.layouts.public');
+        ]);
+
+        if ($this->embed) {
+            return $view->layout('layouts.embed');
+        }
+
+        return $view->layout('components.layouts.public');
     }
 }

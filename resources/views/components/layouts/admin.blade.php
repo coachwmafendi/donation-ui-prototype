@@ -73,6 +73,24 @@
                     </a>
 
                     <a
+                        href="/supporters"
+                        wire:navigate
+                        class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition {{ request()->is('supporters*') ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}"
+                    >
+                        <x-icon name="user" />
+                        Supporters
+                    </a>
+
+                    <a
+                        href="/recurring"
+                        wire:navigate
+                        class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition {{ request()->is('recurring') ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}"
+                    >
+                        <x-icon name="refresh-cw" />
+                        Recurring
+                    </a>
+
+                    <a
                         href="/users"
                         wire:navigate
                         class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition {{ request()->is('users') ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}"
