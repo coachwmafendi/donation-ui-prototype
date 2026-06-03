@@ -37,7 +37,6 @@
             })
         }
     }"
-    x-on:refunded.window="showRefundModal = false"
     class="min-h-screen bg-[#f7f7fb] px-6 py-8 text-slate-900"
 >
     <div class="mx-auto max-w-7xl">

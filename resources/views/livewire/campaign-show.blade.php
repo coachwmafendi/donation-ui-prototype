@@ -29,7 +29,6 @@
             })
         }
     }"
-    x-on:archived.window="showArchiveModal = false"
     class="min-h-screen bg-[#f7f7fb] px-6 py-8 text-slate-900"
 >
     <div class="mx-auto max-w-7xl">
@@ -72,7 +71,7 @@
                 >
                     <div class="border-b border-slate-200 px-6 py-5">
                         <div class="flex items-center gap-3">
-                            <span class="text-xl">◎</span>
+                            <x-icon name="hash" />
                             <h2 class="text-xl font-semibold">Overview</h2>
                         </div>
                     </div>
@@ -121,7 +120,7 @@
                 >
                     <div class="border-b border-slate-200 px-6 py-5">
                         <div class="flex items-center gap-3">
-                            <span class="text-xl">▣</span>
+                            <x-icon name="zap" />
                             <h2 class="text-xl font-semibold">Progress</h2>
                         </div>
                     </div>
@@ -159,7 +158,7 @@
                 </section>
 
                 {{-- Settings Section --}}
-                <x-simple-section id="settings" title="Settings" icon="⚙">
+                <x-simple-section id="settings" title="Settings" icon="<x-icon name='settings' />">
                     <x-detail-row label="Allow recurring donations">
                         {{ $campaign->settings['allow_recurring'] ?? true ? 'Yes' : 'No' }}
                     </x-detail-row>
@@ -185,7 +184,7 @@
                 >
                     <div class="flex items-center justify-between border-b border-slate-200 px-6 py-5">
                         <div class="flex items-center gap-3">
-                            <span class="text-xl">$</span>
+                            <x-icon name="banknote" />
                             <h2 class="text-xl font-semibold">Recent donations</h2>
                         </div>
                         <span class="text-sm text-slate-500">{{ $campaign->donations_count }} total</span>
@@ -225,10 +224,7 @@
                     {{-- Actions --}}
                     <div class="overflow-hidden rounded-xl border border-slate-200 bg-white">
                         <a href="#" class="flex w-full items-center gap-3 border-b border-slate-200 px-5 py-4 text-left text-sm font-medium text-slate-700 hover:bg-slate-50">
-                            <svg class="size-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                            </svg>
+                            <x-icon name="settings" class="size-4 text-slate-500" />
                             <span>Edit campaign</span>
                         </a>
 
@@ -236,11 +232,7 @@
                             @click="showArchiveModal = true"
                             class="flex w-full items-center gap-3 px-5 py-4 text-left text-sm font-medium text-slate-600 hover:bg-slate-50"
                         >
-                            <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="21 8 21 21 3 21 3 8"/>
-                                <rect x="1" y="3" width="22" height="5"/>
-                                <line x1="10" y1="12" x2="14" y2="12"/>
-                            </svg>
+                            <x-icon name="inbox" class="size-4" />
                             <span>Archive campaign</span>
                         </button>
                     </div>
@@ -293,10 +285,7 @@
             <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
                 <h3 class="text-lg font-semibold text-slate-900">Archive campaign</h3>
                 <button @click="showArchiveModal = false" class="text-slate-400 hover:text-slate-600">
-                    <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="18" y1="6" x2="6" y2="18"/>
-                        <line x1="6" y1="6" x2="18" y2="18"/>
-                    </svg>
+                    <x-icon name="x" class="size-5" />
                 </button>
             </div>
 

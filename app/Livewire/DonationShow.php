@@ -46,8 +46,8 @@ class DonationShow extends Component
 
         $this->showRefundModal = false;
         $this->refundReason = '';
-        
-        $this->dispatch('refunded');
+
+        $this->dispatch('toast', message: 'Donation refunded successfully.', type: 'success');
     }
 
     public function render()

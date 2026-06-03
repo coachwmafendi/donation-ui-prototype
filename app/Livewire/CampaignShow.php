@@ -12,10 +12,10 @@ class CampaignShow extends Component
     public bool $showArchiveModal = false;
 
     public array $sections = [
-        ['id' => 'overview', 'label' => 'Overview', 'icon' => '◎'],
-        ['id' => 'progress', 'label' => 'Progress', 'icon' => '▣'],
-        ['id' => 'settings', 'label' => 'Settings', 'icon' => '⚙'],
-        ['id' => 'donations', 'label' => 'Donations', 'icon' => '$'],
+        ['id' => 'overview', 'label' => 'Overview', 'icon' => 'hash'],
+        ['id' => 'progress', 'label' => 'Progress', 'icon' => 'zap'],
+        ['id' => 'settings', 'label' => 'Settings', 'icon' => 'settings'],
+        ['id' => 'donations', 'label' => 'Donations', 'icon' => 'banknote'],
     ];
 
     public function mount(Campaign $campaign): void
@@ -27,7 +27,7 @@ class CampaignShow extends Component
     {
         $this->campaign->update(['status' => 'archived']);
         $this->showArchiveModal = false;
-        $this->dispatch('archived');
+        $this->dispatch('toast', message: 'Campaign archived.', type: 'success');
     }
 
     public function render()

@@ -4,16 +4,21 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileSettingsController;
 use App\Livewire\CampaignIndex;
 use App\Livewire\CampaignShow;
+use App\Livewire\Dashboard;
 use App\Livewire\DonationIndex;
 use App\Livewire\DonationShow;
 use App\Livewire\UserIndex;
 use App\Livewire\UserShow;
 
 Route::get('/', function () {
+    if (auth()->check()) {
+        return redirect('/dashboard');
+    }
     return view('welcome');
 });
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::get('/donations', DonationIndex::class);
     Route::get('/donations/{donation:public_id}', DonationShow::class);
     Route::get('/users', UserIndex::class);

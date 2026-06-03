@@ -46,6 +46,15 @@
                 {{-- Navigation --}}
                 <nav class="flex-1 px-4 py-4 space-y-1">
                     <a
+                        href="/dashboard"
+                        wire:navigate
+                        class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition {{ request()->is('dashboard') ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}"
+                    >
+                        <x-icon name="layout-dashboard" />
+                        Dashboard
+                    </a>
+
+                    <a
                         href="/donations"
                         wire:navigate
                         class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition {{ request()->is('donations') ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}"
@@ -171,5 +180,7 @@
     </div>
 
     @livewireScripts
+
+    <x-toast />
 </body>
 </html>
