@@ -11,13 +11,6 @@ class CampaignShow extends Component
 
     public bool $showArchiveModal = false;
 
-    public array $sections = [
-        ['id' => 'overview', 'label' => 'Overview', 'icon' => 'hash'],
-        ['id' => 'progress', 'label' => 'Progress', 'icon' => 'zap'],
-        ['id' => 'settings', 'label' => 'Settings', 'icon' => 'settings'],
-        ['id' => 'donations', 'label' => 'Donations', 'icon' => 'banknote'],
-    ];
-
     public function mount(Campaign $campaign): void
     {
         $this->campaign = $campaign->loadCount('donations');
