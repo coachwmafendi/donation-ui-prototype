@@ -174,7 +174,7 @@
 
                 {{-- Recurring Plan Section --}}
                 @if($donationModel->frequency !== 'one-time')
-                <x-simple-section id="recurring-plan" title="Recurring plan" icon="<x-icon name='refresh-cw' />">
+                <x-simple-section id="recurring-plan" title="Recurring plan" icon="↻">
                     <x-detail-row label="Plan">
                         {{ ucfirst($donationModel->frequency) }} giving
                     </x-detail-row>
@@ -186,7 +186,7 @@
 
                 {{-- Personal Information Section --}}
                 @if($donationModel->profile)
-                <x-simple-section id="personal-information" title="Personal information" icon="<x-icon name='user' />">
+                <x-simple-section id="personal-information" title="Personal information" icon="👤">
                     <x-detail-row label="Full name">
                         {{ $donationModel->profile->full_name }}
                     </x-detail-row>
@@ -222,7 +222,7 @@
                 @endif
 
                 {{-- Tribute Section --}}
-                <x-simple-section id="tribute" title="Tribute" icon="<x-icon name='heart' />">
+                <x-simple-section id="tribute" title="Tribute" icon="♡">
                     @if($donationModel->tribute_info)
                         <p class="text-slate-700">{{ $donationModel->tribute_info }}</p>
                     @else
@@ -231,7 +231,7 @@
                 </x-simple-section>
 
                 {{-- Comment Section --}}
-                <x-simple-section id="comment" title="Comment" icon="<x-icon name='message-square' />">
+                <x-simple-section id="comment" title="Comment" icon="💬">
                     @if($donationModel->comment)
                         <p class="text-slate-700">{{ $donationModel->comment }}</p>
                     @else
@@ -240,7 +240,7 @@
                 </x-simple-section>
 
                 {{-- Source Section --}}
-                <x-simple-section id="source" title="Source" icon="<x-icon name='external-link' />">
+                <x-simple-section id="source" title="Source" icon="↗">
                     <x-detail-row label="Source">
                         {{ $donationModel->source ? ucfirst(str_replace('_', ' ', $donationModel->source)) : '—' }}
                     </x-detail-row>
@@ -255,7 +255,7 @@
                 </x-simple-section>
 
                 {{-- Insights Section --}}
-                <x-simple-section id="insights" title="Insights" icon="<x-icon name='zap' />">
+                <x-simple-section id="insights" title="Insights" icon="⌁">
                     <x-detail-row label="Donor type">
                         {{ $donationModel->donor_type ? ucfirst(str_replace('_', ' ', $donationModel->donor_type)) : '—' }}
                     </x-detail-row>
@@ -263,7 +263,7 @@
 
                 {{-- UTM Parameters Section --}}
                 @if($donationModel->utm_source || $donationModel->utm_campaign)
-                <x-simple-section id="utm-parameters" title="UTM parameters" icon="<x-icon name='hash' />">
+                <x-simple-section id="utm-parameters" title="UTM parameters" icon="#">
                     @if($donationModel->utm_source)
                     <x-detail-row label="utm_source">
                         {{ $donationModel->utm_source }}
@@ -279,7 +279,7 @@
                 @endif
 
                 {{-- Custom Fields Section --}}
-                <x-simple-section id="custom-fields" title="Custom fields" icon="<x-icon name='settings' />">
+                <x-simple-section id="custom-fields" title="Custom fields" icon="⚙">
                     @if($donationModel->custom_fields && count($donationModel->custom_fields) > 0)
                         @foreach($donationModel->custom_fields as $key => $value)
                         <x-detail-row label="{{ $key }}">
@@ -292,7 +292,7 @@
                 </x-simple-section>
 
                 {{-- Emails Section --}}
-                <x-simple-section id="emails" title="Emails" icon="<x-icon name='mail' />">
+                <x-simple-section id="emails" title="Emails" icon="✉">
                     <x-detail-row label="Receipt email">
                         {{ $donationModel->receipt_email_sent ? 'Sent' : 'Not sent' }}
                     </x-detail-row>
