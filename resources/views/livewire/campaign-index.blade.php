@@ -8,9 +8,9 @@
                 <p class="mt-1 text-sm text-slate-500">Manage fundraising campaigns</p>
             </div>
 
-            <button class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800">
+            <a href="/campaigns/create" wire:navigate class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 transition">
                 Add campaign
-            </button>
+            </a>
         </div>
 
         {{-- Filters --}}
@@ -19,10 +19,7 @@
                 <div class="flex-1">
                     <label class="sr-only">Search</label>
                     <div class="relative">
-                        <svg class="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="11" cy="11" r="8"/>
-                            <path d="m21 21-4.3-4.3"/>
-                        </svg>
+                        <x-icon name="search" class="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-slate-400" />
                         <input
                             wire:model.live.debounce.300ms="search"
                             type="text"
@@ -107,9 +104,7 @@
                         @empty
                             <tr>
                                 <td colspan="6" class="px-6 py-12 text-center">
-                                    <svg class="mx-auto size-12 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                                    </svg>
+                                    <x-icon name="inbox" class="mx-auto size-12 text-slate-400" />
                                     <h3 class="mt-4 text-sm font-medium text-slate-900">No campaigns found</h3>
                                     <p class="mt-1 text-sm text-slate-500">Try adjusting your search or filters.</p>
                                 </td>

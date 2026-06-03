@@ -158,7 +158,7 @@
                 </section>
 
                 {{-- Settings Section --}}
-                <x-simple-section id="settings" title="Settings" icon="<x-icon name='settings' />">
+                <x-simple-section id="settings" title="Settings" iconName="settings">
                     <x-detail-row label="Allow recurring donations">
                         {{ $campaign->settings['allow_recurring'] ?? true ? 'Yes' : 'No' }}
                     </x-detail-row>
@@ -223,8 +223,8 @@
 
                     {{-- Actions --}}
                     <div class="overflow-hidden rounded-xl border border-slate-200 bg-white">
-                        <a href="#" class="flex w-full items-center gap-3 border-b border-slate-200 px-5 py-4 text-left text-sm font-medium text-slate-700 hover:bg-slate-50">
-                            <x-icon name="settings" class="size-4 text-slate-500" />
+                        <a href="/campaigns/{{ $campaign->public_id }}/edit" wire:navigate class="flex w-full items-center gap-3 border-b border-slate-200 px-5 py-4 text-left text-sm font-medium text-slate-700 hover:bg-slate-50">
+                            <x-icon name="pencil" class="size-4 text-slate-500" />
                             <span>Edit campaign</span>
                         </a>
 
@@ -248,7 +248,9 @@
                                     ? 'bg-slate-100 font-semibold text-slate-900'
                                     : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'"
                             >
-                                <span class="w-5 text-center">{{ $section['icon'] }}</span>
+                                <span class="w-5 text-center flex items-center justify-center">
+                                    <x-icon name="{{ $section['icon'] }}" />
+                                </span>
                                 <span>{{ $section['label'] }}</span>
                             </button>
                         @endforeach

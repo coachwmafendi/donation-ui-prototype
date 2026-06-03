@@ -15,9 +15,7 @@
 >
     <span x-show="!copied">{{ $slot ?? 'Copy' }}</span>
     <span x-show="copied" class="flex items-center gap-1">
-        <svg class="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="20 6 9 17 4 12"></polyline>
-        </svg>
+        <x-icon name="check" class="size-3" />
         Copied
     </span>
 </button>

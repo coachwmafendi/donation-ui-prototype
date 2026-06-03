@@ -74,12 +74,7 @@
                     @empty
                         <tr>
                             <td colspan="4" class="px-6 py-12 text-center">
-                                <svg class="mx-auto size-12 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                                    <circle cx="9" cy="7" r="4"/>
-                                    <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                                </svg>
+                                <x-icon name="users" class="mx-auto size-12 text-slate-400" />
                                 <h3 class="mt-4 text-sm font-medium text-slate-900">No users found</h3>
                                 <p class="mt-1 text-sm text-slate-500">Try adjusting your search.</p>
                             </td>

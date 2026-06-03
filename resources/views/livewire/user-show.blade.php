@@ -67,7 +67,7 @@
                 >
                     <div class="border-b border-slate-200 px-6 py-5">
                         <div class="flex items-center gap-3">
-                            <span class="text-xl">👤</span>
+                            <x-icon name="user" />
                             <h2 class="text-xl font-semibold">Overview</h2>
                         </div>
                     </div>
@@ -111,7 +111,7 @@
                 >
                     <div class="border-b border-slate-200 px-6 py-5">
                         <div class="flex items-center gap-3">
-                            <span class="text-xl">📋</span>
+                            <x-icon name="settings" />
                             <h2 class="text-xl font-semibold">Profile Details</h2>
                         </div>
                     </div>
@@ -151,10 +151,7 @@
                             </div>
                         @else
                             <div class="text-center py-10">
-                                <svg class="mx-auto size-10 text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                                    <circle cx="9" cy="7" r="4"/>
-                                </svg>
+                                <x-icon name="user" class="mx-auto size-10 text-slate-300" />
                                 <h3 class="mt-3 text-sm font-medium text-slate-900">No profile linked</h3>
                                 <p class="mt-1 text-sm text-slate-500">This user does not have a donor profile.</p>
                             </div>
@@ -170,7 +167,7 @@
                 >
                     <div class="border-b border-slate-200 px-6 py-5">
                         <div class="flex items-center gap-3">
-                            <span class="text-xl">🔒</span>
+                            <x-icon name="hash" />
                             <h2 class="text-xl font-semibold">Security</h2>
                         </div>
                     </div>
@@ -198,16 +195,14 @@
                 >
                     <div class="border-b border-slate-200 px-6 py-5">
                         <div class="flex items-center gap-3">
-                            <span class="text-xl">⚡</span>
+                            <x-icon name="zap" />
                             <h2 class="text-xl font-semibold">Activity</h2>
                         </div>
                     </div>
 
                     <div class="px-6 py-6">
                         <div class="text-center py-10">
-                            <svg class="mx-auto size-10 text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-                            </svg>
+                            <x-icon name="activity" class="mx-auto size-10 text-slate-300" />
                             <h3 class="mt-3 text-sm font-medium text-slate-900">No recent activity</h3>
                             <p class="mt-1 text-sm text-slate-500">User actions will appear here.</p>
                         </div>
@@ -223,17 +218,12 @@
                     {{-- Actions --}}
                     <div class="overflow-hidden rounded-xl border border-slate-200 bg-white">
                         <button class="flex w-full items-center gap-3 border-b border-slate-200 px-5 py-4 text-left text-sm font-medium text-slate-700 hover:bg-slate-50">
-                            <svg class="size-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
-                            </svg>
+                            <x-icon name="pencil" class="size-4 text-slate-500" />
                             <span>Edit user</span>
                         </button>
 
                         <button class="flex w-full items-center gap-3 px-5 py-4 text-left text-sm font-medium text-red-600 hover:bg-red-50">
-                            <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="3 6 5 6 21 6"/>
-                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                            </svg>
+                            <x-icon name="trash-2" class="size-4" />
                             <span>Delete user</span>
                         </button>
                     </div>

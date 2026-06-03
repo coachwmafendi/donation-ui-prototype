@@ -10,10 +10,10 @@ class UserShow extends Component
     public User $user;
 
     public array $sections = [
-        ['id' => 'overview', 'label' => 'Overview', 'icon' => '👤'],
-        ['id' => 'profile', 'label' => 'Profile Details', 'icon' => '📋'],
-        ['id' => 'security', 'label' => 'Security', 'icon' => '🔒'],
-        ['id' => 'activity', 'label' => 'Activity', 'icon' => '⚡'],
+        ['id' => 'overview', 'label' => 'Overview', 'icon' => 'user'],
+        ['id' => 'profile', 'label' => 'Profile Details', 'icon' => 'settings'],
+        ['id' => 'security', 'label' => 'Security', 'icon' => 'hash'],
+        ['id' => 'activity', 'label' => 'Activity', 'icon' => 'zap'],
     ];
 
     public function mount(User $user): void
