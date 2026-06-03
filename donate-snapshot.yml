@@ -1,0 +1,10 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - link "Donation UI" [ref=e4] [cursor=pointer]:
+      - /url: /
+  - main [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]
+      - generic [ref=e10]
+  - contentinfo [ref=e90]:
+    - generic [ref=e91]: Donation UI. All rights reserved.

@@ -6,6 +6,7 @@ use App\Livewire\CampaignEdit;
 use App\Livewire\CampaignIndex;
 use App\Livewire\CampaignShow;
 use App\Livewire\Dashboard;
+use App\Livewire\DonationForm;
 use App\Livewire\DonationIndex;
 use App\Livewire\DonationShow;
 use App\Livewire\UserIndex;
@@ -20,10 +21,22 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/donate', DonationForm::class)->name('donate');
+Route::get('/donate/{campaign}', DonationForm::class)->name('donate.campaign');
+
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Donation;
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::get('/donations', DonationIndex::class);
     Route::get('/donations/{donation:public_id}', DonationShow::class);
+    Route::get('/donations/{donation:public_id}/receipt', function (Donation $donation) {
+        $pdf = Pdf::loadView('receipts.donation', ['donation' => $donation->load('profile')])
+            ->setPaper('a4', 'portrait');
+        
+        return $pdf->download("receipt-{$donation->public_id}.pdf");
+    })->name('donations.receipt');
     Route::get('/users', UserIndex::class);
     Route::get('/users/{user}', UserShow::class);
     Route::get('/campaigns', CampaignIndex::class)->name('campaigns.index');

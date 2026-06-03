@@ -309,10 +309,13 @@
 
                     {{-- Action Box --}}
                     <div class="overflow-hidden rounded-xl border border-slate-200 bg-white">
-                        <button class="flex w-full items-center gap-3 border-b border-slate-200 px-5 py-4 text-left text-sm font-medium text-slate-700 hover:bg-slate-50">
+                        <a
+                            href="{{ route('donations.receipt', $donationModel) }}"
+                            class="flex w-full items-center gap-3 border-b border-slate-200 px-5 py-4 text-left text-sm font-medium text-slate-700 hover:bg-slate-50"
+                        >
                             <x-icon name="download" class="size-4 text-slate-500" />
                             <span>Download receipt</span>
-                        </button>
+                        </a>
 
                         <button
                             @click="showRefundModal = true"
