@@ -5,8 +5,12 @@
 .env.production
 .phpactor.json
 .phpunit.result.cache
+/.agents
+/.ai
+/.claude
 /.codex
-/.cursor/
+/.cursor
+/.gemini
 /.idea
 /.nova
 /.phpunit.cache
@@ -25,3 +29,19 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# AI agent artifacts
+CLAUDE.md
+GEMINI.md
+boost.json
+opencode.json
+.mcp.json
+
+# Testing / verification files
+browser-*.html
+campaigns-*.html
+.playwright-mcp/
+
+# Screenshots
+*.png
+*.svg
