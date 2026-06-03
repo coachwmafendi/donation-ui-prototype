@@ -407,15 +407,21 @@
                     <div class="border-b border-slate-200 px-6 py-4">
                         <h2 class="text-lg font-semibold">Minimum Amount</h2>
                     </div>
-                    <div class="px-6 py-5 space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700">Minimum donation amount</label>
-                            <div class="relative mt-1.5">
-                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">$</span>
-                                <input type="number" step="0.01" min="0" value="1.00" class="block w-full rounded-lg border border-slate-300 bg-white pl-7 pr-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200">
+                    <div class="px-6 py-5 space-y-6">
+                        @foreach([
+                            ['label' => 'Minimum one-time donation', 'value' => '1'],
+                            ['label' => 'Minimum monthly donation', 'value' => '10'],
+                            ['label' => 'Minimum quarterly donation', 'value' => '5'],
+                            ['label' => 'Minimum yearly donation', 'value' => '50'],
+                        ] as $min)
+                            <div>
+                                <label class="block text-base font-semibold text-slate-900">{{ $min['label'] }}</label>
+                                <div class="relative mt-2 max-w-xs">
+                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-lg font-medium">$</span>
+                                    <input type="number" step="0.01" min="0" value="{{ $min['value'] }}" class="block w-full rounded-xl border-2 border-slate-200 bg-white pl-10 pr-4 py-3 text-lg text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100 transition">
+                                </div>
                             </div>
-                            <p class="mt-1 text-xs text-slate-500">Set to 0 for no minimum.</p>
-                        </div>
+                        @endforeach
                         <div class="flex justify-end pt-2">
                             <button class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition">Save Changes</button>
                         </div>
