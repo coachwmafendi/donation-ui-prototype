@@ -138,26 +138,193 @@
         </div>
 
         {{-- Tab: Settings --}}
-        <div x-show="activeTab === 'settings'" class="max-w-2xl" x-cloak>
-            <div class="rounded-xl border border-slate-200 bg-white overflow-hidden">
-                <div class="border-b border-slate-200 px-6 py-4">
-                    <h2 class="text-lg font-semibold">Campaign settings</h2>
+        <div
+            x-show="activeTab === 'settings'"
+            x-data="{ settingTab: 'general' }"
+            class="grid grid-cols-1 lg:grid-cols-12 gap-6"
+            x-cloak
+        >
+            {{-- Vertical Tabs --}}
+            <nav class="lg:col-span-3 space-y-1">
+                @foreach([
+                    ['id' => 'general', 'label' => 'General'],
+                    ['id' => 'payment', 'label' => 'Payment Method'],
+                    ['id' => 'currency', 'label' => 'Currency'],
+                    ['id' => 'frequency', 'label' => 'Frequency'],
+                    ['id' => 'amounts', 'label' => 'Suggested Amounts'],
+                    ['id' => 'minimum', 'label' => 'Minimum Amount'],
+                    ['id' => 'cost', 'label' => 'Transaction Cost'],
+                ] as $item)
+                    <button
+                        type="button"
+                        @click="settingTab = '{{ $item['id'] }}'"
+                        class="w-full text-left rounded-lg px-4 py-3 text-sm font-medium transition"
+                        :class="settingTab === '{{ $item['id'] }}'
+                            ? 'bg-slate-100 text-slate-900'
+                            : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'"
+                    >
+                        {{ $item['label'] }}
+                    </button>
+                @endforeach
+            </nav>
+
+            {{-- Setting Panels --}}
+            <div class="lg:col-span-9">
+
+                {{-- General --}}
+                <div x-show="settingTab === 'general'" class="rounded-xl border border-slate-200 bg-white overflow-hidden">
+                    <div class="border-b border-slate-200 px-6 py-4">
+                        <h2 class="text-lg font-semibold">General</h2>
+                    </div>
+                    <div class="px-6 py-5 space-y-5">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700">Campaign name</label>
+                            <input type="text" value="{{ $campaign->name }}" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" readonly>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700">Slug</label>
+                            <input type="text" value="{{ $campaign->slug }}" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" readonly>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700">Description</label>
+                            <textarea rows="3" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" readonly>{{ $campaign->description }}</textarea>
+                        </div>
+                        <div class="flex justify-end pt-2">
+                            <button class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition">Save Changes</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="space-y-4 px-6 py-5">
-                    <x-detail-row label="Allow recurring donations">
-                        {{ ($campaign->settings['allow_recurring'] ?? true) ? 'Yes' : 'No' }}
-                    </x-detail-row>
-                    <x-detail-row label="Allow tribute gifts">
-                        {{ ($campaign->settings['allow_tribute'] ?? false) ? 'Yes' : 'No' }}
-                    </x-detail-row>
-                    <x-detail-row label="Suggested amounts">
-                        @if(isset($campaign->settings['suggested_amounts']))
-                            {{ collect($campaign->settings['suggested_amounts'])->map(fn($cents) => '$' . number_format($cents / 100, 2))->join(', ') }}
-                        @else
-                            <span class="text-slate-400">—</span>
-                        @endif
-                    </x-detail-row>
+
+                {{-- Payment Method --}}
+                <div x-show="settingTab === 'payment'" class="rounded-xl border border-slate-200 bg-white overflow-hidden" x-cloak>
+                    <div class="border-b border-slate-200 px-6 py-4">
+                        <h2 class="text-lg font-semibold">Payment Method</h2>
+                    </div>
+                    <div class="px-6 py-5 space-y-4">
+                        <label class="flex items-center gap-3 rounded-lg border-2 border-slate-200 px-4 py-3 cursor-pointer">
+                            <input type="checkbox" checked class="size-4 rounded border-slate-300 text-slate-900">
+                            <span class="text-sm font-medium text-slate-700">Credit card</span>
+                        </label>
+                        <label class="flex items-center gap-3 rounded-lg border-2 border-slate-200 px-4 py-3 cursor-pointer">
+                            <input type="checkbox" checked class="size-4 rounded border-slate-300 text-slate-900">
+                            <span class="text-sm font-medium text-slate-700">PayPal</span>
+                        </label>
+                        <label class="flex items-center gap-3 rounded-lg border-2 border-slate-200 px-4 py-3 cursor-pointer">
+                            <input type="checkbox" class="size-4 rounded border-slate-300 text-slate-900">
+                            <span class="text-sm font-medium text-slate-700">Bank transfer</span>
+                        </label>
+                        <div class="flex justify-end pt-2">
+                            <button class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition">Save Changes</button>
+                        </div>
+                    </div>
                 </div>
+
+                {{-- Currency --}}
+                <div x-show="settingTab === 'currency'" class="rounded-xl border border-slate-200 bg-white overflow-hidden" x-cloak>
+                    <div class="border-b border-slate-200 px-6 py-4">
+                        <h2 class="text-lg font-semibold">Currency</h2>
+                    </div>
+                    <div class="px-6 py-5 space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700">Default currency</label>
+                            <select class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200">
+                                <option value="USD" {{ $campaign->currency === 'USD' ? 'selected' : '' }}>USD — US Dollar</option>
+                                <option value="EUR" {{ $campaign->currency === 'EUR' ? 'selected' : '' }}>EUR — Euro</option>
+                                <option value="GBP" {{ $campaign->currency === 'GBP' ? 'selected' : '' }}>GBP — British Pound</option>
+                                <option value="SGD" {{ $campaign->currency === 'SGD' ? 'selected' : '' }}>SGD — Singapore Dollar</option>
+                                <option value="MYR" {{ $campaign->currency === 'MYR' ? 'selected' : '' }}>MYR — Malaysian Ringgit</option>
+                            </select>
+                        </div>
+                        <div class="flex justify-end pt-2">
+                            <button class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Frequency --}}
+                <div x-show="settingTab === 'frequency'" class="rounded-xl border border-slate-200 bg-white overflow-hidden" x-cloak>
+                    <div class="border-b border-slate-200 px-6 py-4">
+                        <h2 class="text-lg font-semibold">Frequency</h2>
+                    </div>
+                    <div class="px-6 py-5 space-y-4">
+                        <label class="flex items-center gap-3 rounded-lg border-2 border-slate-200 px-4 py-3 cursor-pointer">
+                            <input type="checkbox" checked class="size-4 rounded border-slate-300 text-slate-900">
+                            <span class="text-sm font-medium text-slate-700">One-time</span>
+                        </label>
+                        <label class="flex items-center gap-3 rounded-lg border-2 border-slate-200 px-4 py-3 cursor-pointer">
+                            <input type="checkbox" checked class="size-4 rounded border-slate-300 text-slate-900">
+                            <span class="text-sm font-medium text-slate-700">Monthly</span>
+                        </label>
+                        <label class="flex items-center gap-3 rounded-lg border-2 border-slate-200 px-4 py-3 cursor-pointer">
+                            <input type="checkbox" class="size-4 rounded border-slate-300 text-slate-900">
+                            <span class="text-sm font-medium text-slate-700">Yearly</span>
+                        </label>
+                        <div class="flex justify-end pt-2">
+                            <button class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Suggested Amounts --}}
+                <div x-show="settingTab === 'amounts'" class="rounded-xl border border-slate-200 bg-white overflow-hidden" x-cloak>
+                    <div class="border-b border-slate-200 px-6 py-4">
+                        <h2 class="text-lg font-semibold">Suggested Amounts</h2>
+                    </div>
+                    <div class="px-6 py-5 space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700">Preset amounts (comma separated)</label>
+                            <input type="text" value="10, 25, 50, 100, 250, 500" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200">
+                            <p class="mt-1 text-xs text-slate-500">Default preset buttons shown to donors.</p>
+                        </div>
+                        <div class="flex justify-end pt-2">
+                            <button class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Minimum Amount --}}
+                <div x-show="settingTab === 'minimum'" class="rounded-xl border border-slate-200 bg-white overflow-hidden" x-cloak>
+                    <div class="border-b border-slate-200 px-6 py-4">
+                        <h2 class="text-lg font-semibold">Minimum Amount</h2>
+                    </div>
+                    <div class="px-6 py-5 space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700">Minimum donation amount</label>
+                            <div class="relative mt-1.5">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">$</span>
+                                <input type="number" step="0.01" min="0" value="1.00" class="block w-full rounded-lg border border-slate-300 bg-white pl-7 pr-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200">
+                            </div>
+                            <p class="mt-1 text-xs text-slate-500">Set to 0 for no minimum.</p>
+                        </div>
+                        <div class="flex justify-end pt-2">
+                            <button class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Transaction Cost --}}
+                <div x-show="settingTab === 'cost'" class="rounded-xl border border-slate-200 bg-white overflow-hidden" x-cloak>
+                    <div class="border-b border-slate-200 px-6 py-4">
+                        <h2 class="text-lg font-semibold">Transaction Cost</h2>
+                    </div>
+                    <div class="px-6 py-5 space-y-4">
+                        <div class="flex items-center gap-3">
+                            <input type="checkbox" id="coverFee" class="size-4 rounded border-slate-300 text-slate-900">
+                            <label for="coverFee" class="text-sm font-medium text-slate-700">Ask donor to cover transaction fee</label>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700">Processing fee percentage</label>
+                            <div class="relative mt-1.5">
+                                <input type="number" step="0.1" min="0" max="100" value="3.0" class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 pr-8 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200">
+                                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">%</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-end pt-2">
+                            <button class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
