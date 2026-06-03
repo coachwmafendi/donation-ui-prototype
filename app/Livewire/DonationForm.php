@@ -9,6 +9,10 @@ use Livewire\Component;
 
 class DonationForm extends Component
 {
+    // Wizard step
+    public int $step = 1;
+    public int $totalSteps = 5;
+
     // Campaign selection
     public ?string $campaignId = null;
 
@@ -82,13 +86,57 @@ class DonationForm extends Component
         $this->amount = null;
     }
 
+    public function nextStep(): void
+    {
+        if ($this->step === 1) {
+            $this->validate(['campaignId' => 'required|exists:campaigns,id'], [
+                'campaignId.required' => 'Please select a campaign.'
+            ]);
+        } elseif ($this->step === 2) {
+            $this->validate([
+                'amount' => 'required|numeric|min:1',
+                'currency' => 'required|string|size:3',
+                'frequency' => 'required|in:one-time,monthly,yearly',
+            ]);
+        } elseif ($this->step === 3) {
+            $this->validate([
+                'firstName' => 'required|string|max:255',
+                'lastName' => 'required|string|max:255',
+                'email' => 'required|email|max:255',
+                'phone' => 'nullable|string|max:50',
+            ]);
+        } elseif ($this->step === 4) {
+            $this->validate([
+                'paymentMethod' => 'required|in:credit_card,paypal,bank_transfer',
+            ]);
+        }
+
+        if ($this->step < $this->totalSteps) {
+            $this->step++;
+        }
+    }
+
+    public function prevStep(): void
+    {
+        if ($this->step > 1) {
+            $this->step--;
+        }
+    }
+
+    public function goToStep(int $step): void
+    {
+        if ($step < $this->step) {
+            $this->step = $step;
+        }
+    }
+
     public function submit(): void
     {
         $validated = $this->validate([
             'campaignId' => 'required|exists:campaigns,id',
             'amount' => 'required|numeric|min:1',
             'currency' => 'required|string|size:3',
-            'frequency' => 'required|in:one-time,monthly,weekly,yearly',
+            'frequency' => 'required|in:one-time,monthly,yearly',
             'firstName' => 'required|string|max:255',
             'lastName' => 'required|string|max:255',
             'email' => 'required|email|max:255',
@@ -105,10 +153,8 @@ class DonationForm extends Component
             'agreed' => 'accepted',
         ], [
             'agreed.accepted' => 'You must agree to the terms to proceed.',
-            'campaignId.required' => 'Please select a campaign.',
         ]);
 
-        // Find or create profile
         $profile = Profile::firstOrCreate(
             ['email' => $validated['email']],
             [
@@ -124,12 +170,10 @@ class DonationForm extends Component
             ]
         );
 
-        // Get campaign name
         $campaign = Campaign::findOrFail($validated['campaignId']);
 
-        // Create donation
         $amountCents = (int) round($validated['amount'] * 100);
-        $processingFeeCents = (int) round($amountCents * 0.03); // 3% fee estimation
+        $processingFeeCents = (int) round($amountCents * 0.03);
         $netAmountCents = $amountCents - $processingFeeCents;
 
         $donation = Donation::create([
@@ -154,16 +198,19 @@ class DonationForm extends Component
             'comment' => $validated['comment'] ?: null,
         ]);
 
-        // Update campaign stats
         $campaign->increment('raised_amount_cents', $amountCents);
         $campaign->increment('donor_count');
 
-        // Send receipt email
         \Mail::to($profile->email)
             ->send(new \App\Mail\DonationReceipt($donation, $profile));
 
         $this->donationPublicId = $donation->public_id;
         $this->showSuccess = true;
+    }
+
+    public function getSelectedCampaignProperty(): ?Campaign
+    {
+        return $this->campaignId ? Campaign::find($this->campaignId) : null;
     }
 
     public function render()
