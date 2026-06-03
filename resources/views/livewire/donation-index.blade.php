@@ -1,0 +1,125 @@
+<div class="max-w-7xl mx-auto space-y-6">
+    {{-- Header --}}
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">Donations</h1>
+            <p class="mt-1 text-sm text-slate-500">Manage and track all donations</p>
+        </div>
+
+        <button class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800">
+            Add donation
+        </button>
+    </div>
+
+    {{-- Filters --}}
+    <div class="rounded-xl border border-slate-200 bg-white p-4">
+        <div class="flex flex-col sm:flex-row gap-4">
+            <div class="flex-1">
+                <label class="sr-only">Search</label>
+                <div class="relative">
+                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="m21 21-4.3-4.3"/>
+                    </svg>
+                    <input 
+                        wire:model.live.debounce.300ms="search"
+                        type="text" 
+                        placeholder="Search by donor, email, or campaign..."
+                        class="w-full rounded-lg border border-slate-300 bg-white pl-10 pr-4 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"
+                    >
+                </div>
+            </div>
+
+            <select 
+                wire:model.live="statusFilter"
+                class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"
+            >
+                <option value="">All statuses</option>
+                <option value="succeeded">Succeeded</option>
+                <option value="pending">Pending</option>
+                <option value="failed">Failed</option>
+                <option value="refunded">Refunded</option>
+            </select>
+        </div>
+    </div>
+
+    {{-- Table --}}
+    <div class="rounded-xl border border-slate-200 bg-white overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-slate-200">
+                <thead class="bg-slate-50">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">ID</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Donor</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Amount</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Campaign</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Date</th>
+                        <th class="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200">
+                    @forelse ($donations as $donation)
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="font-mono text-sm text-slate-600">{{ Str::limit($donation->id, 8) }}</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="size-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-medium text-slate-600 mr-3">
+                                        {{ substr($donation->profile->first_name, 0, 1) }}
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-medium text-slate-900">{{ $donation->profile->full_name }}</div>
+                                        <div class="text-sm text-slate-500">{{ $donation->profile->email }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-slate-900">{{ $donation->amount }}</div>
+                                @if($donation->converted_amount)
+                                    <div class="text-sm text-slate-500">≈ {{ $donation->converted_amount }}</div>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="text-sm text-slate-700">{{ $donation->campaign }}</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <x-status-badge :status="$donation->status" />
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="text-sm text-slate-500">{{ $donation->donation_date->format('M d, Y') }}</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right">
+                                <a 
+                                    href="/donations/{{ $donation->id }}" 
+                                    wire:navigate
+                                    class="text-sm font-medium text-blue-600 hover:text-blue-800"
+                                >
+                                    View
+                                </a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" class="px-6 py-12 text-center">
+                                <svg class="mx-auto size-12 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                                </svg>
+                                <h3 class="mt-4 text-sm font-medium text-slate-900">No donations found</h3>
+                                <p class="mt-1 text-sm text-slate-500">Try adjusting your search or filters.</p>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        {{-- Pagination --}}
+        @if($donations->hasPages())
+            <div class="px-6 py-4 border-t border-slate-200">
+                {{ $donations->links() }}
+            </div>
+        @endif
+    </div>
+</div>
