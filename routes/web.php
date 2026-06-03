@@ -7,6 +7,7 @@ use App\Livewire\CampaignIndex;
 use App\Livewire\CampaignPublic;
 use App\Livewire\CampaignShow;
 use App\Livewire\Dashboard;
+use App\Livewire\DonationEmbed;
 use App\Livewire\DonationForm;
 use App\Livewire\DonationIndex;
 use App\Livewire\DonationShow;
@@ -30,6 +31,15 @@ Route::get('/welcome', HomePage::class)->name('welcome');
 Route::get('/c/{campaign:slug}', CampaignPublic::class)->name('campaigns.public');
 Route::get('/donate', DonationForm::class)->name('donate');
 Route::get('/donate/{campaign}', DonationForm::class)->name('donate.campaign');
+
+// Embed routes for external websites
+Route::get('/embed', DonationEmbed::class)->name('donate.embed');
+Route::get('/embed/{campaign}', DonationEmbed::class)->name('donate.campaign.embed');
+
+// Embed instructions (admin only)
+Route::get('/embed-instructions', function () {
+    return view('embed-instructions');
+})->middleware('auth')->name('embed.instructions');
 
 use App\Models\Donation;
 use Barryvdh\DomPDF\Facade\Pdf;
