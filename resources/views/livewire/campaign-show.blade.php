@@ -269,12 +269,43 @@
                             { id: 'monthly', label: 'Monthly' },
                         ],
                         defaultFreq: 'monthly',
+                        allOptions: [
+                            { id: 'one-time', label: 'Once' },
+                            { id: 'monthly', label: 'Monthly' },
+                            { id: 'weekly', label: 'Weekly' },
+                            { id: 'yearly', label: 'Yearly' },
+                            { id: 'quarterly', label: 'Quarterly' },
+                        ],
 
-                        removeFrequency(id) {
-                            this.frequencies = this.frequencies.filter(f => f.id !== id)
-                            if (this.defaultFreq === id && this.frequencies.length > 0) {
+                        removeFrequency(index) {
+                            const removed = this.frequencies[index]
+                            this.frequencies.splice(index, 1)
+                            if (this.defaultFreq === removed.id && this.frequencies.length > 0) {
                                 this.defaultFreq = this.frequencies[0].id
                             }
+                        },
+
+                        addFrequency() {
+                            const used = this.frequencies.map(f => f.id)
+                            const available = this.allOptions.filter(o => !used.includes(o.id))
+                            if (available.length > 0) {
+                                this.frequencies.push(available[0])
+                            }
+                        },
+
+                        changeFrequency(index, newId) {
+                            const option = this.allOptions.find(o => o.id === newId)
+                            if (option) {
+                                this.frequencies[index] = option
+                                if (this.defaultFreq === this.frequencies[index].id) {
+                                    this.defaultFreq = option.id
+                                }
+                            }
+                        },
+
+                        availableOptions(currentId) {
+                            const used = this.frequencies.map(f => f.id).filter(id => id !== currentId)
+                            return this.allOptions.filter(o => !used.includes(o.id))
                         },
                     }"
                     class="rounded-xl border border-slate-200 bg-white overflow-hidden"
@@ -285,17 +316,27 @@
                     </div>
                     <div class="px-6 py-5 space-y-4">
 
-                        <template x-for="freq in frequencies" :key="freq.id">
+                        <template x-for="(freq, index) in frequencies" :key="index">
                             <div class="flex items-center gap-3">
                                 <div class="flex-1 relative">
-                                    <div
-                                        class="block w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 text-base text-slate-900 transition select-none"
-                                        x-text="freq.label"
-                                    ></div>
+                                    <select
+                                        x-model="freq.id"
+                                        @change="changeFrequency(index, $event.target.value)"
+                                        class="block w-full appearance-none rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 pr-10 text-base text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100 transition cursor-pointer"
+                                    >
+                                        <template x-for="opt in availableOptions(freq.id)" :key="opt.id">
+                                            <option
+                                                :value="opt.id"
+                                                :selected="opt.id === freq.id"
+                                                x-text="opt.label"
+                                            ></option>
+                                        </template>
+                                    </select>
+                                    <svg class="absolute right-3 top-1/2 -translate-y-1/2 size-5 text-slate-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
                                 </div>
                                 <button
                                     type="button"
-                                    @click="removeFrequency(freq.id)"
+                                    @click="removeFrequency(index)"
                                     class="p-2.5 text-slate-400 hover:text-red-600 transition"
                                     title="Remove frequency"
                                 >
@@ -309,6 +350,15 @@
                             </div>
                         </template>
 
+                        <button
+                            type="button"
+                            @click="addFrequency"
+                            x-show="frequencies.length < allOptions.length"
+                            class="w-full rounded-xl border-2 border-dashed border-slate-300 px-4 py-3 text-sm font-medium text-slate-500 hover:border-slate-400 hover:text-slate-700 transition"
+                        >
+                            + Add frequency
+                        </button>
+
                         <template x-if="frequencies.length === 0">
                             <p class="text-sm text-slate-500 py-4">No frequencies selected.</p>
                         </template>
@@ -318,7 +368,7 @@
                         <div>
                             <h3 class="text-sm font-semibold text-slate-900 mb-3">Default frequency</h3>
                             <div class="space-y-2">
-                                <template x-for="freq in frequencies" :key="freq.id">
+                                <template x-for="(freq, index) in frequencies" :key="freq.id">
                                     <label class="flex items-center gap-3 rounded-lg border-2 px-4 py-3 cursor-pointer transition"
                                         :class="defaultFreq === freq.id ? 'border-slate-900 bg-slate-50' : 'border-slate-200'"
                                     >
