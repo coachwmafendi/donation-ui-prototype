@@ -34,7 +34,7 @@ Route::get('/donate/{campaign}', DonationForm::class)->name('donate.campaign');
 
 // Embed routes for external websites
 Route::get('/embed', DonationEmbed::class)->name('donate.embed');
-Route::get('/embed/{campaign}', DonationEmbed::class)->name('donate.campaign.embed');
+Route::get('/embed/{campaign:slug}', DonationEmbed::class)->name('donate.campaign.embed');
 
 // Embed instructions (admin only)
 Route::get('/embed-instructions', function () {

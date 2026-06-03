@@ -18,6 +18,22 @@
             <p class="mt-2 text-slate-600">Add a donation form to your website, blog, or masjid page in minutes.</p>
         </div>
 
+        {{-- Production URL Warning --}}
+        <div class="mb-8 rounded-xl border border-red-200 bg-red-50 p-5">
+            <div class="flex items-start gap-3">
+                <svg class="size-5 text-red-600 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                <div>
+                    <h3 class="font-semibold text-red-900">Important: Production URL Required</h3>
+                    <p class="mt-1 text-sm text-red-700">
+                        Below examples use <code class="bg-red-100 px-1 rounded">{{ request()->getSchemeAndHttpHost() }}</code> which only works on this local computer.
+                    </p>
+                    <p class="mt-2 text-sm text-red-700">
+                         Set <code class="bg-red-100 px-1 rounded">APP_URL</code> in your <code class="bg-red-100 px-1 rounded">.env</code> to your production domain (e.g. <code class="bg-red-100 px-1 rounded">https://yoursite.com</code>) before sharing embed codes.
+                    </p>
+                </div>
+            </div>
+        </div>
+
         <div class="space-y-8">
 
             {{-- General Embed --}}
@@ -93,6 +109,22 @@
                 </ul>
             </div>
 
+            {{-- Deployment --}}
+            <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+                <h2 class="text-lg font-semibold text-slate-900">Deploy to production</h2>
+                <p class="mt-2 text-sm text-slate-500">Before embedding on live websites:</p>
+                <ol class="mt-4 space-y-3 text-sm text-slate-700 list-decimal list-inside">
+                    <li>Deploy this app to a public server (e.g. <a href="https://cloud.laravel.com" target="_blank" class="text-blue-600 hover:underline">Laravel Cloud</a>, VPS, shared hosting)</li>
+                    <li>Update <code class="bg-slate-100 px-1 rounded">APP_URL</code> in <code class="bg-slate-100 px-1 rounded">.env</code> to your domain</li>
+                    <li>Set up SSL/HTTPS (required for embed security)</li>
+                    <li>Generate new embed codes — auto-updated URLs below</li>
+                </ol>
+                <div class="mt-4 rounded-lg bg-slate-50 p-4">
+                    <p class="text-xs font-medium text-slate-500 uppercase">Current APP_URL</p>
+                    <p class="mt-1 text-sm font-mono text-slate-900">{{ config('app.url') }}</p>
+                </div>
+            </div>
+
         </div>
 
         <div class="mt-12 text-center text-sm text-slate-500">
@@ -102,9 +134,10 @@
 
     <script>
         function copyEmbed(slug) {
-            const code = `<iframe\n  src="{{ url('/embed') }}/${slug}"\n  width="100%"\n  height="650"\n  frameborder="0"\n  style="border: none; border-radius: 12px;"\n  title="Donation Form"\n></iframe>`;
+            const baseUrl = '{{ config('app.url') }}';
+            const code = `<iframe\n  src="${baseUrl}/embed/${slug}"\n  width="100%"\n  height="650"\n  frameborder="0"\n  style="border: none; border-radius: 12px;"\n  title="Donation Form"\n></iframe>`;
             navigator.clipboard.writeText(code).then(() => {
-                alert('Embed code copied!');
+                alert('Embed code copied!\n\nNote: Update APP_URL in .env before using on production.');
             });
         }
     </script>
