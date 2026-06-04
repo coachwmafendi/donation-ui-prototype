@@ -2,26 +2,40 @@
 
 namespace App\Livewire;
 
-use App\Mail\DonationReceipt;
 use App\Models\Campaign;
-use App\Models\Donation;
-use App\Models\Profile;
 use Livewire\Component;
 
 class DonationEmbed extends Component
 {
     public ?string $campaignId = null;
 
+    public ?Campaign $campaign = null;
+
+    // Wizard step
+    public int $step = 1;
+
+    public int $totalSteps = 4;
+
+    // Campaign settings (injected from settings JSON)
+    public array $campaignFrequencies = ['one-time', 'monthly'];
+
+    public array $campaignPresets = [10, 25, 50, 100, 250, 500];
+
+    public ?float $campaignMinAmount = 1;
+
+    public string $campaignDefaultFrequency = 'one-time';
+
+    // Amount
     public ?float $amount = null;
 
     public string $currency = 'USD';
 
-    public array $presets = [25, 50, 100, 250];
-
     public bool $customAmount = false;
 
+    // Frequency
     public string $frequency = 'one-time';
 
+    // Personal info
     public string $firstName = '';
 
     public string $lastName = '';
@@ -30,6 +44,7 @@ class DonationEmbed extends Component
 
     public string $phone = '';
 
+    // Address (optional)
     public bool $showAddress = false;
 
     public string $country = '';
@@ -44,19 +59,20 @@ class DonationEmbed extends Component
 
     public string $postalCode = '';
 
+    // Payment
     public string $paymentMethod = 'credit_card';
 
+    // Optional fields
     public string $comment = '';
 
     public string $tributeInfo = '';
 
     public bool $agreed = false;
 
+    // UI state
     public bool $showSuccess = false;
 
     public ?string $donationPublicId = null;
-
-    public ?Campaign $campaign = null;
 
     public function mount(?string $campaign = null): void
     {
@@ -64,8 +80,37 @@ class DonationEmbed extends Component
             $this->campaign = Campaign::where('public_id', $campaign)->orWhere('slug', $campaign)->first();
             if ($this->campaign) {
                 $this->campaignId = $this->campaign->id;
+                $this->loadCampaignSettings();
             }
         }
+    }
+
+    protected function loadCampaignSettings(): void
+    {
+        if (! $this->campaign) {
+            return;
+        }
+
+        $this->currency = $this->campaign->currency ?? 'USD';
+        $settings = $this->campaign->settings ?? [];
+
+        if (! empty($settings['frequencies'])) {
+            $this->campaignFrequencies = $settings['frequencies'];
+        }
+
+        if (! empty($settings['presets'])) {
+            $this->campaignPresets = $settings['presets'];
+        }
+
+        if (isset($settings['min_amount'])) {
+            $this->campaignMinAmount = (float) $settings['min_amount'];
+        }
+
+        if (! empty($settings['default_frequency']) && in_array($settings['default_frequency'], $this->campaignFrequencies)) {
+            $this->campaignDefaultFrequency = $settings['default_frequency'];
+        }
+
+        $this->frequency = $this->campaignDefaultFrequency;
     }
 
     public function selectPreset(float $amount): void
@@ -80,13 +125,58 @@ class DonationEmbed extends Component
         $this->amount = null;
     }
 
+    public function nextStep(): void
+    {
+        if ($this->step === 1) {
+            $min = $this->campaignMinAmount ?? 1;
+            $this->validate([
+                'amount' => 'required|numeric|min:'.$min,
+                'currency' => 'required|string|size:3',
+                'frequency' => 'required|in:'.implode(',', $this->campaignFrequencies),
+            ], [
+                'amount.min' => 'The minimum donation amount is '.number_format($min, 2).' '.strtoupper($this->currency).'.',
+            ]);
+        } elseif ($this->step === 2) {
+            $this->validate([
+                'firstName' => 'required|string|max:255',
+                'lastName' => 'required|string|max:255',
+                'email' => 'required|email|max:255',
+                'phone' => 'nullable|string|max:50',
+            ]);
+        } elseif ($this->step === 3) {
+            $this->validate([
+                'paymentMethod' => 'required|in:credit_card,paypal,bank_transfer',
+            ]);
+        }
+
+        if ($this->step < $this->totalSteps) {
+            $this->step++;
+        }
+    }
+
+    public function prevStep(): void
+    {
+        if ($this->step > 1) {
+            $this->step--;
+        }
+    }
+
+    public function goToStep(int $step): void
+    {
+        if ($step < $this->step) {
+            $this->step = $step;
+        }
+    }
+
     public function submit(): void
     {
+        $min = $this->campaignMinAmount ?? 1;
+
         $validated = $this->validate([
             'campaignId' => 'required|exists:campaigns,id',
-            'amount' => 'required|numeric|min:1',
+            'amount' => 'required|numeric|min:'.$min,
             'currency' => 'required|string|size:3',
-            'frequency' => 'required|in:one-time,monthly,yearly',
+            'frequency' => 'required|in:'.implode(',', $this->campaignFrequencies),
             'firstName' => 'required|string|max:255',
             'lastName' => 'required|string|max:255',
             'email' => 'required|email|max:255',
@@ -103,10 +193,10 @@ class DonationEmbed extends Component
             'agreed' => 'accepted',
         ], [
             'agreed.accepted' => 'You must agree to the terms to proceed.',
-            'campaignId.required' => 'Please select a campaign.',
+            'amount.min' => 'The minimum donation amount is '.number_format($min, 2).' '.strtoupper($this->currency).'.',
         ]);
 
-        $profile = Profile::firstOrCreate(
+        $profile = \App\Models\Profile::firstOrCreate(
             ['email' => $validated['email']],
             [
                 'first_name' => $validated['firstName'],
@@ -126,7 +216,7 @@ class DonationEmbed extends Component
         $processingFeeCents = (int) round($amountCents * 0.03);
         $netAmountCents = $amountCents - $processingFeeCents;
 
-        $donation = Donation::create([
+        $donation = \App\Models\Donation::create([
             'profile_id' => $profile->id,
             'amount_cents' => $amountCents,
             'currency' => strtoupper($validated['currency']),
@@ -152,7 +242,7 @@ class DonationEmbed extends Component
         $campaign->increment('donor_count');
 
         \Mail::to($profile->email)
-            ->send(new DonationReceipt($donation, $profile));
+            ->send(new \App\Mail\DonationReceipt($donation, $profile));
 
         $this->donationPublicId = $donation->public_id;
         $this->showSuccess = true;
@@ -160,8 +250,8 @@ class DonationEmbed extends Component
 
     public function render()
     {
-        return view('livewire.donation-embed', [
-            'campaigns' => Campaign::where('status', 'active')->orderBy('name')->get(),
+        return view('livewire.donation-form', [
+            'campaignName' => $this->campaign?->name,
         ])->layout('layouts.embed');
     }
 }

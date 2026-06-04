@@ -92,13 +92,16 @@ class DonationForm extends Component
 
     protected function loadCampaignSettings(): void
     {
-        $campaign = Campaign::find($this->campaignId);
+        $campaign = Campaign::where('public_id', $this->campaignId)
+            ->orWhere('slug', $this->campaignId)
+            ->first();
 
         if (! $campaign) {
             return;
         }
 
         $this->selectedCampaign = $campaign;
+        $this->campaignId = $campaign->id;
         $this->currency = $campaign->currency ?? 'USD';
 
         $settings = $campaign->settings ?? [];
@@ -260,7 +263,13 @@ class DonationForm extends Component
 
     public function render()
     {
-        $view = view('livewire.donation-form');
+        if (! $this->selectedCampaign && $this->campaignId) {
+            $this->selectedCampaign = Campaign::find($this->campaignId);
+        }
+
+        $view = view('livewire.donation-form', [
+            'campaignName' => $this->selectedCampaign?->name,
+        ]);
 
         if ($this->embed) {
             return $view->layout('layouts.embed');

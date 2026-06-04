@@ -210,7 +210,7 @@
             <div class="rounded-lg bg-slate-50 p-5 space-y-3">
                 <div class="flex justify-between">
                     <span class="text-sm text-slate-500">Campaign</span>
-                    <span class="text-sm font-semibold text-slate-900">{{ $this->selectedCampaign->name ?? '—' }}</span>
+                    <span class="text-sm font-semibold text-slate-900">{{ $campaignName ?? '—' }}</span>
                 </div>
                 <div class="flex justify-between">
                     <span class="text-sm text-slate-500">Amount</span>
