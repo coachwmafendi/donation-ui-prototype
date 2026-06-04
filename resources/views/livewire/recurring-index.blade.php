@@ -59,12 +59,20 @@
                             <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Frequency</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Next payment</th>
-                            <th class="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+                            <th class="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider"></th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200">
                         @forelse ($recurring as $plan)
-                            <tr class="hover:bg-slate-50 transition-colors">
+                            <tr
+                                wire:key="recurring-{{ $plan->id }}"
+                                @click="!$event.target.closest('button') && Livewire.navigate('/donations/{{ $plan->public_id }}')"
+                                @keydown.enter="!$event.target.closest('button') && Livewire.navigate('/donations/{{ $plan->public_id }}')"
+                                @keydown.space.prevent="!$event.target.closest('button') && Livewire.navigate('/donations/{{ $plan->public_id }}')"
+                                role="link"
+                                tabindex="0"
+                                class="cursor-pointer hover:bg-slate-50 transition-colors"
+                            >
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
                                         <div class="size-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-medium text-slate-600 mr-3">
@@ -106,13 +114,6 @@
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right">
-                                    <a
-                                        href="/donations/{{ $plan->public_id }}"
-                                        wire:navigate
-                                        class="text-sm font-medium text-blue-600 hover:text-blue-800"
-                                    >
-                                        View
-                                    </a>
                                     @if($plan->status === 'succeeded')
                                         <button
                                             wire:click="pause('{{ $plan->public_id }}')"

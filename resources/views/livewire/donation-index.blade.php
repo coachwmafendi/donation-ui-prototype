@@ -52,12 +52,20 @@
                         <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Campaign</th>
                         <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
                         <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Date</th>
-                        <th class="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+                        <th class="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider"></th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-200">
                     @forelse ($donations as $donation)
-                        <tr class="hover:bg-slate-50 transition-colors">
+                        <tr
+                            wire:key="donation-{{ $donation->id }}"
+                            @click="Livewire.navigate('/donations/{{ $donation->public_id }}')"
+                            @keydown.enter="Livewire.navigate('/donations/{{ $donation->public_id }}')"
+                            @keydown.space.prevent="Livewire.navigate('/donations/{{ $donation->public_id }}')"
+                            role="link"
+                            tabindex="0"
+                            class="cursor-pointer hover:bg-slate-50 transition-colors"
+                        >
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span class="font-mono text-sm text-slate-600">{{ $donation->public_id }}</span>
                             </td>
@@ -88,13 +96,7 @@
                                 <span class="text-sm text-slate-500">{{ $donation->donation_date->format('M d, Y') }}</span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right">
-                                <a 
-                                    href="/donations/{{ $donation->public_id }}" 
-                                    wire:navigate
-                                    class="text-sm font-medium text-blue-600 hover:text-blue-800"
-                                >
-                                    View
-                                </a>
+                                <span class="text-sm text-slate-400">&rarr;</span>
                             </td>
                         </tr>
                     @empty
