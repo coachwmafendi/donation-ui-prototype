@@ -136,7 +136,7 @@ $showAvatars = $pageConfig['show_donor_avatars'] ?? true;
                     <div class="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
                         <iframe
                             id="donation-embed"
-                            src="{{ config('app.url') }}/embed/{{ $campaign->slug }}"
+                            src="{{ config('app.url') }}/embed/{{ $campaign->slug }}?v={{ $campaign->updated_at->timestamp }}"
                             width="100%"
                             height="600"
                             frameborder="0"
@@ -214,7 +214,7 @@ $showAvatars = $pageConfig['show_donor_avatars'] ?? true;
                         <p class="mt-2 text-xs text-slate-500">Add this donation form to your website.</p>
                         <div class="mt-3">
                             <pre class="rounded-lg bg-slate-50 border border-slate-200 p-3 text-xs text-slate-700 overflow-x-auto whitespace-pre-wrap">&lt;iframe
-  src="{{ config('app.url') }}/embed/{{ $campaign->slug }}"
+  src="{{ config('app.url') }}/embed/{{ $campaign->slug }}?v={{ $campaign->updated_at->timestamp }}"
   width="100%"
   height="650"
   frameborder="0"

@@ -551,7 +551,7 @@
                             </div>
                         </div>
                         <pre id="embed-code" class="rounded-lg bg-slate-50 border border-slate-200 text-slate-700 p-4 text-xs overflow-x-auto whitespace-pre-wrap">&lt;iframe
-  src="{{ config('app.url') }}/embed/{{ $campaign->slug }}"
+  src="{{ config('app.url') }}/embed/{{ $campaign->slug }}?v={{ $campaign->updated_at->timestamp }}"
   width="100%"
   height="650"
   frameborder="0"
