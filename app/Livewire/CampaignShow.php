@@ -117,10 +117,15 @@ class CampaignShow extends Component
         ];
 
         // Per-frequency presets
-        $this->frequencyPresets = $settings['frequency_presets'] ?? [
-            'one-time' => [200, 100, 50, 30, 10, 5],
-            'monthly' => [50, 25, 10],
-        ];
+        $this->frequencyPresets = $settings['frequency_presets'] ?? [];
+
+        // Backward compatibility: if no frequency_presets but has old flat presets
+        if (empty($this->frequencyPresets) && ! empty($settings['presets'])) {
+            $oldPresets = $settings['presets'];
+            foreach ($this->frequencies as $freq) {
+                $this->frequencyPresets[$freq] = $oldPresets;
+            }
+        }
 
         // Ensure all configured frequencies have preset arrays
         foreach ($this->frequencies as $freq) {
