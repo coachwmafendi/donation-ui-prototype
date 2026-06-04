@@ -25,7 +25,7 @@ class Dashboard extends Component
             ->limit(5)
             ->get();
 
-        // Daily trend (last 14 days)
+        // Daily trend (last 14 days) — format for chart
         $trendDays = collect(range(0, 13))->map(function ($daysAgo) use ($now) {
             $date = $now->copy()->subDays($daysAgo);
 
@@ -37,6 +37,44 @@ class Dashboard extends Component
                     ->sum('amount_cents'),
             ];
         })->reverse()->values();
+
+        // Chart data prep
+        $maxAmount = max($trendDays->max('amount'), 1);
+        $chartHeight = 220;
+        $chartWidth = 640;
+        $paddingX = 40;
+        $paddingY = 30;
+
+        $chartPoints = $trendDays->map(function ($day, $index) use ($maxAmount, $chartWidth, $chartHeight, $paddingX, $paddingY) {
+            $x = $paddingX + ($index * ($chartWidth / 13));
+            $y = $paddingY + $chartHeight - (($day['amount'] / $maxAmount) * $chartHeight);
+
+            return [
+                'x' => round($x, 1),
+                'y' => round($y, 1),
+                'amount' => $day['amount'],
+                'label' => $day['label'],
+                'date' => $day['date'],
+            ];
+        });
+
+        // Build smooth SVG path using quadratic bezier
+        $pathPoints = $chartPoints->map(function ($point, $index) use ($chartPoints) {
+            if ($index === 0) {
+                return "M {$point['x']} {$point['y']}";
+            }
+
+            $prev = $chartPoints[$index - 1];
+            $midX = ($prev['x'] + $point['x']) / 2;
+
+            return "Q {$midX} {$prev['y']}, {$point['x']} {$point['y']}";
+        })->implode(' ');
+
+        // Area path (close the bottom)
+        $lastPoint = $chartPoints->last();
+        $firstPoint = $chartPoints->first();
+        $baselineY = $paddingY + $chartHeight;
+        $areaPath = $pathPoints . " L {$lastPoint['x']} {$baselineY} L {$firstPoint['x']} {$baselineY} Z";
 
         // Top campaigns by raised amount
         $topCampaigns = Campaign::orderByDesc('raised_amount_cents')
@@ -51,6 +89,15 @@ class Dashboard extends Component
                 ['label' => 'New donors (30d)', 'value' => number_format($newDonors), 'trend' => '+23%', 'trendUp' => true],
             ],
             'recentDonations' => $recentDonations,
+            'chartPoints' => $chartPoints,
+            'pathPoints' => $pathPoints,
+            'areaPath' => $areaPath,
+            'chartMax' => $maxAmount,
+            'chartWidth' => $chartWidth + ($paddingX * 2),
+            'chartHeight' => $chartHeight + ($paddingY * 2),
+            'paddingX' => $paddingX,
+            'paddingY' => $paddingY,
+            'baselineY' => $baselineY,
             'trend' => $trendDays,
             'topCampaigns' => $topCampaigns,
         ])->layout('components.layouts.admin');
