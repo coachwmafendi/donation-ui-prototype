@@ -24,9 +24,6 @@
                         <x-status-badge :status="$campaign->status" />
                     </div>
                 </div>
-                <a href="/campaigns/{{ $campaign->public_id }}/edit" wire:navigate class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
-                    Edit campaign
-                </a>
             </div>
         </div>
 
@@ -142,12 +139,6 @@
             x-show="activeTab === 'settings'"
             x-data="{
                 settingTab: 'general',
-                frequencies: [
-                    { id: 'one-time', label: 'Once' },
-                    { id: 'monthly', label: 'Monthly' },
-                ],
-                defaultFreq: 'monthly',
-                amountsFreq: 'one-time',
                 allOptions: [
                     { id: 'one-time', label: 'Once' },
                     { id: 'monthly', label: 'Monthly' },
@@ -155,38 +146,46 @@
                     { id: 'yearly', label: 'Yearly' },
                     { id: 'quarterly', label: 'Quarterly' },
                 ],
+                get frequencies() {
+                    return $wire.frequencies.map(id => {
+                        const opt = this.allOptions.find(o => o.id === id)
+                        return opt || { id, label: id }
+                    })
+                },
+                set frequencies(val) {
+                    $wire.frequencies = val.map(f => f.id)
+                },
+                amountsFreq: $wire.frequencies[0] || 'one-time',
 
-                removeFrequency(index) {
-                    const removed = this.frequencies[index]
-                    this.frequencies.splice(index, 1)
-                    if (this.defaultFreq === removed.id && this.frequencies.length > 0) {
-                        this.defaultFreq = this.frequencies[0].id
-                    }
-                    if (this.frequencies.length > 0 && !this.frequencies.find(f => f.id === this.amountsFreq)) {
-                        this.amountsFreq = this.frequencies[0].id
+                addFrequency() {
+                    const used = $wire.frequencies
+                    const available = this.allOptions.filter(o => !used.includes(o.id))
+                    if (available.length > 0) {
+                        $wire.frequencies.push(available[0].id)
                     }
                 },
 
-                addFrequency() {
-                    const used = this.frequencies.map(f => f.id)
-                    const available = this.allOptions.filter(o => !used.includes(o.id))
-                    if (available.length > 0) {
-                        this.frequencies.push(available[0])
+                removeFrequency(index) {
+                    const removedId = $wire.frequencies[index]
+                    $wire.frequencies.splice(index, 1)
+                    if ($wire.defaultFrequency === removedId && $wire.frequencies.length > 0) {
+                        $wire.defaultFrequency = $wire.frequencies[0]
+                    }
+                    if ($wire.frequencies.length > 0 && !$wire.frequencies.includes(this.amountsFreq)) {
+                        this.amountsFreq = $wire.frequencies[0]
                     }
                 },
 
                 changeFrequency(index, newId) {
-                    const option = this.allOptions.find(o => o.id === newId)
-                    if (option) {
-                        this.frequencies[index] = option
-                        if (this.defaultFreq === this.frequencies[index].id) {
-                            this.defaultFreq = option.id
-                        }
+                    const oldId = $wire.frequencies[index]
+                    $wire.frequencies[index] = newId
+                    if ($wire.defaultFrequency === oldId) {
+                        $wire.defaultFrequency = newId
                     }
                 },
 
                 availableOptions(currentId) {
-                    const used = this.frequencies.map(f => f.id).filter(id => id !== currentId)
+                    const used = $wire.frequencies.filter(id => id !== currentId)
                     return this.allOptions.filter(o => !used.includes(o.id))
                 },
             }"
@@ -270,19 +269,22 @@
                     </div>
                     <div class="px-6 py-5 space-y-4">
                         <label class="flex items-center gap-3 rounded-lg border-2 border-slate-200 px-4 py-3 cursor-pointer">
-                            <input type="checkbox" checked class="size-4 rounded border-slate-300 text-slate-900">
+                            <input type="checkbox" wire:model="paymentMethods" value="credit_card" class="size-4 rounded border-slate-300 text-slate-900">
                             <span class="text-sm font-medium text-slate-700">Credit card</span>
                         </label>
                         <label class="flex items-center gap-3 rounded-lg border-2 border-slate-200 px-4 py-3 cursor-pointer">
-                            <input type="checkbox" checked class="size-4 rounded border-slate-300 text-slate-900">
+                            <input type="checkbox" wire:model="paymentMethods" value="paypal" class="size-4 rounded border-slate-300 text-slate-900">
                             <span class="text-sm font-medium text-slate-700">PayPal</span>
                         </label>
                         <label class="flex items-center gap-3 rounded-lg border-2 border-slate-200 px-4 py-3 cursor-pointer">
-                            <input type="checkbox" class="size-4 rounded border-slate-300 text-slate-900">
+                            <input type="checkbox" wire:model="paymentMethods" value="bank_transfer" class="size-4 rounded border-slate-300 text-slate-900">
                             <span class="text-sm font-medium text-slate-700">Bank transfer</span>
                         </label>
                         <div class="flex justify-end pt-2">
-                            <button class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition">Save Changes</button>
+                            <button wire:click="savePaymentMethods" wire:loading.attr="disabled" class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition disabled:opacity-50">
+                                <span wire:loading.remove>Save Changes</span>
+                                <span wire:loading>Saving...</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -295,16 +297,19 @@
                     <div class="px-6 py-5 space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-slate-700">Default currency</label>
-                            <select class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200">
-                                <option value="USD" {{ $campaign->currency === 'USD' ? 'selected' : '' }}>USD — US Dollar</option>
-                                <option value="EUR" {{ $campaign->currency === 'EUR' ? 'selected' : '' }}>EUR — Euro</option>
-                                <option value="GBP" {{ $campaign->currency === 'GBP' ? 'selected' : '' }}>GBP — British Pound</option>
-                                <option value="SGD" {{ $campaign->currency === 'SGD' ? 'selected' : '' }}>SGD — Singapore Dollar</option>
-                                <option value="MYR" {{ $campaign->currency === 'MYR' ? 'selected' : '' }}>MYR — Malaysian Ringgit</option>
+                            <select wire:model="currency" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200">
+                                <option value="USD">USD — US Dollar</option>
+                                <option value="EUR">EUR — Euro</option>
+                                <option value="GBP">GBP — British Pound</option>
+                                <option value="SGD">SGD — Singapore Dollar</option>
+                                <option value="MYR">MYR — Malaysian Ringgit</option>
                             </select>
                         </div>
                         <div class="flex justify-end pt-2">
-                            <button class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition">Save Changes</button>
+                            <button wire:click="saveCurrency" wire:loading.attr="disabled" class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition disabled:opacity-50">
+                                <span wire:loading.remove>Save Changes</span>
+                                <span wire:loading>Saving...</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -352,9 +357,9 @@
                             <div class="space-y-2">
                                 <template x-for="(freq, index) in frequencies" :key="freq.id">
                                     <label class="flex items-center gap-3 rounded-lg border-2 px-4 py-3 cursor-pointer transition"
-                                        :class="defaultFreq === freq.id ? 'border-slate-900 bg-slate-50' : 'border-slate-200'"
+                                        :class="$wire.defaultFrequency === freq.id ? 'border-slate-900 bg-slate-50' : 'border-slate-200'"
                                     >
-                                        <input type="radio" x-model="defaultFreq" :value="freq.id" class="size-4 text-slate-900 focus:ring-slate-500">
+                                        <input type="radio" x-model="$wire.defaultFrequency" :value="freq.id" class="size-4 text-slate-900 focus:ring-slate-500">
                                         <span class="text-sm font-medium text-slate-700" x-text="freq.label"></span>
                                     </label>
                                 </template>
@@ -362,7 +367,10 @@
                         </div>
 
                         <div class="flex justify-end pt-2">
-                            <button class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition">Save Changes</button>
+                            <button wire:click="saveFrequencies" wire:loading.attr="disabled" class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition disabled:opacity-50">
+                                <span wire:loading.remove>Save Changes</span>
+                                <span wire:loading>Saving...</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -395,15 +403,14 @@
 
                         {{-- Preset inputs --}}
                         <div>
-                            <p class="text-sm text-slate-600 mb-4">Fill in suggested donation amount presets for our AI to adjust them for each supporter.</p>
                             <h3 class="text-base font-semibold text-slate-900 mb-3">Suggested donation amount presets</h3>
                             <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                                @foreach([200, 100, 50, 30, 10, 5] as $preset)
+                                @foreach($presets as $index => $preset)
                                     <div class="relative">
                                         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">$</span>
                                         <input
                                             type="number"
-                                            value="{{ $preset }}"
+                                            wire:model="presets.{{ $index }}"
                                             class="block w-full rounded-lg border border-slate-300 bg-white pl-7 pr-3 py-2.5 text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"
                                             placeholder="0"
                                         >
@@ -422,7 +429,7 @@
                                     <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">$</span>
                                     <input
                                         type="number"
-                                        :value="freq.id === 'one-time' ? 50 : 25"
+                                        x-model.number="$wire.defaultAmounts[freq.id]"
                                         class="block w-full rounded-lg border border-slate-300 bg-white pl-7 pr-3 py-2.5 text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"
                                         placeholder="0"
                                     >
@@ -431,7 +438,10 @@
                         </template>
 
                         <div class="flex justify-end pt-2">
-                            <button class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition">Save Changes</button>
+                            <button wire:click="saveAmounts" wire:loading.attr="disabled" class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition disabled:opacity-50">
+                                <span wire:loading.remove>Save Changes</span>
+                                <span wire:loading>Saving...</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -442,20 +452,28 @@
                         <h2 class="text-lg font-semibold">Minimum Amount</h2>
                     </div>
                     <div class="px-6 py-5 space-y-6">
-                        @foreach([
-                            ['label' => 'Minimum one-time donation', 'value' => '10'],
-                            ['label' => 'Minimum monthly donation', 'value' => '10'],
-                        ] as $min)
+                        <template x-for="freq in frequencies" :key="freq.id">
                             <div>
-                                <label class="block text-base font-semibold text-slate-900">{{ $min['label'] }}</label>
+                                <label class="block text-base font-semibold text-slate-900">
+                                    Minimum <span x-text="freq.label.toLowerCase()"></span> donation
+                                </label>
                                 <div class="relative mt-2 max-w-xs">
                                     <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-lg font-medium">$</span>
-                                    <input type="number" step="0.01" min="0" value="{{ $min['value'] }}" class="block w-full rounded-xl border-2 border-slate-200 bg-white pl-10 pr-4 py-3 text-lg text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100 transition">
+                                    <input
+                                        type="number"
+                                        step="0.01"
+                                        min="0"
+                                        x-model.number="$wire.minAmounts[freq.id]"
+                                        class="block w-full rounded-xl border-2 border-slate-200 bg-white pl-10 pr-4 py-3 text-lg text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100 transition"
+                                    >
                                 </div>
                             </div>
-                        @endforeach
+                        </template>
                         <div class="flex justify-end pt-2">
-                            <button class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition">Save Changes</button>
+                            <button wire:click="saveMinimums" wire:loading.attr="disabled" class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition disabled:opacity-50">
+                                <span wire:loading.remove>Save Changes</span>
+                                <span wire:loading>Saving...</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -467,11 +485,14 @@
                     </div>
                     <div class="px-6 py-5 space-y-4">
                         <div class="flex items-center gap-3">
-                            <input type="checkbox" id="coverFee" checked class="size-4 rounded border-slate-300 text-slate-900">
+                            <input type="checkbox" id="coverFee" wire:model="coverFee" class="size-4 rounded border-slate-300 text-slate-900">
                             <label for="coverFee" class="text-sm font-medium text-slate-700">Ask donor to cover transaction fee</label>
                         </div>
                         <div class="flex justify-end pt-2">
-                            <button class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition">Save Changes</button>
+                            <button wire:click="saveTransactionCost" wire:loading.attr="disabled" class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition disabled:opacity-50">
+                                <span wire:loading.remove>Save Changes</span>
+                                <span wire:loading>Saving...</span>
+                            </button>
                         </div>
                     </div>
                 </div>

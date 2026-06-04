@@ -52,12 +52,20 @@
                             <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Progress</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Date range</th>
-                            <th class="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+                            <th class="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider"></th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200">
                         @forelse ($campaigns as $campaign)
-                            <tr class="hover:bg-slate-50 transition-colors">
+                            <tr
+                                wire:key="campaign-{{ $campaign->id }}"
+                                @click="Livewire.navigate('/campaigns/{{ $campaign->public_id }}')"
+                                @keydown.enter="Livewire.navigate('/campaigns/{{ $campaign->public_id }}')"
+                                @keydown.space.prevent="Livewire.navigate('/campaigns/{{ $campaign->public_id }}')"
+                                role="link"
+                                tabindex="0"
+                                class="cursor-pointer hover:bg-slate-50 transition-colors"
+                            >
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="font-mono text-sm text-slate-600">{{ $campaign->public_id }}</span>
                                 </td>
@@ -92,13 +100,7 @@
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right">
-                                    <a
-                                        href="/campaigns/{{ $campaign->public_id }}"
-                                        wire:navigate
-                                        class="text-sm font-medium text-blue-600 hover:text-blue-800"
-                                    >
-                                        View
-                                    </a>
+                                    <span class="text-sm text-slate-400">&rarr;</span>
                                 </td>
                             </tr>
                         @empty

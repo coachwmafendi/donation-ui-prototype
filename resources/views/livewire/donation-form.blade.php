@@ -27,11 +27,10 @@
     <div class="mb-10">
         <div class="flex items-center justify-between">
             @foreach([
-                1 => 'Campaign',
-                2 => 'Amount',
-                3 => 'Details',
-                4 => 'Payment',
-                5 => 'Review'
+                1 => 'Amount',
+                2 => 'Details',
+                3 => 'Payment',
+                4 => 'Review'
             ] as $num => $label)
                 <div class="flex flex-col items-center">
                     <button
@@ -48,50 +47,22 @@
                     </button>
                     <span class="mt-2 text-xs font-medium {{ $step >= $num ? 'text-slate-900' : 'text-slate-400' }}">{{ $label }}</span>
                 </div>
-                @if($num < 5)
+                @if($num < 4)
                     <div class="flex-1 h-px mx-2 {{ $step > $num ? 'bg-slate-900' : 'bg-slate-200' }}"></div>
                 @endif
             @endforeach
         </div>
     </div>
 
-    {{-- Step 1: Campaign --}}
+    {{-- Step 1: Amount --}}
     @if($step === 1)
     <div class="rounded-xl border border-slate-200 bg-white overflow-hidden">
         <div class="border-b border-slate-200 px-6 py-5">
-            <h2 class="text-lg font-semibold">Step 1: Choose a campaign</h2>
-        </div>
-        <div class="px-6 py-5 space-y-3">
-            @foreach($campaigns as $campaign)
-                <label class="flex items-center gap-4 rounded-lg border-2 p-4 cursor-pointer transition {{ $campaignId == $campaign->id ? 'border-slate-900 bg-slate-50' : 'border-slate-200 hover:border-slate-300' }}">
-                    <input type="radio" wire:model="campaignId" value="{{ $campaign->id }}" class="size-4 text-slate-900">
-                    <div class="flex-1">
-                        <div class="font-semibold text-slate-900">{{ $campaign->name }}</div>
-                        <div class="text-sm text-slate-500">{{ $campaign->raised_amount }} / {{ $campaign->goal_amount }}</div>
-                    </div>
-                </label>
-            @endforeach
-            @error('campaignId')
-                <p class="text-sm text-red-600">{{ $message }}</p>
-            @enderror
-        </div>
-        <div class="flex justify-end px-6 py-4 bg-slate-50 border-t border-slate-200">
-            <button wire:click="nextStep" class="rounded-lg bg-slate-900 px-6 py-2.5 text-sm font-semibold text-white hover:bg-slate-800 transition">
-                Continue
-            </button>
-        </div>
-    </div>
-    @endif
-
-    {{-- Step 2: Amount --}}
-    @if($step === 2)
-    <div class="rounded-xl border border-slate-200 bg-white overflow-hidden">
-        <div class="border-b border-slate-200 px-6 py-5">
-            <h2 class="text-lg font-semibold">Step 2: Select donation amount</h2>
+            <h2 class="text-lg font-semibold">Step 1: Select donation amount</h2>
         </div>
         <div class="px-6 py-5 space-y-5">
             <div class="grid grid-cols-3 gap-3">
-                @foreach($presets as $preset)
+                @foreach($campaignPresets as $preset)
                     <button type="button" wire:click="selectPreset({{ $preset }})" class="rounded-lg border-2 px-4 py-3 text-sm font-semibold transition {{ $amount == $preset && !$customAmount ? 'border-slate-900 bg-slate-900 text-white' : 'border-slate-200 text-slate-700 hover:border-slate-300' }}">
                         ${{ $preset }}
                     </button>
@@ -105,7 +76,7 @@
             @if($customAmount)
                 <div class="relative">
                     <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">$</span>
-                    <input wire:model="amount" type="number" step="0.01" min="1" class="block w-full rounded-lg border border-slate-300 bg-white pl-8 pr-4 py-3 text-lg text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="0.00" autofocus>
+                    <input wire:model="amount" type="number" step="0.01" min="{{ $campaignMinAmount }}" class="block w-full rounded-lg border border-slate-300 bg-white pl-8 pr-4 py-3 text-lg text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="0.00" autofocus>
                 </div>
             @endif
 
@@ -127,9 +98,9 @@
                 <div>
                     <label for="frequency" class="block text-sm font-medium text-slate-700 mb-1.5">Frequency</label>
                     <select wire:model="frequency" id="frequency" class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200">
-                        <option value="one-time">One-time</option>
-                        <option value="monthly">Monthly</option>
-                        <option value="yearly">Yearly</option>
+                        @foreach($campaignFrequencies as $freq)
+                            <option value="{{ $freq }}">{{ ucfirst($freq) }}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>
@@ -142,10 +113,10 @@
     @endif
 
     {{-- Step 3: Personal Information --}}
-    @if($step === 3)
+    @if($step === 2)
     <div class="rounded-xl border border-slate-200 bg-white overflow-hidden">
         <div class="border-b border-slate-200 px-6 py-5">
-            <h2 class="text-lg font-semibold">Step 3: Your information</h2>
+            <h2 class="text-lg font-semibold">Step 2: Your information</h2>
         </div>
         <div class="px-6 py-5 space-y-4">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -199,11 +170,11 @@
     </div>
     @endif
 
-    {{-- Step 4: Payment --}}
-    @if($step === 4)
+    {{-- Step 3: Payment --}}
+    @if($step === 3)
     <div class="rounded-xl border border-slate-200 bg-white overflow-hidden">
         <div class="border-b border-slate-200 px-6 py-5">
-            <h2 class="text-lg font-semibold">Step 4: Payment method</h2>
+            <h2 class="text-lg font-semibold">Step 3: Payment method</h2>
         </div>
         <div class="px-6 py-5 space-y-2">
             <label class="flex items-center gap-3 rounded-lg border-2 px-4 py-3 cursor-pointer transition {{ $paymentMethod === 'credit_card' ? 'border-slate-900 bg-slate-50' : 'border-slate-200 hover:border-slate-300' }}">
@@ -227,11 +198,11 @@
     </div>
     @endif
 
-    {{-- Step 5: Review --}}
-    @if($step === 5)
+    {{-- Step 4: Review --}}
+    @if($step === 4)
     <div class="rounded-xl border border-slate-200 bg-white overflow-hidden">
         <div class="border-b border-slate-200 px-6 py-5">
-            <h2 class="text-lg font-semibold">Step 5: Review your donation</h2>
+            <h2 class="text-lg font-semibold">Step 4: Review your donation</h2>
         </div>
         <div class="px-6 py-5 space-y-6">
 

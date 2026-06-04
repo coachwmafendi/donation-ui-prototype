@@ -13,17 +13,26 @@ class DonationForm extends Component
     // Wizard step
     public int $step = 1;
 
-    public int $totalSteps = 5;
+    public int $totalSteps = 4;
 
-    // Campaign selection
+    // Campaign
     public ?string $campaignId = null;
+
+    public ?Campaign $selectedCampaign = null;
+
+    // Campaign settings (injected from settings JSON)
+    public array $campaignFrequencies = ['one-time', 'monthly'];
+
+    public array $campaignPresets = [10, 25, 50, 100, 250, 500];
+
+    public ?float $campaignMinAmount = 1;
+
+    public string $campaignDefaultFrequency = 'one-time';
 
     // Amount
     public ?float $amount = null;
 
     public string $currency = 'USD';
-
-    public array $presets = [10, 25, 50, 100, 250, 500];
 
     public bool $customAmount = false;
 
@@ -73,10 +82,44 @@ class DonationForm extends Component
 
     public function mount(?string $campaign = null, bool $embed = false): void
     {
+        $this->embed = $embed;
+
         if ($campaign) {
             $this->campaignId = $campaign;
+            $this->loadCampaignSettings();
         }
-        $this->embed = $embed;
+    }
+
+    protected function loadCampaignSettings(): void
+    {
+        $campaign = Campaign::find($this->campaignId);
+
+        if (! $campaign) {
+            return;
+        }
+
+        $this->selectedCampaign = $campaign;
+        $this->currency = $campaign->currency ?? 'USD';
+
+        $settings = $campaign->settings ?? [];
+
+        if (! empty($settings['frequencies'])) {
+            $this->campaignFrequencies = $settings['frequencies'];
+        }
+
+        if (! empty($settings['presets'])) {
+            $this->campaignPresets = $settings['presets'];
+        }
+
+        if (isset($settings['min_amount'])) {
+            $this->campaignMinAmount = (float) $settings['min_amount'];
+        }
+
+        if (! empty($settings['default_frequency']) && in_array($settings['default_frequency'], $this->campaignFrequencies)) {
+            $this->campaignDefaultFrequency = $settings['default_frequency'];
+        }
+
+        $this->frequency = $this->campaignDefaultFrequency;
     }
 
     public function selectPreset(float $amount): void
@@ -94,23 +137,22 @@ class DonationForm extends Component
     public function nextStep(): void
     {
         if ($this->step === 1) {
-            $this->validate(['campaignId' => 'required|exists:campaigns,id'], [
-                'campaignId.required' => 'Please select a campaign.',
+            $min = $this->campaignMinAmount ?? 1;
+            $this->validate([
+                'amount' => 'required|numeric|min:'.$min,
+                'currency' => 'required|string|size:3',
+                'frequency' => 'required|in:'.implode(',', $this->campaignFrequencies),
+            ], [
+                'amount.min' => 'The minimum donation amount is '.number_format($min, 2).' '.strtoupper($this->currency).'.',
             ]);
         } elseif ($this->step === 2) {
-            $this->validate([
-                'amount' => 'required|numeric|min:1',
-                'currency' => 'required|string|size:3',
-                'frequency' => 'required|in:one-time,monthly,yearly',
-            ]);
-        } elseif ($this->step === 3) {
             $this->validate([
                 'firstName' => 'required|string|max:255',
                 'lastName' => 'required|string|max:255',
                 'email' => 'required|email|max:255',
                 'phone' => 'nullable|string|max:50',
             ]);
-        } elseif ($this->step === 4) {
+        } elseif ($this->step === 3) {
             $this->validate([
                 'paymentMethod' => 'required|in:credit_card,paypal,bank_transfer',
             ]);
@@ -137,11 +179,13 @@ class DonationForm extends Component
 
     public function submit(): void
     {
+        $min = $this->campaignMinAmount ?? 1;
+
         $validated = $this->validate([
             'campaignId' => 'required|exists:campaigns,id',
-            'amount' => 'required|numeric|min:1',
+            'amount' => 'required|numeric|min:'.$min,
             'currency' => 'required|string|size:3',
-            'frequency' => 'required|in:one-time,monthly,yearly',
+            'frequency' => 'required|in:'.implode(',', $this->campaignFrequencies),
             'firstName' => 'required|string|max:255',
             'lastName' => 'required|string|max:255',
             'email' => 'required|email|max:255',
@@ -158,6 +202,7 @@ class DonationForm extends Component
             'agreed' => 'accepted',
         ], [
             'agreed.accepted' => 'You must agree to the terms to proceed.',
+            'amount.min' => 'The minimum donation amount is '.number_format($min, 2).' '.strtoupper($this->currency).'.',
         ]);
 
         $profile = Profile::firstOrCreate(
@@ -213,20 +258,9 @@ class DonationForm extends Component
         $this->showSuccess = true;
     }
 
-    public function getSelectedCampaignProperty(): ?Campaign
-    {
-        return $this->campaignId ? Campaign::find($this->campaignId) : null;
-    }
-
     public function render()
     {
-        $campaigns = Campaign::where('status', 'active')
-            ->orderBy('name')
-            ->get(['id', 'name', 'goal_amount_cents', 'raised_amount_cents', 'currency']);
-
-        $view = view('livewire.donation-form', [
-            'campaigns' => $campaigns,
-        ]);
+        $view = view('livewire.donation-form');
 
         if ($this->embed) {
             return $view->layout('layouts.embed');

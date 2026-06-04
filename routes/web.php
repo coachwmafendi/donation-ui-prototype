@@ -29,7 +29,17 @@ Route::get('/', function () {
 
 Route::get('/welcome', HomePage::class)->name('welcome');
 Route::get('/c/{campaign:slug}', CampaignPublic::class)->name('campaigns.public');
-Route::get('/donate', DonationForm::class)->name('donate');
+use App\Models\Campaign;
+
+Route::get('/donate', function () {
+    $campaign = Campaign::where('status', 'active')->first();
+
+    if (! $campaign) {
+        abort(404, 'No active campaigns available.');
+    }
+
+    return redirect()->route('donate.campaign', ['campaign' => $campaign->public_id]);
+})->name('donate');
 Route::get('/donate/{campaign}', DonationForm::class)->name('donate.campaign');
 
 // Embed routes for external websites
