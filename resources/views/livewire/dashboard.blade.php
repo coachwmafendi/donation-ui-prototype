@@ -145,7 +145,18 @@
                     {{-- Funnel --}}
                     <div class="rounded-xl border border-slate-200 bg-white p-6">
                         <h2 class="text-base font-semibold text-slate-900 mb-4">Donation Pipeline</h2>
-                        <x-charts.funnel :steps="$donationFunnel" height="28" />
+                        <div class="space-y-4">
+                            @foreach($donationFunnel as $step)
+                                <div class="flex items-center gap-3">
+                                    <x-status-badge status="{{ Str::lower(ucwords($step['label'])) }}" />
+                                    <span class="text-sm font-medium text-slate-700">{{ $step['label'] }}</span>
+                                    <span class="ml-auto text-sm font-semibold text-slate-900">{{ number_format($step['value']) }}</span>
+                                </div>
+                                <div class="mx-4 h-1 w-full rounded-full bg-slate-100 overflow-hidden">
+                                    <div class="h-full rounded-full" style="width: {{ $loop->index === 0 ? '100%' : '92%' }}; background-color: {{ $step['color'] }}"></div>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
 
@@ -158,22 +169,22 @@
                 <div class="rounded-xl border border-slate-200 bg-white p-5">
                     <h2 class="text-lg font-semibold text-slate-900 mb-4">Quick actions</h2>
                     <div class="space-y-2">
-                        <a href="#" class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-                            <x-icon name="settings" class="size-4 text-slate-500" />
+                        <a href="/campaigns/create" wire:navigate class="flex items-center gap-3 rounded-lg bg-slate-900 px-4 py-3 text-sm font-medium text-white hover:bg-slate-800 transition">
+                            <x-icon name="settings" class="size-4 text-white" />
                             Create campaign
                         </a>
 
-                        <a href="/donations" wire:navigate class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
+                        <a href="/donations" wire:navigate class="flex items-center gap-3 rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
                             <x-icon name="dollar-sign" class="size-4 text-slate-500" />
                             View donations
                         </a>
 
-                        <a href="/users" wire:navigate class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
+                        <a href="/users" wire:navigate class="flex items-center gap-3 rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
                             <x-icon name="user" class="size-4 text-slate-500" />
                             View supporters
                         </a>
 
-                        <button class="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
+                        <button class="flex w-full items-center gap-3 rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
                             <x-icon name="download" class="size-4 text-slate-500" />
                             Export report
                         </button>
@@ -187,28 +198,29 @@
                         <a href="/donations" wire:navigate class="text-sm text-blue-600 hover:text-blue-800">View all</a>
                     </div>
 
-                    <div class="space-y-4">
-                        @forelse ($recentDonations as $donation)
-                            <a href="/donations/{{ $donation->public_id }}" wire:navigate class="block group">
-                                <div class="flex items-start gap-3">
-                                    <span class="mt-1.5 block size-2 rounded-full flex-shrink-0 {{ $donation->status === 'succeeded' ? 'bg-emerald-500' : ($donation->status === 'failed' ? 'bg-red-500' : 'bg-amber-500') }}"></span>
-                                    <div class="flex-1 min-w-0">
-                                        <p class="text-sm font-medium text-slate-900 truncate">
-                                            {{ $donation->profile?->full_name ?? 'Anonymous' }}
-                                        </p>
-                                        <p class="text-sm text-slate-500">
-                                            {{ $donation->amount }}
-                                            <span class="text-slate-400">·</span>
-                                            {{ $donation->donation_date->diffForHumans() }}
-                                        </p>
+                    @empty
+                        <div class="text-center py-12">
+                            <x-empty-state title="No recent donations" description="When donations arrive, they'll appear here">
+                                <template #icon>
+                                    <x-icon name="heart" class="size-10 mx-auto text-slate-300" />
+                                </template>
+                            </x-empty-state>
+                                                <span class="text-slate-400">·</span>
+                                                {{ $donation->donation_date->diffForHumans() }}
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
-                            </a>
-                        @empty
-                            <div class="text-center py-6">
-                                <p class="text-sm text-slate-500">No recent donations.</p>
+                                </a>
+                            @endforeach
+                        @else
+                            <div class="text-center py-12">
+                                <x-empty-state title="No recent donations" description="When donations arrive, they'll appear here">
+                                    <template #icon>
+                                        <x-icon name="heart" class="size-10 mx-auto text-slate-300" />
+                                    </template>
+                                </x-empty-state>
                             </div>
-                        @endforelse
+                        @endif
                     </div>
                 </div>
             </div>

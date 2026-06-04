@@ -72,16 +72,6 @@
         <div class="px-6 py-5 space-y-5">
 
             {{-- Frequency tabs --}}
-            <style>
-                @keyframes heartFloat {
-                    0% { opacity: 0; transform: translateY(0) scale(0.4); }
-                    15% { opacity: 1; transform: translateY(-15px) scale(1); }
-                    100% { opacity: 0; transform: translateY(-90px) scale(0.5); }
-                }
-                .heart-particle {
-                    animation: heartFloat 1.3s ease-out forwards;
-                }
-            </style>
             <div class="flex gap-3 justify-center">
                 @foreach($campaignFrequencies as $freq)
                     @php
@@ -104,14 +94,36 @@
                             'bg-white text-slate-600 border-2 border-slate-200 hover:border-emerald-400 hover:text-emerald-600 hover:shadow-md scale-[0.92] hover:scale-100' => !$isActive,
                         ])
                         @if($freq === 'monthly')
-                            x-data="{ particles: [], spawnParticles() { 
-                                const count = 6;
-                                for (let i = 0; i < count; i++) {
-                                    this.particles.push({ id: Date.now() + i, x: Math.random() * 40 - 20, delay: i * 80 });
+                            x-data="{ 
+                                spawnHearts() {
+                                    const container = this.$refs.heartsContainer;
+                                    const count = 6;
+                                    const svgPath = 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z';
+                                    
+                                    for (let i = 0; i < count; i++) {
+                                        const heart = document.createElement('div');
+                                        heart.style.position = 'absolute';
+                                        heart.style.left = 'calc(50% + ' + (Math.random() * 40 - 20) + 'px)';
+                                        heart.style.top = '50%';
+                                        heart.style.pointerEvents = 'none';
+                                        heart.innerHTML = '<svg width=\'20\' height=\'20\' viewBox=\'0 0 24 24\' fill=\'%2310b981\'><path d=\'' + svgPath + '\'/></svg>';
+                                        container.appendChild(heart);
+                                        
+                                        const animation = heart.animate([
+                                            { opacity: 0, transform: 'translateY(0) scale(0.4)' },
+                                            { opacity: 1, transform: 'translateY(-15px) scale(1)', offset: 0.15 },
+                                            { opacity: 0, transform: 'translateY(-90px) scale(0.5)' }
+                                        ], {
+                                            duration: 1300,
+                                            easing: 'ease-out',
+                                            delay: i * 80
+                                        });
+                                        
+                                        animation.onfinish = () => heart.remove();
+                                    }
                                 }
-                                setTimeout(() => this.particles = [], 1200);
-                            } }"
-                            @click="spawnParticles()"
+                            }"
+                            @click="spawnHearts()"
                         @endif
                     >
                         @if($freq === 'monthly')
@@ -120,14 +132,7 @@
                         {{ $label }}
                         
                         @if($freq === 'monthly')
-                            <template x-for="p in particles" :key="p.id">
-                                <div 
-                                    class="heart-particle absolute pointer-events-none text-emerald-500"
-                                    :style="`left: calc(50% + ${p.x}px); top: 50%; animation-delay: ${p.delay}ms;`"
-                                >
-                                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                                </div>
-                            </template>
+                            <div x-ref="heartsContainer" class="absolute inset-0 overflow-visible pointer-events-none"></div>
                         @endif
                     </button>
                 @endforeach

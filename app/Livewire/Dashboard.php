@@ -100,7 +100,7 @@ class Dashboard extends Component
             ->get()
             ->map(function ($c, $index) {
                 return [
-                    'label' => Str::limit($c->name, 20),
+                    'label' => Str::limit($c->name, 30),
                     'value' => (int) $c->total,
                     'color' => ['#10b981', '#3b82f6', '#f59e0b', '#6366f1', '#ec4899'][$index % 5],
                 ];
