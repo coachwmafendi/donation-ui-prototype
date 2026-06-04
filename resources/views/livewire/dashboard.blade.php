@@ -35,11 +35,13 @@
             @endforeach
         </div>
 
-        {{-- Main Row: Trend Chart + Quick Actions --}}
-        <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+        {{-- Main Layout: Content (8 cols) + Sidebar (4 cols) --}}
+        <div class="grid grid-cols-1 gap-8 lg:grid-cols-12">
 
-            {{-- Trend Chart --}}
-            <div class="lg:col-span-2 space-y-6">
+            {{-- Main Content --}}
+            <div class="lg:col-span-8 space-y-8">
+
+                {{-- Trend Chart --}}
                 <div class="rounded-xl border border-slate-200 bg-white p-6">
                     <div class="flex items-center justify-between mb-6">
                         <div>
@@ -51,7 +53,6 @@
                         </div>
                     </div>
 
-                    {{-- SVG Area Chart --}}
                     <div
                         class="relative"
                         x-data="{ activeIndex: null }"
@@ -65,19 +66,14 @@
                                 </linearGradient>
                             </defs>
 
-                            {{-- Grid lines --}}
                             @foreach([0, 0.25, 0.5, 0.75, 1] as $grid)
                                 @php $gridY = $paddingY + ($chartHeight * $grid); @endphp
                                 <line x1="{{ $paddingX }}" y1="{{ $gridY }}" x2="{{ $chartWidth - $paddingX }}" y2="{{ $gridY }}" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 4"/>
                             @endforeach
 
-                            {{-- Area fill --}}
                             <path d="{{ $areaPath }}" fill="url(#areaGradient)"/>
-
-                            {{-- Line --}}
                             <path d="{{ $pathPoints }}" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 
-                            {{-- Data points --}}
                             @foreach($chartPoints as $index => $point)
                                 <circle
                                     cx="{{ $point['x'] }}"
@@ -94,7 +90,6 @@
                             @endforeach
                         </svg>
 
-                        {{-- Tooltips (rendered by PHP, shown by Alpine) --}}
                         @foreach($chartPoints as $index => $point)
                             <div
                                 class="absolute pointer-events-none transition-opacity duration-200"
@@ -108,7 +103,6 @@
                             </div>
                         @endforeach
 
-                        {{-- X-axis labels --}}
                         <div class="flex justify-between px-10 mt-2">
                             @foreach($chartPoints as $index => $point)
                                 <span class="text-[10px] text-slate-400 text-center @if($index % 2 !== 0) hidden lg:block @endif" style="width: 20px;">{{ $point['label'] }}</span>
@@ -122,44 +116,43 @@
                     <h2 class="text-lg font-semibold text-slate-900 mb-4">Top campaigns</h2>
                     <x-charts.horizontal-bar :data="$campaignSplits" bar-height="32" />
                 </div>
-            </div>
 
-                {{-- Second Row: More Charts --}}
-                <div class="lg:col-span-2">
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        {{-- Doughnut: Campaign Split --}}
-                        <div class="rounded-xl border border-slate-200 bg-white p-6">
-                            <h2 class="text-lg font-semibold text-slate-900 mb-4">Donations by Campaign</h2>
-                            <div class="flex items-center gap-6">
-                                <x-charts.doughnut :data="$campaignSplits" size="140" />
-                                <div class="space-y-2">
-                                    @foreach($campaignSplits as $campaign)
-                                        <div class="flex items-center gap-2 text-xs">
-                                            <span class="size-2 rounded-full" style="background-color: {{ $campaign['color'] }}"></span>
-                                            <span class="text-slate-600">{{ $campaign['label'] }}</span>
-                                            <span class="text-slate-900 font-medium ml-auto">${{ number_format($campaign['value'] / 100, 0) }}</span>
-                                        </div>
-                                    @endforeach
-                                </div>
+                {{-- Three Charts Row --}}
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {{-- Doughnut --}}
+                    <div class="rounded-xl border border-slate-200 bg-white p-6">
+                        <h2 class="text-base font-semibold text-slate-900 mb-4">Donations by Campaign</h2>
+                        <div class="flex items-center gap-4">
+                            <x-charts.doughnut :data="$campaignSplits" size="100" />
+                            <div class="space-y-1.5 flex-1">
+                                @foreach($campaignSplits as $campaign)
+                                    <div class="flex items-center gap-2 text-xs">
+                                        <span class="size-2 rounded-full flex-shrink-0" style="background-color: {{ $campaign['color'] }}"></span>
+                                        <span class="text-slate-600 truncate">{{ $campaign['label'] }}</span>
+                                        <span class="text-slate-900 font-medium ml-auto">${{ number_format($campaign['value'] / 100, 0) }}</span>
+                                    </div>
+                                @endforeach
                             </div>
                         </div>
+                    </div>
 
-                        {{-- Range Bar: Donation Sizes --}}
-                        <div class="rounded-xl border border-slate-200 bg-white p-6">
-                            <h2 class="text-lg font-semibold text-slate-900 mb-4">Donation Sizes</h2>
-                            <x-charts.range-bar :data="$donationRanges" bar-height="24" />
-                        </div>
+                    {{-- Range Bar --}}
+                    <div class="rounded-xl border border-slate-200 bg-white p-6">
+                        <h2 class="text-base font-semibold text-slate-900 mb-4">Donation Sizes</h2>
+                        <x-charts.range-bar :data="$donationRanges" bar-height="20" />
+                    </div>
 
-                        {{-- Funnel: Pipeline --}}
-                        <div class="rounded-xl border border-slate-200 bg-white p-6">
-                            <h2 class="text-lg font-semibold text-slate-900 mb-4">Donation Pipeline</h2>
-                            <x-charts.funnel :steps="$donationFunnel" height="36" />
-                        </div>
+                    {{-- Funnel --}}
+                    <div class="rounded-xl border border-slate-200 bg-white p-6">
+                        <h2 class="text-base font-semibold text-slate-900 mb-4">Donation Pipeline</h2>
+                        <x-charts.funnel :steps="$donationFunnel" height="28" />
                     </div>
                 </div>
 
-            {{-- Sidebar: Quick Actions + Recent Activity --}}
-            <div class="space-y-6">
+            </div>
+
+            {{-- Sidebar --}}
+            <div class="lg:col-span-4 space-y-8">
 
                 {{-- Quick Actions --}}
                 <div class="rounded-xl border border-slate-200 bg-white p-5">
