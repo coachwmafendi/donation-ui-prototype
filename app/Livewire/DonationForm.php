@@ -36,6 +36,8 @@ class DonationForm extends Component
 
     public string $currency = 'MYR';
 
+    public string $currencySymbol = 'RM';
+
     public bool $customAmount = false;
 
     // Frequency
@@ -105,6 +107,7 @@ class DonationForm extends Component
         $this->selectedCampaign = $campaign;
         $this->campaignId = $campaign->id;
         $this->currency = $campaign->currency ?? 'MYR';
+        $this->updateCurrencySymbol();
 
         $settings = $campaign->settings ?? [];
 
@@ -167,14 +170,15 @@ class DonationForm extends Component
         $this->currency = strtoupper($value);
     }
 
-    public function getCurrentPresetsProperty(): array
+    public function setCurrency(string $value): void
     {
-        return $this->frequencyPresets[$this->frequency] ?? $this->campaignPresets;
+        $this->currency = strtoupper($value);
+        $this->updateCurrencySymbol();
     }
 
-    public function getCurrencySymbolProperty(): string
+    protected function updateCurrencySymbol(): void
     {
-        return match(strtoupper($this->currency)) {
+        $this->currencySymbol = match(strtoupper($this->currency)) {
             'USD' => '$',
             'EUR' => '€',
             'GBP' => '£',
@@ -182,6 +186,11 @@ class DonationForm extends Component
             'MYR' => 'RM',
             default => '$',
         };
+    }
+
+    public function getCurrentPresetsProperty(): array
+    {
+        return $this->frequencyPresets[$this->frequency] ?? $this->campaignPresets;
     }
 
     public function selectPreset(float $amount): void

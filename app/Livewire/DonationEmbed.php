@@ -32,9 +32,15 @@ class DonationEmbed extends Component
         return $this->frequencyPresets[$this->frequency] ?? $this->campaignPresets;
     }
 
-    public function getCurrencySymbolProperty(): string
+    public function setCurrency(string $value): void
     {
-        return match(strtoupper($this->currency)) {
+        $this->currency = strtoupper($value);
+        $this->updateCurrencySymbol();
+    }
+
+    protected function updateCurrencySymbol(): void
+    {
+        $this->currencySymbol = match(strtoupper($this->currency)) {
             'USD' => '$',
             'EUR' => '€',
             'GBP' => '£',
@@ -48,6 +54,8 @@ class DonationEmbed extends Component
     public ?float $amount = null;
 
     public string $currency = 'MYR';
+
+    public string $currencySymbol = 'RM';
 
     public bool $customAmount = false;
 
@@ -111,6 +119,7 @@ class DonationEmbed extends Component
         }
 
         $this->currency = $this->campaign->currency ?? 'MYR';
+        $this->updateCurrencySymbol();
         $settings = $this->campaign->settings ?? [];
 
         if (! empty($settings['frequencies'])) {
