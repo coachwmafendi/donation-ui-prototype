@@ -161,6 +161,12 @@ class DonationForm extends Component
         $this->applyDefaultAmountForFrequency($value);
     }
 
+    public function updatedCurrency(string $value): void
+    {
+        // Ensure currency symbol and presets update when currency changes
+        $this->currency = strtoupper($value);
+    }
+
     public function getCurrentPresetsProperty(): array
     {
         return $this->frequencyPresets[$this->frequency] ?? $this->campaignPresets;

@@ -128,7 +128,7 @@
                     class="block w-full border-0 bg-transparent py-3.5 pl-4 pr-4 text-lg text-slate-900 focus:outline-none focus:ring-0" 
                     placeholder="0.00"
                 >
-                <select wire:model="currency" class="border-0 border-l border-slate-200 bg-transparent px-4 py-3.5 text-sm font-medium text-slate-700 focus:outline-none focus:ring-0 cursor-pointer hover:bg-slate-50">
+                <select wire:model.change="currency" class="border-0 border-l border-slate-200 bg-transparent px-4 py-3.5 text-sm font-medium text-slate-700 focus:outline-none focus:ring-0 cursor-pointer hover:bg-slate-50">
                     <option value="USD">🇺🇸 USD</option>
                     <option value="EUR">🇪🇺 EUR</option>
                     <option value="GBP">🇬🇧 GBP</option>
