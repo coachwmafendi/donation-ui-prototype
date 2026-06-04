@@ -130,6 +130,16 @@ class DonationEmbed extends Component
         }
 
         $this->frequency = $this->campaignDefaultFrequency;
+
+        // Auto-select default amount if it exists in the frequency's presets
+        $defaultAmounts = $settings['default_amounts'] ?? [];
+        if (isset($defaultAmounts[$this->frequency])) {
+            $defaultAmount = (float) $defaultAmounts[$this->frequency];
+            $currentPresets = $this->frequencyPresets[$this->frequency] ?? [];
+            if (in_array($defaultAmount, $currentPresets)) {
+                $this->amount = $defaultAmount;
+            }
+        }
     }
 
     public function selectPreset(float $amount): void
