@@ -1,5 +1,24 @@
 <div class="mx-auto max-w-2xl px-6 py-10">
 
+<style>
+    @keyframes floatUp {
+        0% {
+            transform: translateY(0) scale(0.5);
+            opacity: 0;
+        }
+        20% {
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(-40px) scale(1.2);
+            opacity: 0;
+        }
+    }
+    .animate-float-up {
+        animation: floatUp 1.2s ease-out forwards;
+    }
+</style>
+
     {{-- Success State --}}
     @if($showSuccess)
         <div class="text-center py-16">
@@ -71,18 +90,42 @@
         <div class="px-6 py-5 space-y-5">
 
             {{-- Frequency tabs --}}
-            <div class="flex gap-1 border-b border-slate-200 bg-slate-50/50 p-1 rounded-t-xl">
+            <div class="flex gap-2 justify-center">
                 @foreach($campaignFrequencies as $freq)
+                    @php
+                        $label = $freq === 'one-time' ? 'One Time' : 'Monthly';
+                        $isActive = $frequency === $freq;
+                    @endphp
                     <button
                         type="button"
                         wire:click="$set('frequency', '{{ $freq }}')"
                         @class([
-                            'flex-1 rounded-lg py-2.5 text-sm font-bold tracking-wide transition',
-                            'bg-emerald-600 text-white shadow-sm' => $frequency === $freq,
-                            'text-slate-500 hover:text-slate-700 hover:bg-slate-100' => $frequency !== $freq,
+                            'flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-bold transition-all duration-300 ease-in-out transform',
+                            'bg-emerald-600 text-white shadow-md scale-100' => $isActive,
+                            'bg-white text-slate-600 border border-slate-200 hover:border-emerald-300 hover:text-emerald-600 scale-95 hover:scale-100' => !$isActive,
                         ])
+                        @if($freq === 'monthly')
+                            x-data="{ showHearts: false }"
+                            @click="showHearts = true; setTimeout(() => showHearts = false, 1500)"
+                        @endif
                     >
-                        {{ Illuminate\Support\Str::title(str_replace('-', ' ', $freq)) }}
+                        {{ $label }}
+                        @if($freq === 'monthly')
+                            <span class="relative">
+                                <svg class="size-4 text-current" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                </svg>
+                                <template x-if="showHearts">
+                                    <div class="absolute -top-8 left-1/2 -translate-x-1/2 pointer-events-none">
+                                        <div class="animate-float-up text-emerald-500">
+                                            <svg class="size-5 opacity-75" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </template>
+                            </span>
+                        @endif
                     </button>
                 @endforeach
             </div>
