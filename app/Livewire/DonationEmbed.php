@@ -151,10 +151,17 @@ class DonationEmbed extends Component
             }
         }
 
-        // Ensure all frequencies have presets
+        // Ensure all frequencies have presets with sensible defaults
+        $defaultPresets = [
+            'one-time' => [500, 300, 200, 100, 50, 25],
+            'monthly' => [300, 200, 100, 50, 30, 10],
+            'weekly' => [50, 30, 20, 10, 5, 3],
+            'yearly' => [1000, 500, 300, 200, 100, 50],
+            'quarterly' => [400, 300, 200, 100, 75, 50],
+        ];
         foreach ($this->campaignFrequencies as $freq) {
-            if (! isset($this->frequencyPresets[$freq]) || ! is_array($this->frequencyPresets[$freq])) {
-                $this->frequencyPresets[$freq] = [50, 25, 10];
+            if (! isset($this->frequencyPresets[$freq]) || ! is_array($this->frequencyPresets[$freq]) || empty($this->frequencyPresets[$freq])) {
+                $this->frequencyPresets[$freq] = $defaultPresets[$freq] ?? [50, 25, 10];
             }
         }
 

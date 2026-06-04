@@ -43,8 +43,11 @@
                     </a>
                 </div>
 
-                {{-- Navigation --}}
-                <nav class="flex-1 px-4 py-4 space-y-1">
+                {{-- Spacer --}}
+                <div class="flex-1"></div>
+
+                {{-- Navigation + Bottom section --}}
+                <div class="border-t border-slate-200 px-4 py-4 space-y-1">
                     <a
                         href="/dashboard"
                         wire:navigate
@@ -98,27 +101,26 @@
                         <x-icon name="users" />
                         Users
                     </a>
-                </nav>
 
-                {{-- Bottom section --}}
-                <div class="px-4 py-4 border-t border-slate-200">
-                    <div class="flex items-center gap-3 px-4 py-2">
-                        <div class="size-8 rounded-full bg-slate-200 flex items-center justify-center text-sm font-medium text-slate-600">
-                            {{ substr(auth()->user()->name ?? 'A', 0, 1) }}
+                    <div class="border-t border-slate-200 pt-4 mt-4">
+                        <div class="flex items-center gap-3 px-4 py-2">
+                            <div class="size-8 rounded-full bg-slate-200 flex items-center justify-center text-sm font-medium text-slate-600">
+                                {{ substr(auth()->user()->name ?? 'A', 0, 1) }}
+                            </div>
+                            <div class="text-sm min-w-0">
+                                <p class="font-medium text-slate-900 truncate">{{ auth()->user()->name ?? 'Guest' }}</p>
+                                <p class="text-slate-500 truncate">{{ auth()->user()->email ?? '' }}</p>
+                            </div>
                         </div>
-                        <div class="text-sm min-w-0">
-                            <p class="font-medium text-slate-900 truncate">{{ auth()->user()->name ?? 'Guest' }}</p>
-                            <p class="text-slate-500 truncate">{{ auth()->user()->email ?? '' }}</p>
-                        </div>
+
+                        <form action="{{ route('logout') }}" method="POST" class="mt-2 px-4">
+                            @csrf
+                            <button type="submit" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-600 hover:bg-red-50 hover:text-red-600 transition">
+                                <x-icon name="log-out" class="size-4" />
+                                Sign out
+                            </button>
+                        </form>
                     </div>
-
-                    <form action="{{ route('logout') }}" method="POST" class="mt-2 px-4">
-                        @csrf
-                        <button type="submit" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-600 hover:bg-red-50 hover:text-red-600 transition">
-                            <x-icon name="log-out" class="size-4" />
-                            Sign out
-                        </button>
-                    </form>
                 </div>
             </div>
         </aside>
