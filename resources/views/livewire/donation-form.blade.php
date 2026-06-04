@@ -100,8 +100,18 @@
             </div>
 
             <div class="relative">
+                <style>
+                    input[type=number]::-webkit-inner-spin-button,
+                    input[type=number]::-webkit-outer-spin-button {
+                        -webkit-appearance: none;
+                        margin: 0;
+                    }
+                    input[type=number] {
+                        -moz-appearance: textfield;
+                    }
+                </style>
                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">$</span>
-                <input wire:model="amount" type="number" step="0.01" min="{{ $campaignMinAmount }}" class="block w-full rounded-lg border border-slate-300 bg-white pl-8 pr-4 py-3 text-lg text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="0.00">
+                <input wire:model="amount" type="number" step="0.01" min="{{ $campaignMinAmount }}" max="99999" class="block w-full rounded-lg border border-slate-300 bg-white pl-8 pr-4 py-3 text-lg text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200 [appearance:textfield]" placeholder="0.00">
             </div>
 
             @error('amount')
