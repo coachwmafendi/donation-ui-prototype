@@ -72,7 +72,17 @@
         <div class="px-6 py-5 space-y-5">
 
             {{-- Frequency tabs --}}
-            <div class="flex gap-3 justify-center" x-data="{ floatingHearts: [] }">
+            <style>
+                @keyframes heartFloat {
+                    0% { opacity: 0; transform: translateY(0) scale(0.4); }
+                    15% { opacity: 1; transform: translateY(-10px) scale(1); }
+                    100% { opacity: 0; transform: translateY(-50px) scale(0.6); }
+                }
+                .heart-particle {
+                    animation: heartFloat 1s ease-out forwards;
+                }
+            </style>
+            <div class="flex gap-3 justify-center">
                 @foreach($campaignFrequencies as $freq)
                     @php
                         $label = $freq === 'one-time' ? 'One Time' : 'Monthly';
@@ -82,42 +92,43 @@
                         type="button"
                         wire:click="$set('frequency', '{{ $freq }}')"
                         @class([
-                            'relative flex items-center gap-2.5 rounded-full px-7 py-3 text-base font-bold transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] transform overflow-visible',
+                            'relative flex items-center gap-2.5 rounded-full px-7 py-3 text-base font-bold transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] transform',
                             'bg-emerald-600 text-white shadow-lg shadow-emerald-600/25 scale-100' => $isActive,
                             'bg-white text-slate-600 border-2 border-slate-200 hover:border-emerald-400 hover:text-emerald-600 hover:shadow-md scale-[0.92] hover:scale-100' => !$isActive,
                         ])
                         @if($freq === 'monthly')
-                            @click="
-                                for (let i = 0; i < 5; i++) {
-                                    setTimeout(() => {
-                                        floatingHearts.push({ id: Date.now() + i, x: (Math.random() - 0.5) * 60, y: -30 - Math.random() * 50, s: 0.6 + Math.random() * 0.8 });
-                                        setTimeout(() => floatingHearts.shift(), 1200);
-                                    }, i * 80);
+                            x-data="{ particles: [], spawnParticles() { 
+                                const count = 6;
+                                for (let i = 0; i < count; i++) {
+                                    this.particles.push({ id: Date.now() + i, x: Math.random() * 40 - 20, delay: i * 80 });
                                 }
-                            "
+                                setTimeout(() => this.particles = [], 1200);
+                            } }"
+                            @click="spawnParticles()"
                         @endif
                     >
                         @if($freq === 'monthly')
                             <svg class="size-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                         @endif
                         {{ $label }}
+                        
+                        @if($freq === 'monthly')
+                            <template x-for="p in particles" :key="p.id">
+                                <div 
+                                    class="heart-particle absolute pointer-events-none text-emerald-500"
+                                    :style="`left: calc(50% + ${p.x}px); top: 50%; animation-delay: ${p.delay}ms;`"
+                                >
+                                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                </div>
+                            </template>
+                        @endif
                     </button>
                 @endforeach
-                
-                <template x-for="heart in floatingHearts" :key="heart.id">
-                    <div 
-                        class="fixed pointer-events-none z-50 text-emerald-500"
-                        :style="`left: ${$el.parentElement.getBoundingClientRect().left + $el.parentElement.getBoundingClientRect().width/2}px; top: ${$el.parentElement.getBoundingClientRect().top}px;`"
-                        x-transition:enter="transition ease-out duration-300"
-                        x-transition:enter-start="opacity-0 translate-y-0 scale-50"
-                        x-transition:enter-end="opacity-100 -translate-y-8 scale-100"
-                        x-transition:leave="transition ease-in duration-500"
-                        x-transition:leave-start="opacity-100 -translate-y-8 scale-100"
-                        x-transition:leave-end="opacity-0 -translate-y-20 scale-0"
-                    >
-                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                    </div>
-                </template>
+            </div>
+                            </template>
+                        @endif
+                    </button>
+                @endforeach
             </div>
 
             <div class="grid grid-cols-3 gap-3">
