@@ -87,7 +87,7 @@
                                     @mouseenter="activeIndex = {{ $index }}"
                                     @mouseleave="activeIndex = null"
                                 />
-                            @endforeach>
+                            @endforeach
                         </svg>
 
                         @foreach($chartPoints as $index => $point)
@@ -101,12 +101,12 @@
                                     <div class="text-slate-400 text-[10px]">{{ $point['date'] }}</div>
                                 </div>
                             </div>
-                        @endforeach>
+                        @endforeach
 
                         <div class="flex justify-between px-10 mt-2">
                             @foreach($chartPoints as $index => $point)
                                 <span class="text-[10px] text-slate-400 text-center @if($index % 2 !== 0) hidden lg:block @endif" style="width: 20px;">{{ $point['label'] }}</span>
-                            @endforeach>
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -132,7 +132,7 @@
                                         <span class="text-slate-600 truncate">{{ $campaign['label'] }}</span>
                                         <span class="text-slate-900 font-medium ml-auto">${{ number_format($campaign['value'] / 100, 0) }}</span>
                                     </div>
-                                @endforeach>
+                                @endforeach
                             </div>
                         </div>
                     </div>
@@ -156,7 +156,7 @@
                                 <div class="mx-4 h-1 w-full rounded-full bg-slate-100 overflow-hidden">
                                     <div class="h-full rounded-full" style="width: {{ $loop->index === 0 ? '100%' : '92%' }}; background-color: {{ $step['color'] }}"></div>
                                 </div>
-                            @endforeach>
+                            @endforeach
                         </div>
                     </div>
 
@@ -218,7 +218,7 @@
                                         </div>
                                     </div>
                                 </a>
-                            @endforeach>
+                            @endforeach
                         @else
                             <div class="text-center py-12">
                                 <x-empty-state title="No recent donations" description="When donations arrive, they'll appear here">
