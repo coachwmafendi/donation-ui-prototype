@@ -50,8 +50,8 @@ $showAvatars = $pageConfig['show_donor_avatars'] ?? true;
             @endif
         @endif
 
-        <div class="relative mx-auto max-w-5xl px-6 py-20 md:py-28">
-            <div class="mx-auto max-w-3xl text-center">
+        <div class="relative mx-auto max-w-6xl px-6 py-20 md:py-28">
+            <div class="mx-auto max-w-4xl text-center">
                 <span class="inline-flex items-center rounded-full {{ $darkHero ? 'bg-white/10 text-white/80' : 'bg-slate-100 text-slate-600' }} px-3 py-1 text-xs font-medium backdrop-blur-sm">
                     {{ ucfirst($campaign->status) }}
                 </span>
@@ -135,11 +135,13 @@ $showAvatars = $pageConfig['show_donor_avatars'] ?? true;
                 <section id="donate">
                     <div class="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
                         <iframe
+                            id="donation-embed"
                             src="{{ config('app.url') }}/embed/{{ $campaign->slug }}"
                             width="100%"
-                            height="650"
+                            height="800"
                             frameborder="0"
-                            style="border: none; display: block;"
+                            scrolling="no"
+                            style="border: none; display: block; overflow: hidden;"
                             title="Donate to {{ $campaign->name }}"
                         ></iframe>
                     </div>
@@ -248,4 +250,20 @@ $showAvatars = $pageConfig['show_donor_avatars'] ?? true;
     </div>
     @endif
 
+    <script>
+        (function () {
+            const iframe = document.getElementById('donation-embed');
+            if (!iframe) return;
+
+            function resize () {
+                try {
+                    const height = iframe.contentWindow.document.documentElement.scrollHeight;
+                    iframe.style.height = (height + 32) + 'px';
+                } catch (e) {}
+            }
+
+            iframe.addEventListener('load', resize);
+            setInterval(resize, 500);
+        })();
+    </script>
 </div>
