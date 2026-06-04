@@ -225,6 +225,15 @@
                 <span class="text-sm font-medium text-slate-700">Bank transfer</span>
             </label>
             @error('paymentMethod')<p class="mt-2 text-sm text-red-600">{{ $message }}</p>@enderror
+
+            {{-- Cover transaction cost --}}
+            <label class="flex items-start gap-3 cursor-pointer rounded-lg border border-slate-200 px-4 py-3 hover:bg-slate-50 transition mt-2">
+                <input wire:model="coverTransactionFee" type="checkbox" class="mt-0.5 size-4 rounded border-slate-300 text-slate-900 focus:ring-slate-500">
+                <div>
+                    <span class="text-sm font-medium text-slate-700 block">Cover transaction cost</span>
+                    <span class="text-xs text-slate-500">Add {{ $this->currencySymbol }}{{ number_format($this->processingFee, 2) }} (3%) so 100% of your donation goes to the campaign.</span>
+                </div>
+            </label>
         </div>
         <div class="flex justify-between px-6 py-4 bg-slate-50 border-t border-slate-200">
             <button wire:click="prevStep" class="rounded-lg border border-slate-300 bg-white px-6 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">Back</button>
@@ -247,10 +256,25 @@
                     <span class="text-sm text-slate-500">Campaign</span>
                     <span class="text-sm font-semibold text-slate-900">{{ $campaignName ?? '—' }}</span>
                 </div>
+                @if($coverTransactionFee)
+                <div class="flex justify-between">
+                    <span class="text-sm text-slate-500">Donation</span>
+                    <span class="text-sm font-semibold text-slate-900">{{ $this->currencySymbol }}{{ number_format($amount, 2) }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-sm text-slate-500">Transaction cost (3%)</span>
+                    <span class="text-sm font-semibold text-slate-900">{{ $this->currencySymbol }}{{ number_format($this->processingFee, 2) }}</span>
+                </div>
+                <div class="border-t border-slate-200 pt-2 mt-1 flex justify-between">
+                    <span class="text-sm font-semibold text-slate-900">Total</span>
+                    <span class="text-sm font-bold text-slate-900">{{ $this->currencySymbol }}{{ number_format($this->paymentTotal, 2) }}</span>
+                </div>
+                @else
                 <div class="flex justify-between">
                     <span class="text-sm text-slate-500">Amount</span>
                     <span class="text-sm font-semibold text-slate-900">{{ match(strtoupper($currency)) { 'USD' => '🇺🇸', 'EUR' => '🇪🇺', 'GBP' => '🇬🇧', 'SGD' => '🇸🇬', 'MYR' => '🇲🇾', default => '' } }} {{ $this->currencySymbol }}{{ number_format($amount, 2) }}</span>
                 </div>
+                @endif
                 <div class="flex justify-between">
                     <span class="text-sm text-slate-500">Frequency</span>
                     <span class="text-sm font-semibold text-slate-900">{{ ucfirst($frequency) }}</span>

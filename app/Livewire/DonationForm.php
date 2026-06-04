@@ -70,6 +70,8 @@ class DonationForm extends Component
     // Payment
     public string $paymentMethod = 'credit_card';
 
+    public bool $coverTransactionFee = false;
+
     // Optional fields
     public string $comment = '';
 
@@ -176,6 +178,20 @@ class DonationForm extends Component
         $this->updateCurrencySymbol();
     }
 
+    public function getProcessingFeeProperty(): float
+    {
+        return round(($this->amount ?? 0) * 0.03, 2);
+    }
+
+    public function getPaymentTotalProperty(): float
+    {
+        $amount = $this->amount ?? 0;
+        if ($this->coverTransactionFee) {
+            return round($amount + ($amount * 0.03), 2);
+        }
+        return $amount;
+    }
+
     protected function updateCurrencySymbol(): void
     {
         $this->currencySymbol = match(strtoupper($this->currency)) {
@@ -268,6 +284,7 @@ class DonationForm extends Component
             'state' => 'nullable|string|max:255',
             'postalCode' => 'nullable|string|max:50',
             'paymentMethod' => 'required|in:credit_card,paypal,bank_transfer',
+            'coverTransactionFee' => 'boolean',
             'comment' => 'nullable|string|max:1000',
             'tributeInfo' => 'nullable|string|max:1000',
             'agreed' => 'accepted',
@@ -295,7 +312,14 @@ class DonationForm extends Component
 
         $amountCents = (int) round($validated['amount'] * 100);
         $processingFeeCents = (int) round($amountCents * 0.03);
-        $netAmountCents = $amountCents - $processingFeeCents;
+
+        if ($validated['coverTransactionFee']) {
+            $paymentAmountCents = $amountCents + $processingFeeCents;
+            $netAmountCents = $amountCents;
+        } else {
+            $paymentAmountCents = $amountCents;
+            $netAmountCents = $amountCents - $processingFeeCents;
+        }
 
         $donation = Donation::create([
             'profile_id' => $profile->id,
@@ -308,7 +332,7 @@ class DonationForm extends Component
             'frequency' => $validated['frequency'],
             'donation_date' => now(),
             'success_date' => now(),
-            'payment_amount_cents' => $amountCents,
+            'payment_amount_cents' => $paymentAmountCents,
             'processing_fee_cents' => $processingFeeCents,
             'net_amount_cents' => $netAmountCents,
             'payment_method' => $validated['paymentMethod'],
