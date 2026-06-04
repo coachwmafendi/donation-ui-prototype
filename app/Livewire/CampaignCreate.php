@@ -46,7 +46,7 @@ class CampaignCreate extends Component
             'currency' => 'required|string|size:3',
         ]);
 
-        Campaign::create([
+        $campaign = Campaign::create([
             'name' => $validated['name'],
             'slug' => $validated['slug'],
             'status' => $validated['status'],
@@ -58,7 +58,7 @@ class CampaignCreate extends Component
         ]);
 
         $this->dispatch('toast', message: 'Campaign created successfully.', type: 'success');
-        $this->redirect('/campaigns', navigate: true);
+        $this->redirect('/campaigns/'.$campaign->public_id.'/edit', navigate: true);
     }
 
     public function render()
