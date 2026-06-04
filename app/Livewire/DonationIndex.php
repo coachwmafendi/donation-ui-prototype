@@ -11,6 +11,7 @@ class DonationIndex extends Component
     use WithPagination;
 
     public string $search = '';
+
     public string $statusFilter = '';
 
     public function updatedSearch(): void
@@ -30,12 +31,12 @@ class DonationIndex extends Component
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
                     $q->whereHas('profile', function ($sq) {
-                        $sq->where('first_name', 'like', '%' . $this->search . '%')
-                           ->orWhere('last_name', 'like', '%' . $this->search . '%')
-                           ->orWhere('email', 'like', '%' . $this->search . '%');
+                        $sq->where('first_name', 'like', '%'.$this->search.'%')
+                            ->orWhere('last_name', 'like', '%'.$this->search.'%')
+                            ->orWhere('email', 'like', '%'.$this->search.'%');
                     })
-                    ->orWhere('campaign', 'like', '%' . $this->search . '%')
-                    ->orWhere('public_id', 'like', '%' . $this->search . '%');
+                        ->orWhere('campaign', 'like', '%'.$this->search.'%')
+                        ->orWhere('public_id', 'like', '%'.$this->search.'%');
                 });
             })
             ->when($this->statusFilter, function ($query) {

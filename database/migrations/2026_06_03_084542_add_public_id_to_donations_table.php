@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Donation;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,12 +14,12 @@ return new class extends Migration
         });
 
         // Generate public_ids for existing records
-        \App\Models\Donation::chunkById(100, function ($donations) {
+        Donation::chunkById(100, function ($donations) {
             foreach ($donations as $donation) {
                 do {
-                    $id = strtoupper(\Str::random(8));
-                } while (\App\Models\Donation::where('public_id', $id)->exists());
-                
+                    $id = strtoupper(Str::random(8));
+                } while (Donation::where('public_id', $id)->exists());
+
                 $donation->update(['public_id' => $id]);
             }
         });

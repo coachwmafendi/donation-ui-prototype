@@ -25,6 +25,11 @@ class Profile extends Model
         'city',
         'state',
         'postal_code',
+        'tags',
+    ];
+
+    protected $casts = [
+        'tags' => 'array',
     ];
 
     protected static function boot(): void

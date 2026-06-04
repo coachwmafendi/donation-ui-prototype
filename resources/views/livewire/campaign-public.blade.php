@@ -87,6 +87,21 @@
                     </div>
                 </section>
 
+                {{-- Donate Form --}}
+                <section id="donate">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-6">Make a donation</h2>
+                    <div class="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+                        <iframe
+                            src="{{ config('app.url') }}/embed/{{ $campaign->slug }}"
+                            width="100%"
+                            height="650"
+                            frameborder="0"
+                            style="border: none; display: block;"
+                            title="Donate to {{ $campaign->name }}"
+                        ></iframe>
+                    </div>
+                </section>
+
                 {{-- Recent Donors --}}
                 @if($recentDonations->count() > 0)
                 <section>
@@ -124,38 +139,6 @@
             {{-- Sidebar Sticky --}}
             <aside class="lg:col-span-1">
                 <div class="sticky top-6 space-y-6">
-
-                    {{-- Donate Card --}}
-                    <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-                        <h3 class="text-lg font-semibold text-slate-900">Make a donation</h3>
-                        <p class="mt-2 text-sm text-slate-500">Choose an amount to support this campaign.</p>
-                        
-                        <div class="mt-5 grid grid-cols-2 gap-3">
-                            @foreach([25, 50, 100, 250] as $preset)
-                                <a 
-                                    href="/donate/{{ $campaign->public_id }}?amount={{ $preset }}" 
-                                    class="rounded-lg border border-slate-200 px-4 py-3 text-center text-sm font-medium text-slate-700 hover:border-slate-900 hover:bg-slate-50 transition"
-                                >
-                                    ${{ $preset }}
-                                </a>
-                            @endforeach
-                        </div>
-
-                        <a 
-                            href="/donate/{{ $campaign->public_id }}" 
-                            class="mt-4 block w-full rounded-lg bg-slate-900 px-4 py-3 text-center text-sm font-semibold text-white hover:bg-slate-800 transition"
-                        >
-                            Custom amount
-                        </a>
-
-                        <div class="mt-4 flex items-center justify-center gap-2 text-xs text-slate-400">
-                            <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                            </svg>
-                            Secure transaction
-                        </div>
-                    </div>
 
                     {{-- Campaign Meta --}}
                     <div class="rounded-xl border border-slate-200 bg-white p-6">

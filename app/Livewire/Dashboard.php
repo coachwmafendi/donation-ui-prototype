@@ -4,7 +4,6 @@ namespace App\Livewire;
 
 use App\Models\Campaign;
 use App\Models\Donation;
-use Carbon\Carbon;
 use Livewire\Component;
 
 class Dashboard extends Component
@@ -29,6 +28,7 @@ class Dashboard extends Component
         // Daily trend (last 14 days)
         $trendDays = collect(range(0, 13))->map(function ($daysAgo) use ($now) {
             $date = $now->copy()->subDays($daysAgo);
+
             return [
                 'label' => $date->format('D'),
                 'date' => $date->format('M d'),
@@ -46,7 +46,7 @@ class Dashboard extends Component
         return view('livewire.dashboard', [
             'stats' => [
                 ['label' => 'Total donations', 'value' => number_format($totalDonations), 'trend' => '+12%', 'trendUp' => true],
-                ['label' => 'Total raised', 'value' => '$' . number_format($totalRaised / 100, 0), 'trend' => '+8%', 'trendUp' => true],
+                ['label' => 'Total raised', 'value' => '$'.number_format($totalRaised / 100, 0), 'trend' => '+8%', 'trendUp' => true],
                 ['label' => 'Active campaigns', 'value' => number_format($activeCampaigns), 'trend' => null],
                 ['label' => 'New donors (30d)', 'value' => number_format($newDonors), 'trend' => '+23%', 'trendUp' => true],
             ],

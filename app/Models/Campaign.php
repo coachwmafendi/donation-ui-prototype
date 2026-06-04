@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class Campaign extends Model
 {
@@ -43,7 +44,7 @@ class Campaign extends Model
                 $model->public_id = PublicId::generateFor(self::class);
             }
             if (empty($model->slug)) {
-                $model->slug = \Illuminate\Support\Str::slug($model->name);
+                $model->slug = Str::slug($model->name);
             }
         });
     }
@@ -60,17 +61,20 @@ class Campaign extends Model
 
     public function getGoalAmountAttribute(): string
     {
-        return '$' . number_format($this->goal_amount_cents / 100, 2);
+        return '$'.number_format($this->goal_amount_cents / 100, 2);
     }
 
     public function getRaisedAmountAttribute(): string
     {
-        return '$' . number_format($this->raised_amount_cents / 100, 2);
+        return '$'.number_format($this->raised_amount_cents / 100, 2);
     }
 
     public function getProgressPercentageAttribute(): int
     {
-        if (!$this->goal_amount_cents) return 0;
+        if (! $this->goal_amount_cents) {
+            return 0;
+        }
+
         return min(100, (int) round(($this->raised_amount_cents / $this->goal_amount_cents) * 100));
     }
 }

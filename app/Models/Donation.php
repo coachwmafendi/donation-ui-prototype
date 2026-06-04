@@ -78,38 +78,42 @@ class Donation extends Model
 
     public function getAmountAttribute(): string
     {
-        return '$' . number_format($this->amount_cents / 100, 2) . ' ' . $this->currency;
+        return '$'.number_format($this->amount_cents / 100, 2).' '.$this->currency;
     }
 
     public function getConvertedAmountAttribute(): ?string
     {
-        if (!$this->converted_amount_cents || !$this->converted_currency) {
+        if (! $this->converted_amount_cents || ! $this->converted_currency) {
             return null;
         }
-        return $this->converted_currency . ' ' . number_format($this->converted_amount_cents / 100, 2);
+
+        return $this->converted_currency.' '.number_format($this->converted_amount_cents / 100, 2);
     }
 
     public function getPaymentAmountAttribute(): ?string
     {
-        if (!$this->payment_amount_cents) {
+        if (! $this->payment_amount_cents) {
             return null;
         }
-        return '$' . number_format($this->payment_amount_cents / 100, 2) . ' ' . $this->currency;
+
+        return '$'.number_format($this->payment_amount_cents / 100, 2).' '.$this->currency;
     }
 
     public function getProcessingFeeAttribute(): ?string
     {
-        if (!$this->processing_fee_cents) {
+        if (! $this->processing_fee_cents) {
             return null;
         }
-        return '$' . number_format($this->processing_fee_cents / 100, 2) . ' ' . $this->currency;
+
+        return '$'.number_format($this->processing_fee_cents / 100, 2).' '.$this->currency;
     }
 
     public function getNetAmountAttribute(): ?string
     {
-        if (!$this->net_amount_cents) {
+        if (! $this->net_amount_cents) {
             return null;
         }
-        return '$' . number_format($this->net_amount_cents / 100, 2) . ' ' . $this->currency;
+
+        return '$'.number_format($this->net_amount_cents / 100, 2).' '.$this->currency;
     }
 }

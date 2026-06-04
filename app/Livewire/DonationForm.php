@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Mail\DonationReceipt;
 use App\Models\Campaign;
 use App\Models\Donation;
 use App\Models\Profile;
@@ -11,6 +12,7 @@ class DonationForm extends Component
 {
     // Wizard step
     public int $step = 1;
+
     public int $totalSteps = 5;
 
     // Campaign selection
@@ -93,7 +95,7 @@ class DonationForm extends Component
     {
         if ($this->step === 1) {
             $this->validate(['campaignId' => 'required|exists:campaigns,id'], [
-                'campaignId.required' => 'Please select a campaign.'
+                'campaignId.required' => 'Please select a campaign.',
             ]);
         } elseif ($this->step === 2) {
             $this->validate([
@@ -205,7 +207,7 @@ class DonationForm extends Component
         $campaign->increment('donor_count');
 
         \Mail::to($profile->email)
-            ->send(new \App\Mail\DonationReceipt($donation, $profile));
+            ->send(new DonationReceipt($donation, $profile));
 
         $this->donationPublicId = $donation->public_id;
         $this->showSuccess = true;

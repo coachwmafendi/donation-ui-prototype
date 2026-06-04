@@ -11,6 +11,7 @@ class CampaignIndex extends Component
     use WithPagination;
 
     public string $search = '';
+
     public string $statusFilter = '';
 
     public function updatedSearch(): void
@@ -28,8 +29,8 @@ class CampaignIndex extends Component
         $query = Campaign::query()
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
-                    $q->where('name', 'like', '%' . $this->search . '%')
-                      ->orWhere('public_id', 'like', '%' . $this->search . '%');
+                    $q->where('name', 'like', '%'.$this->search.'%')
+                        ->orWhere('public_id', 'like', '%'.$this->search.'%');
                 });
             })
             ->when($this->statusFilter, function ($query) {

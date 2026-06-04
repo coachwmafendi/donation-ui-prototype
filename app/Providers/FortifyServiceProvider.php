@@ -49,7 +49,7 @@ class FortifyServiceProvider extends ServiceProvider
                 ->markdown('emails.password-reset', [
                     'url' => $url,
                     'user' => $notifiable,
-                    'expires' => config('auth.passwords.' . config('auth.defaults.passwords') . '.expire', 60),
+                    'expires' => config('auth.passwords.'.config('auth.defaults.passwords').'.expire', 60),
                 ]);
         });
 

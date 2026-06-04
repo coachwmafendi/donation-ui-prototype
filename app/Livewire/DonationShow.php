@@ -8,11 +8,13 @@ use Livewire\Component;
 class DonationShow extends Component
 {
     public string $donationId;
+
     public Donation $donationModel;
-    
+
     public bool $showRefundModal = false;
+
     public string $refundReason = '';
-    
+
     public array $sections = [
         ['id' => 'donation', 'label' => 'Donation', 'icon' => 'banknote'],
         ['id' => 'payment-fees', 'label' => 'Payment & fees', 'icon' => 'percent'],

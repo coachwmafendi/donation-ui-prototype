@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Mail\DonationReceipt;
 use App\Models\Campaign;
 use App\Models\Donation;
 use App\Models\Profile;
@@ -12,31 +13,49 @@ class DonationEmbed extends Component
     public ?string $campaignId = null;
 
     public ?float $amount = null;
+
     public string $currency = 'USD';
+
     public array $presets = [25, 50, 100, 250];
+
     public bool $customAmount = false;
+
     public string $frequency = 'one-time';
 
     public string $firstName = '';
+
     public string $lastName = '';
+
     public string $email = '';
+
     public string $phone = '';
 
     public bool $showAddress = false;
+
     public string $country = '';
+
     public string $addressLine1 = '';
+
     public string $addressLine2 = '';
+
     public string $city = '';
+
     public string $state = '';
+
     public string $postalCode = '';
 
     public string $paymentMethod = 'credit_card';
+
     public string $comment = '';
+
     public string $tributeInfo = '';
+
     public bool $agreed = false;
 
     public bool $showSuccess = false;
+
     public ?string $donationPublicId = null;
+
     public ?Campaign $campaign = null;
 
     public function mount(?string $campaign = null): void
@@ -133,7 +152,7 @@ class DonationEmbed extends Component
         $campaign->increment('donor_count');
 
         \Mail::to($profile->email)
-            ->send(new \App\Mail\DonationReceipt($donation, $profile));
+            ->send(new DonationReceipt($donation, $profile));
 
         $this->donationPublicId = $donation->public_id;
         $this->showSuccess = true;

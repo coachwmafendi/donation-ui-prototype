@@ -140,7 +140,56 @@
         {{-- Tab: Settings --}}
         <div
             x-show="activeTab === 'settings'"
-            x-data="{ settingTab: 'general' }"
+            x-data="{
+                settingTab: 'general',
+                frequencies: [
+                    { id: 'one-time', label: 'Once' },
+                    { id: 'monthly', label: 'Monthly' },
+                ],
+                defaultFreq: 'monthly',
+                amountsFreq: 'one-time',
+                allOptions: [
+                    { id: 'one-time', label: 'Once' },
+                    { id: 'monthly', label: 'Monthly' },
+                    { id: 'weekly', label: 'Weekly' },
+                    { id: 'yearly', label: 'Yearly' },
+                    { id: 'quarterly', label: 'Quarterly' },
+                ],
+
+                removeFrequency(index) {
+                    const removed = this.frequencies[index]
+                    this.frequencies.splice(index, 1)
+                    if (this.defaultFreq === removed.id && this.frequencies.length > 0) {
+                        this.defaultFreq = this.frequencies[0].id
+                    }
+                    if (this.frequencies.length > 0 && !this.frequencies.find(f => f.id === this.amountsFreq)) {
+                        this.amountsFreq = this.frequencies[0].id
+                    }
+                },
+
+                addFrequency() {
+                    const used = this.frequencies.map(f => f.id)
+                    const available = this.allOptions.filter(o => !used.includes(o.id))
+                    if (available.length > 0) {
+                        this.frequencies.push(available[0])
+                    }
+                },
+
+                changeFrequency(index, newId) {
+                    const option = this.allOptions.find(o => o.id === newId)
+                    if (option) {
+                        this.frequencies[index] = option
+                        if (this.defaultFreq === this.frequencies[index].id) {
+                            this.defaultFreq = option.id
+                        }
+                    }
+                },
+
+                availableOptions(currentId) {
+                    const used = this.frequencies.map(f => f.id).filter(id => id !== currentId)
+                    return this.allOptions.filter(o => !used.includes(o.id))
+                },
+            }"
             class="grid grid-cols-1 lg:grid-cols-12 gap-6"
             x-cloak
         >
@@ -263,51 +312,6 @@
                 {{-- Frequency --}}
                 <div
                     x-show="settingTab === 'frequency'"
-                    x-data="{
-                        frequencies: [
-                            { id: 'one-time', label: 'Once' },
-                            { id: 'monthly', label: 'Monthly' },
-                        ],
-                        defaultFreq: 'monthly',
-                        allOptions: [
-                            { id: 'one-time', label: 'Once' },
-                            { id: 'monthly', label: 'Monthly' },
-                            { id: 'weekly', label: 'Weekly' },
-                            { id: 'yearly', label: 'Yearly' },
-                            { id: 'quarterly', label: 'Quarterly' },
-                        ],
-
-                        removeFrequency(index) {
-                            const removed = this.frequencies[index]
-                            this.frequencies.splice(index, 1)
-                            if (this.defaultFreq === removed.id && this.frequencies.length > 0) {
-                                this.defaultFreq = this.frequencies[0].id
-                            }
-                        },
-
-                        addFrequency() {
-                            const used = this.frequencies.map(f => f.id)
-                            const available = this.allOptions.filter(o => !used.includes(o.id))
-                            if (available.length > 0) {
-                                this.frequencies.push(available[0])
-                            }
-                        },
-
-                        changeFrequency(index, newId) {
-                            const option = this.allOptions.find(o => o.id === newId)
-                            if (option) {
-                                this.frequencies[index] = option
-                                if (this.defaultFreq === this.frequencies[index].id) {
-                                    this.defaultFreq = option.id
-                                }
-                            }
-                        },
-
-                        availableOptions(currentId) {
-                            const used = this.frequencies.map(f => f.id).filter(id => id !== currentId)
-                            return this.allOptions.filter(o => !used.includes(o.id))
-                        },
-                    }"
                     class="rounded-xl border border-slate-200 bg-white overflow-hidden"
                     x-cloak
                 >
@@ -334,19 +338,6 @@
                                     </select>
                                     <svg class="absolute right-3 top-1/2 -translate-y-1/2 size-5 text-slate-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
                                 </div>
-                                <button
-                                    type="button"
-                                    @click="removeFrequency(index)"
-                                    class="p-2.5 text-slate-400 hover:text-red-600 transition"
-                                    title="Remove frequency"
-                                >
-                                    <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <polyline points="3 6 5 6 21 6"/>
-                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                                        <line x1="10" y1="11" x2="10" y2="17"/>
-                                        <line x1="14" y1="11" x2="14" y2="17"/>
-                                    </svg>
-                                </button>
                             </div>
                         </template>
 
@@ -379,7 +370,6 @@
                 {{-- Suggested Amounts --}}
                 <div
                     x-show="settingTab === 'amounts'"
-                    x-data="{ amountsFreq: 'one-time', impactEnabled: false }"
                     class="rounded-xl border border-slate-200 bg-white overflow-hidden"
                     x-cloak
                 >
@@ -390,35 +380,18 @@
 
                         {{-- Frequency sub-tabs --}}
                         <div class="flex gap-4 border-b border-slate-200">
-                            @foreach([
-                                ['id' => 'one-time', 'label' => 'ONE-TIME'],
-                                ['id' => 'monthly', 'label' => 'MONTHLY'],
-                            ] as $freq)
+                            <template x-for="freq in frequencies" :key="freq.id">
                                 <button
                                     type="button"
-                                    @click="amountsFreq = '{{ $freq['id'] }}'"
-                                    class="pb-3 text-sm font-semibold tracking-wide border-b-2 transition -mb-px"
-                                    :class="amountsFreq === '{{ $freq['id'] }}'
+                                    @click="amountsFreq = freq.id"
+                                    class="pb-3 text-sm font-semibold tracking-wide border-b-2 transition -mb-px uppercase"
+                                    :class="amountsFreq === freq.id
                                         ? 'border-blue-600 text-blue-600'
                                         : 'border-transparent text-slate-500 hover:text-slate-700'"
-                                >
-                                    {{ $freq['label'] }}
-                                </button>
-                            @endforeach
+                                    x-text="freq.label"
+                                ></button>
+                            </template>
                         </div>
-
-                        {{-- Impact descriptions toggle --}}
-                        <label class="flex items-start gap-3 cursor-pointer">
-                            <input type="checkbox" x-model="impactEnabled" class="mt-1 size-4 rounded border-slate-300 text-slate-900">
-                            <div>
-                                <span class="text-sm font-medium text-slate-900">Enable impact descriptions</span>
-                                <p class="mt-1 text-sm text-slate-500 leading-relaxed">
-                                    Boost supporters' engagement and generosity by telling them how their funds might be used (e.g. “$30 can buy school supplies for one child”).
-                                </p>
-                            </div>
-                        </label>
-
-                        <hr class="border-slate-200">
 
                         {{-- Preset inputs --}}
                         <div>
@@ -439,19 +412,23 @@
                             </div>
                         </div>
 
-                        {{-- Default amount (monthly only) --}}
-                        <div x-show="amountsFreq === 'monthly'" x-cloak>
-                            <h3 class="text-base font-semibold text-slate-900 mb-3">Default monthly suggested amount</h3>
-                            <div class="relative max-w-xs">
-                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">$</span>
-                                <input
-                                    type="number"
-                                    value="25"
-                                    class="block w-full rounded-lg border border-slate-300 bg-white pl-7 pr-3 py-2.5 text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"
-                                    placeholder="0"
-                                >
+                        {{-- Default amount --}}
+                        <template x-for="freq in frequencies" :key="freq.id">
+                            <div x-show="amountsFreq === freq.id" x-cloak>
+                                <h3 class="text-base font-semibold text-slate-900 mb-3">
+                                    Default <span x-text="freq.label.toLowerCase()"></span> suggested amount
+                                </h3>
+                                <div class="relative max-w-xs">
+                                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">$</span>
+                                    <input
+                                        type="number"
+                                        :value="freq.id === 'one-time' ? 50 : 25"
+                                        class="block w-full rounded-lg border border-slate-300 bg-white pl-7 pr-3 py-2.5 text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"
+                                        placeholder="0"
+                                    >
+                                </div>
                             </div>
-                        </div>
+                        </template>
 
                         <div class="flex justify-end pt-2">
                             <button class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition">Save Changes</button>
@@ -466,10 +443,8 @@
                     </div>
                     <div class="px-6 py-5 space-y-6">
                         @foreach([
-                            ['label' => 'Minimum one-time donation', 'value' => '1'],
+                            ['label' => 'Minimum one-time donation', 'value' => '10'],
                             ['label' => 'Minimum monthly donation', 'value' => '10'],
-                            ['label' => 'Minimum quarterly donation', 'value' => '5'],
-                            ['label' => 'Minimum yearly donation', 'value' => '50'],
                         ] as $min)
                             <div>
                                 <label class="block text-base font-semibold text-slate-900">{{ $min['label'] }}</label>
@@ -492,15 +467,8 @@
                     </div>
                     <div class="px-6 py-5 space-y-4">
                         <div class="flex items-center gap-3">
-                            <input type="checkbox" id="coverFee" class="size-4 rounded border-slate-300 text-slate-900">
+                            <input type="checkbox" id="coverFee" checked class="size-4 rounded border-slate-300 text-slate-900">
                             <label for="coverFee" class="text-sm font-medium text-slate-700">Ask donor to cover transaction fee</label>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700">Processing fee percentage</label>
-                            <div class="relative mt-1.5">
-                                <input type="number" step="0.1" min="0" max="100" value="3.0" class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 pr-8 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200">
-                                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">%</span>
-                            </div>
                         </div>
                         <div class="flex justify-end pt-2">
                             <button class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition">Save Changes</button>
@@ -550,6 +518,22 @@
                 </div>
                 <div class="px-6 py-5 space-y-5">
                     <p class="text-sm text-slate-600">This is the public-facing page for donors. Share this link on social media, email, or your website.</p>
+
+                    <div class="rounded-lg border border-slate-200 bg-slate-50 overflow-hidden">
+                        <div class="border-b border-slate-200 bg-slate-100 px-4 py-2 flex items-center justify-between">
+                            <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Preview embed</span>
+                        </div>
+                        <div class="p-4">
+                            <iframe
+                                src="{{ config('app.url') }}/embed/{{ $campaign->slug }}"
+                                width="100%"
+                                height="650"
+                                frameborder="0"
+                                style="border: none; border-radius: 12px;"
+                                title="Donate to {{ $campaign->name }}"
+                            ></iframe>
+                        </div>
+                    </div>
 
                     <div>
                         <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Public URL</label>
