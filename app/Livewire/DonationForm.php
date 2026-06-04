@@ -132,15 +132,33 @@ class DonationForm extends Component
 
         $this->frequency = $this->campaignDefaultFrequency;
 
-        // Auto-select default amount if it exists in the frequency's presets
+        $this->applyDefaultAmountForFrequency($this->frequency);
+    }
+
+    protected function applyDefaultAmountForFrequency(string $frequency): void
+    {
+        $this->customAmount = false;
+        $this->amount = null;
+
+        if (! $this->selectedCampaign) {
+            return;
+        }
+
+        $settings = $this->selectedCampaign->settings ?? [];
         $defaultAmounts = $settings['default_amounts'] ?? [];
-        if (isset($defaultAmounts[$this->frequency])) {
-            $defaultAmount = (float) $defaultAmounts[$this->frequency];
-            $currentPresets = $this->frequencyPresets[$this->frequency] ?? [];
+
+        if (isset($defaultAmounts[$frequency])) {
+            $defaultAmount = (float) $defaultAmounts[$frequency];
+            $currentPresets = $this->frequencyPresets[$frequency] ?? [];
             if (in_array($defaultAmount, $currentPresets)) {
                 $this->amount = $defaultAmount;
             }
         }
+    }
+
+    public function updatedFrequency(string $value): void
+    {
+        $this->applyDefaultAmountForFrequency($value);
     }
 
     public function getCurrentPresetsProperty(): array

@@ -62,7 +62,7 @@ $showAvatars = $pageConfig['show_donor_avatars'] ?? true;
                     {{ $heroSubheadline }}
                 </p>
                 <div class="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-                    <a href="/donate/{{ $campaign->public_id }}" class="rounded-lg {{ $darkHero ? 'bg-white text-slate-900 hover:bg-slate-100' : 'bg-slate-900 text-white hover:bg-slate-800' }} px-8 py-3.5 text-base font-semibold shadow-lg transition">
+                    <a href="#donate" class="rounded-lg {{ $darkHero ? 'bg-white text-slate-900 hover:bg-slate-100' : 'bg-slate-900 text-white hover:bg-slate-800' }} px-8 py-3.5 text-base font-semibold shadow-lg transition">
                         {{ $primaryCta }}
                     </a>
                     <a href="{{ $secondaryCtaLink }}" class="rounded-lg border {{ $darkHero ? 'border-white/20 bg-white/5 text-white hover:bg-white/10' : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50' }} px-8 py-3.5 text-base font-medium backdrop-blur-sm transition">
