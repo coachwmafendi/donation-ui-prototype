@@ -72,7 +72,7 @@
         <div class="px-6 py-5 space-y-5">
 
             {{-- Frequency tabs --}}
-            <div class="flex gap-3 justify-center">
+            <div class="flex gap-3 justify-center" x-data="{ floatingHearts: [] }">
                 @foreach($campaignFrequencies as $freq)
                     @php
                         $label = $freq === 'one-time' ? 'One Time' : 'Monthly';
@@ -82,25 +82,42 @@
                         type="button"
                         wire:click="$set('frequency', '{{ $freq }}')"
                         @class([
-                            'flex items-center gap-2.5 rounded-full px-7 py-3 text-base font-bold transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] transform',
+                            'relative flex items-center gap-2.5 rounded-full px-7 py-3 text-base font-bold transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] transform overflow-visible',
                             'bg-emerald-600 text-white shadow-lg shadow-emerald-600/25 scale-100' => $isActive,
                             'bg-white text-slate-600 border-2 border-slate-200 hover:border-emerald-400 hover:text-emerald-600 hover:shadow-md scale-[0.92] hover:scale-100' => !$isActive,
                         ])
                         @if($freq === 'monthly')
-                            x-data="{ floatHearts() { const c = this.$el.querySelector('.heart-container'); c.querySelectorAll('.floating-heart').forEach(h => h.remove()); for(let i=0;i<7;i++){const h=document.createElement('div');h.className='floating-heart';h.innerHTML='<svg style=\"width:100%;height:100%\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z\"/></svg>';h.style.cssText='position:absolute;width:'+(10+Math.random()*14)+'px;height:'+(10+Math.random()*14)+'px;pointer-events:none;opacity:0;color:#10b981;';c.appendChild(h);const x=(Math.random()-0.5)*50,y=-30-Math.random()*40,r=(Math.random()-0.5)*40,d=900+Math.random()*600;h.animate([{transform:'translateX(-50%)translateY(0)scale(0.3)rotate(0deg)',opacity:0},{transform:'translateX(calc(-50% + '+x+'px))translateY('+(y*0.4)+'px)scale(1)rotate('+(r*0.3)+'deg)',opacity:1,offset:0.25},{transform:'translateX(calc(-50% + '+(x*1.5)+'px))translateY('+y+'px)scale(0.2)rotate('+r+'deg)',opacity:0}],{duration:d,easing:'cubic-bezier(0.25,0.46,0.45,0.94)',fill:'forwards'});setTimeout(()=>h.remove(),d+50);} } }"
-                            @click="floatHearts()"
+                            @click="
+                                for (let i = 0; i < 5; i++) {
+                                    setTimeout(() => {
+                                        floatingHearts.push({ id: Date.now() + i, x: (Math.random() - 0.5) * 60, y: -30 - Math.random() * 50, s: 0.6 + Math.random() * 0.8 });
+                                        setTimeout(() => floatingHearts.shift(), 1200);
+                                    }, i * 80);
+                                }
+                            "
                         @endif
                     >
                         @if($freq === 'monthly')
-                            <span class="relative flex items-center heart-container">
-                                <svg class="size-5 text-current transition-transform duration-300 group-hover:scale-110" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                                </svg>
-                            </span>
+                            <svg class="size-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                         @endif
                         {{ $label }}
                     </button>
                 @endforeach
+                
+                <template x-for="heart in floatingHearts" :key="heart.id">
+                    <div 
+                        class="fixed pointer-events-none z-50 text-emerald-500"
+                        :style="`left: ${$el.parentElement.getBoundingClientRect().left + $el.parentElement.getBoundingClientRect().width/2}px; top: ${$el.parentElement.getBoundingClientRect().top}px;`"
+                        x-transition:enter="transition ease-out duration-300"
+                        x-transition:enter-start="opacity-0 translate-y-0 scale-50"
+                        x-transition:enter-end="opacity-100 -translate-y-8 scale-100"
+                        x-transition:leave="transition ease-in duration-500"
+                        x-transition:leave-start="opacity-100 -translate-y-8 scale-100"
+                        x-transition:leave-end="opacity-0 -translate-y-20 scale-0"
+                    >
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    </div>
+                </template>
             </div>
 
             <div class="grid grid-cols-3 gap-3">
