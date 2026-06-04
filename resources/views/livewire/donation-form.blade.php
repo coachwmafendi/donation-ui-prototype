@@ -1,23 +1,5 @@
 <div class="mx-auto max-w-2xl px-6 py-10">
 
-<style>
-    @keyframes floatUp {
-        0% {
-            transform: translateY(0) scale(0.5);
-            opacity: 0;
-        }
-        20% {
-            opacity: 1;
-        }
-        100% {
-            transform: translateY(-40px) scale(1.2);
-            opacity: 0;
-        }
-    }
-    .animate-float-up {
-        animation: floatUp 1.2s ease-out forwards;
-    }
-</style>
 
     {{-- Success State --}}
     @if($showSuccess)
@@ -105,24 +87,40 @@
                             'bg-white text-slate-600 border-2 border-slate-200 hover:border-emerald-400 hover:text-emerald-600 hover:shadow-md scale-[0.92] hover:scale-100' => !$isActive,
                         ])
                         @if($freq === 'monthly')
-                            x-data="{ showHearts: false }"
-                            @click="showHearts = true; setTimeout(() => showHearts = false, 1500)"
+                            x-data="{ }"
+                            @click="
+                                const container = $el.querySelector('.heart-container');
+                                for (let i = 0; i < 7; i++) {
+                                    const heart = document.createElement('div');
+                                    heart.innerHTML = '<svg class=\"text-emerald-500\" style=\"width:100%;height:100%\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z\"/></svg>';
+                                    heart.style.cssText = 'position: absolute; left: 50%; top: 0; width: ' + (8 + Math.random() * 12) + 'px; height: ' + (8 + Math.random() * 12) + 'px; pointer-events: none; opacity: 0;';
+                                    container.appendChild(heart);
+                                    
+                                    const xEnd = (Math.random() - 0.5) * 60;
+                                    const yEnd = -40 - Math.random() * 50;
+                                    const rotation = (Math.random() - 0.5) * 60;
+                                    const duration = 800 + Math.random() * 700;
+                                    
+                                    heart.animate([
+                                        { transform: 'translate(-50%, 0) scale(0) rotate(0deg)', opacity: 0 },
+                                        { transform: 'translate(' + (xEnd * 0.3 - 50) + '%, ' + (yEnd * 0.3) + 'px) scale(0.8) rotate(' + (rotation * 0.3) + 'deg)', opacity: 1, offset: 0.2 },
+                                        { transform: 'translate(' + (xEnd - 50) + '%, ' + yEnd + 'px) scale(0) rotate(' + rotation + 'deg)', opacity: 0 }
+                                    ], {
+                                        duration: duration,
+                                        easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                                        fill: 'forwards'
+                                    });
+                                    
+                                    setTimeout(() => heart.remove(), duration + 50);
+                                }
+                            "
                         @endif
                     >
                         @if($freq === 'monthly')
-                            <span class="relative flex items-center">
+                            <span class="relative flex items-center heart-container">
                                 <svg class="size-5 text-current transition-transform duration-300 group-hover:scale-110" viewBox="0 0 24 24" fill="currentColor">
                                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                                 </svg>
-                                <template x-if="showHearts">
-                                    <div class="absolute -top-10 left-1/2 -translate-x-1/2 pointer-events-none">
-                                        <div class="animate-float-up text-emerald-500">
-                                            <svg class="size-6 opacity-80" viewBox="0 0 24 24" fill="currentColor">
-                                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                                            </svg>
-                                        </div>
-                                    </div>
-                                </template>
                             </span>
                         @endif
                         {{ $label }}
