@@ -74,14 +74,14 @@ class DonationEmbed extends Component
 
     public ?string $donationPublicId = null;
 
-    public function mount(?string $campaign = null): void
+    public bool $embed = true;
+
+    public function mount(?Campaign $campaign = null): void
     {
         if ($campaign) {
-            $this->campaign = Campaign::where('public_id', $campaign)->orWhere('slug', $campaign)->first();
-            if ($this->campaign) {
-                $this->campaignId = $this->campaign->id;
-                $this->loadCampaignSettings();
-            }
+            $this->campaign = $campaign;
+            $this->campaignId = $campaign->id;
+            $this->loadCampaignSettings();
         }
     }
 
@@ -252,6 +252,8 @@ class DonationEmbed extends Component
     {
         return view('livewire.donation-form', [
             'campaignName' => $this->campaign?->name,
+            'campaignPublicId' => $this->campaign?->public_id,
+            'embed' => true,
         ])->layout('layouts.embed');
     }
 }

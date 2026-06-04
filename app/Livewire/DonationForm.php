@@ -269,6 +269,7 @@ class DonationForm extends Component
 
         $view = view('livewire.donation-form', [
             'campaignName' => $this->selectedCampaign?->name,
+            'campaignPublicId' => $this->selectedCampaign?->public_id,
         ]);
 
         if ($this->embed) {

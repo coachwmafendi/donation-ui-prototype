@@ -18,10 +18,30 @@
     @else
 
     {{-- Header --}}
+    @if(!$embed)
     <div class="text-center mb-10">
         <h1 class="text-3xl font-bold tracking-tight text-slate-900">Make a donation</h1>
         <p class="mt-2 text-slate-600">Your contribution makes a difference.</p>
     </div>
+    @endif
+
+    {{-- Campaign Info --}}
+    @if($campaignName)
+    <div class="rounded-lg border border-slate-200 bg-slate-50 p-4 mb-8">
+        <div class="flex items-center gap-3">
+            <div class="size-10 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                <svg class="size-5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3.332.81-4.5 2.09C10.832 3.81 9.26 3 7.5 3A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+            </div>
+            <div class="min-w-0">
+                <p class="text-xs text-slate-500 font-medium uppercase tracking-wider">Campaign</p>
+                <p class="text-sm font-semibold text-slate-900 truncate">{{ $campaignName }}</p>
+                @if($campaignPublicId)
+                    <p class="text-xs text-slate-500 font-mono">ID {{ $campaignPublicId }}</p>
+                @endif
+            </div>
+        </div>
+    </div>
+    @endif
 
     {{-- Stepper --}}
     <div class="mb-10">
@@ -233,18 +253,6 @@
                         <span class="text-sm text-slate-500">Email</span>
                         <span class="text-sm font-semibold text-slate-900">{{ $email }}</span>
                     </div>
-                </div>
-            </div>
-
-            {{-- Comment & Tribute --}}
-            <div class="space-y-4">
-                <div>
-                    <label for="comment" class="block text-sm font-medium text-slate-700">Comment (optional)</label>
-                    <textarea wire:model="comment" id="comment" rows="2" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="Leave a message..."></textarea>
-                </div>
-                <div>
-                    <label for="tributeInfo" class="block text-sm font-medium text-slate-700">Tribute (optional)</label>
-                    <input wire:model="tributeInfo" id="tributeInfo" type="text" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="In memory of...">
                 </div>
             </div>
 
