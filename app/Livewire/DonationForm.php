@@ -34,7 +34,7 @@ class DonationForm extends Component
     // Amount
     public ?float $amount = null;
 
-    public string $currency = 'USD';
+    public string $currency = 'MYR';
 
     public bool $customAmount = false;
 
@@ -164,6 +164,18 @@ class DonationForm extends Component
     public function getCurrentPresetsProperty(): array
     {
         return $this->frequencyPresets[$this->frequency] ?? $this->campaignPresets;
+    }
+
+    public function getCurrencySymbolProperty(): string
+    {
+        return match(strtoupper($this->currency)) {
+            'USD' => '$',
+            'EUR' => '€',
+            'GBP' => '£',
+            'SGD' => 'S$',
+            'MYR' => 'RM',
+            default => '$',
+        };
     }
 
     public function selectPreset(float $amount): void

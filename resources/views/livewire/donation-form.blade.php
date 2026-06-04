@@ -91,13 +91,13 @@
             <div class="grid grid-cols-3 gap-3">
                 @foreach($this->currentPresets as $preset)
                     <button type="button" wire:click="selectPreset({{ $preset }})" class="rounded-lg border-2 px-4 py-3 text-sm font-semibold transition {{ $amount == $preset && !$customAmount ? 'border-slate-900 bg-slate-900 text-white' : 'border-slate-200 text-slate-700 hover:border-slate-300' }}">
-                        ${{ $preset }}
+                        {{ $this->currencySymbol }}{{ $preset }}
                     </button>
                 @endforeach
             </div>
 
             <div class="relative flex items-stretch rounded-xl border border-slate-300 bg-white overflow-hidden focus-within:border-slate-500 focus-within:ring-2 focus-within:ring-slate-200">
-                <span class="flex items-center pl-4 text-slate-400 text-lg select-none">$</span>
+                <span class="flex items-center pl-4 text-slate-400 text-lg select-none">{{ $this->currencySymbol }}</span>
                 <input 
                     wire:model="amount" 
                     type="text" 
@@ -250,7 +250,7 @@
                 </div>
                 <div class="flex justify-between">
                     <span class="text-sm text-slate-500">Amount</span>
-                    <span class="text-sm font-semibold text-slate-900">{{ match(strtoupper($currency)) { 'USD' => '🇺🇸', 'EUR' => '🇪🇺', 'GBP' => '🇬🇧', 'SGD' => '🇸🇬', 'MYR' => '🇲🇾', default => '' } }} ${{ number_format($amount, 2) }}</span>
+                    <span class="text-sm font-semibold text-slate-900">{{ match(strtoupper($currency)) { 'USD' => '🇺🇸', 'EUR' => '🇪🇺', 'GBP' => '🇬🇧', 'SGD' => '🇸🇬', 'MYR' => '🇲🇾', default => '' } }} {{ $this->currencySymbol }}{{ number_format($amount, 2) }}</span>
                 </div>
                 <div class="flex justify-between">
                     <span class="text-sm text-slate-500">Frequency</span>
