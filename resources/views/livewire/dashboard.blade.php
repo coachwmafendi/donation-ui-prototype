@@ -100,7 +100,7 @@
                         {{-- X-axis labels --}}
                         <div class="flex justify-between px-10 mt-2">
                             @foreach($chartPoints as $index => $point)
-                                <span class="text-[10px] text-slate-400 text-center transition-opacity" style="width: 20px;" :class="{{ $index % 2 === 0 }} ? 'opacity-100' : 'opacity-0 lg:opacity-100'">{{ $point['label'] }}</span>
+                                <span class="text-[10px] text-slate-400 text-center @if($index % 2 !== 0) hidden lg:block @endif" style="width: 20px;">{{ $point['label'] }}</span>
                             @endforeach
                         </div>
                     </div>
