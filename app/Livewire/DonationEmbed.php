@@ -40,14 +40,14 @@ class DonationEmbed extends Component
 
     public function getProcessingFeeProperty(): float
     {
-        return round(($this->amount ?? 0) * 0.03, 2);
+        return round(($this->amount ?? 0) * 0.01, 2);
     }
 
     public function getPaymentTotalProperty(): float
     {
         $amount = $this->amount ?? 0;
         if ($this->coverTransactionFee) {
-            return round($amount + ($amount * 0.03), 2);
+            return round($amount + ($amount * 0.01), 2);
         }
         return $amount;
     }
@@ -298,7 +298,7 @@ class DonationEmbed extends Component
 
         $campaign = Campaign::findOrFail($validated['campaignId']);
         $amountCents = (int) round($validated['amount'] * 100);
-        $processingFeeCents = (int) round($amountCents * 0.03);
+        $processingFeeCents = (int) round($amountCents * 0.01);
 
         if ($validated['coverTransactionFee']) {
             $paymentAmountCents = $amountCents + $processingFeeCents;
