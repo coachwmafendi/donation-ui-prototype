@@ -10,7 +10,7 @@
             <h1 class="mt-6 text-3xl font-bold tracking-tight text-slate-900">Thank you!</h1>
             <p class="mt-3 text-lg text-slate-600">Your donation has been received.</p>
             <div class="mt-8">
-                <a href="/donate" wire:navigate class="rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-emerald-700 transition">
+                <a href="{{ $campaignPublicId ? '/donate/'.$campaignPublicId : '/donate' }}" wire:navigate class="rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-emerald-700 transition">
                     Make another donation
                 </a>
             </div>
