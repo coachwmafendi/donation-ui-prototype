@@ -334,7 +334,7 @@
                             <div class="flex items-center gap-3">
                                 <div class="flex-1 relative">
                                     <select
-                                        x-model="freq.id"
+                                        :value="freq.id"
                                         @change="changeFrequency(index, $event.target.value)"
                                         class="block w-full appearance-none rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 pr-10 text-base text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100 transition cursor-pointer"
                                     >
