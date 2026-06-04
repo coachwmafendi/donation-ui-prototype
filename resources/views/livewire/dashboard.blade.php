@@ -120,44 +120,43 @@
                 {{-- Top Campaigns --}}
                 <div class="rounded-xl border border-slate-200 bg-white p-6">
                     <h2 class="text-lg font-semibold text-slate-900 mb-4">Top campaigns</h2>
-                    <div class="space-y-4">
-                        @forelse ($topCampaigns as $campaign)
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center gap-4">
-                                    <div class="h-10 w-16 rounded-lg bg-slate-100 overflow-hidden">
-                                        @if($campaign->cover_image)
-                                            <img src="{{ $campaign->cover_image }}" alt="" class="h-full w-full object-cover">
-                                        @else
-                                            <div class="h-full w-full flex items-center justify-center text-slate-400 text-xs font-medium">
-                                                {{ substr($campaign->name, 0, 2) }}
-                                            </div>
-                                        @endif
-                                    </div>
-                                    <div>
-                                        <a href="/campaigns/{{ $campaign->public_id }}" wire:navigate class="text-sm font-medium text-slate-900 hover:text-blue-600">
-                                            {{ $campaign->name }}
-                                        </a>
-                                        <div class="flex items-center gap-2 text-xs text-slate-500 mt-0.5">
-                                            <span>{{ $campaign->donor_count }} donors</span>
-                                            <span>·</span>
-                                            <x-status-badge :status="$campaign->status" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="text-right">
-                                    <div class="text-sm font-medium text-slate-900">{{ $campaign->raised_amount }}</div>
-                                    <div class="text-xs text-slate-500">of {{ $campaign->goal_amount }}</div>
-                                </div>
-                            </div>
-                        @empty
-                            <div class="text-center py-8">
-                                <p class="text-sm text-slate-500">No campaigns yet.</p>
-                                <a href="#" class="mt-3 inline-block text-sm font-medium text-blue-600 hover:text-blue-800">Create your first campaign</a>
-                            </div>
-                        @endforelse
-                    </div>
+                    <x-charts.horizontal-bar :data="$campaignSplits" bar-height="32" />
                 </div>
             </div>
+
+                {{-- Second Row: More Charts --}}
+                <div class="lg:col-span-2">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        {{-- Doughnut: Campaign Split --}}
+                        <div class="rounded-xl border border-slate-200 bg-white p-6">
+                            <h2 class="text-lg font-semibold text-slate-900 mb-4">Donations by Campaign</h2>
+                            <div class="flex items-center gap-6">
+                                <x-charts.doughnut :data="$campaignSplits" size="140" />
+                                <div class="space-y-2">
+                                    @foreach($campaignSplits as $campaign)
+                                        <div class="flex items-center gap-2 text-xs">
+                                            <span class="size-2 rounded-full" style="background-color: {{ $campaign['color'] }}"></span>
+                                            <span class="text-slate-600">{{ $campaign['label'] }}</span>
+                                            <span class="text-slate-900 font-medium ml-auto">${{ number_format($campaign['value'] / 100, 0) }}</span>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Range Bar: Donation Sizes --}}
+                        <div class="rounded-xl border border-slate-200 bg-white p-6">
+                            <h2 class="text-lg font-semibold text-slate-900 mb-4">Donation Sizes</h2>
+                            <x-charts.range-bar :data="$donationRanges" bar-height="24" />
+                        </div>
+
+                        {{-- Funnel: Pipeline --}}
+                        <div class="rounded-xl border border-slate-200 bg-white p-6">
+                            <h2 class="text-lg font-semibold text-slate-900 mb-4">Donation Pipeline</h2>
+                            <x-charts.funnel :steps="$donationFunnel" height="36" />
+                        </div>
+                    </div>
+                </div>
 
             {{-- Sidebar: Quick Actions + Recent Activity --}}
             <div class="space-y-6">
