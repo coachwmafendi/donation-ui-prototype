@@ -558,45 +558,240 @@
         </div>
 
         {{-- Tab: Campaign Page --}}
-        <div x-show="activeTab === 'page'" class="max-w-2xl" x-cloak>
-            <div class="rounded-xl border border-slate-200 bg-white overflow-hidden">
-                <div class="border-b border-slate-200 px-6 py-4">
-                    <h2 class="text-lg font-semibold">Public campaign page</h2>
+        <div x-show="activeTab === 'page'" class="max-w-3xl" x-cloak>
+            <div class="space-y-6">
+
+                {{-- Preview & URL Card --}}
+                <div class="rounded-xl border border-slate-200 bg-white overflow-hidden">
+                    <div class="border-b border-slate-200 px-6 py-4">
+                        <h2 class="text-lg font-semibold">Public campaign page</h2>
+                    </div>
+                    <div class="px-6 py-5 space-y-5">
+                        <p class="text-sm text-slate-600">This is the public-facing page for donors. Share this link on social media, email, or your website.</p>
+
+                        <div class="rounded-lg border border-slate-200 bg-slate-50 overflow-hidden">
+                            <div class="border-b border-slate-200 bg-slate-100 px-4 py-2 flex items-center justify-between">
+                                <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Preview embed</span>
+                            </div>
+                            <div class="p-4">
+                                <iframe
+                                    src="{{ config('app.url') }}/embed/{{ $campaign->slug }}"
+                                    width="100%"
+                                    height="650"
+                                    frameborder="0"
+                                    style="border: none; border-radius: 12px;"
+                                    title="Donate to {{ $campaign->name }}"
+                                ></iframe>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Public URL</label>
+                            <div class="mt-2 flex items-center gap-3">
+                                <code class="flex-1 rounded-lg bg-slate-50 border border-slate-200 px-4 py-3 text-sm text-slate-700">{{ config('app.url') }}/c/{{ $campaign->slug }}</code>
+                                <x-copy-button :text="config('app.url').'/c/'.$campaign->slug">Copy</x-copy-button>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-3">
+                            <a href="/c/{{ $campaign->slug }}" target="_blank" class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition">
+                                View public page
+                            </a>
+                            <a href="/donate/{{ $campaign->public_id }}" target="_blank" class="rounded-lg border border-slate-300 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
+                                View donation form
+                            </a>
+                        </div>
+                    </div>
                 </div>
-                <div class="px-6 py-5 space-y-5">
-                    <p class="text-sm text-slate-600">This is the public-facing page for donors. Share this link on social media, email, or your website.</p>
 
-                    <div class="rounded-lg border border-slate-200 bg-slate-50 overflow-hidden">
-                        <div class="border-b border-slate-200 bg-slate-100 px-4 py-2 flex items-center justify-between">
-                            <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Preview embed</span>
-                        </div>
-                        <div class="p-4">
-                            <iframe
-                                src="{{ config('app.url') }}/embed/{{ $campaign->slug }}"
-                                width="100%"
-                                height="650"
-                                frameborder="0"
-                                style="border: none; border-radius: 12px;"
-                                title="Donate to {{ $campaign->name }}"
-                            ></iframe>
-                        </div>
+                {{-- Settings Form --}}
+                <div class="rounded-xl border border-slate-200 bg-white overflow-hidden">
+                    <div class="border-b border-slate-200 px-6 py-4">
+                        <h2 class="text-lg font-semibold">Page Settings</h2>
                     </div>
+                    <div class="divide-y divide-slate-200">
 
-                    <div>
-                        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Public URL</label>
-                        <div class="mt-2 flex items-center gap-3">
-                            <code class="flex-1 rounded-lg bg-slate-50 border border-slate-200 px-4 py-3 text-sm text-slate-700">{{ config('app.url') }}/c/{{ $campaign->slug }}</code>
-                            <x-copy-button :text="config('app.url').'/c/'.$campaign->slug">Copy</x-copy-button>
+                        {{-- Section: Appearance --}}
+                        <div class="px-6 py-5">
+                            <h3 class="text-sm font-semibold text-slate-900 mb-1">Appearance</h3>
+                            <p class="text-xs text-slate-500 mb-4">Customize the visual style of your campaign page.</p>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Primary color</label>
+                                    <select wire:model="pagePrimaryColor" class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200">
+                                        <option value="emerald">Emerald (default)</option>
+                                        <option value="blue">Blue</option>
+                                        <option value="amber">Amber</option>
+                                        <option value="rose">Rose</option>
+                                        <option value="violet">Violet</option>
+                                        <option value="cyan">Cyan</option>
+                                    </select>
+                                </div>
+                                <label class="flex items-center gap-3">
+                                    <input type="checkbox" wire:model="pageDarkHero" class="size-4 rounded border-slate-300 text-slate-900">
+                                    <span class="text-sm text-slate-700">Use dark hero section</span>
+                                </label>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="flex gap-3">
-                        <a href="/c/{{ $campaign->slug }}" target="_blank" class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition">
-                            View public page
-                        </a>
-                        <a href="/donate/{{ $campaign->public_id }}" target="_blank" class="rounded-lg border border-slate-300 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-                            View donation form
-                        </a>
+                        {{-- Section: Visibility Toggles --}}
+                        <div class="px-6 py-5">
+                            <h3 class="text-sm font-semibold text-slate-900 mb-1">Content Visibility</h3>
+                            <p class="text-xs text-slate-500 mb-4">Choose which sections to show on the public page.</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <label class="flex items-center gap-3 rounded-lg border border-slate-200 px-4 py-3 cursor-pointer hover:bg-slate-50 transition">
+                                    <input type="checkbox" wire:model="pageShowProgressBar" class="size-4 rounded border-slate-300 text-slate-900">
+                                    <span class="text-sm text-slate-700">Progress bar</span>
+                                </label>
+                                <label class="flex items-center gap-3 rounded-lg border border-slate-200 px-4 py-3 cursor-pointer hover:bg-slate-50 transition">
+                                    <input type="checkbox" wire:model="pageShowDonorCount" class="size-4 rounded border-slate-300 text-slate-900">
+                                    <span class="text-sm text-slate-700">Donor count</span>
+                                </label>
+                                <label class="flex items-center gap-3 rounded-lg border border-slate-200 px-4 py-3 cursor-pointer hover:bg-slate-50 transition">
+                                    <input type="checkbox" wire:model="pageShowGoalAmount" class="size-4 rounded border-slate-300 text-slate-900">
+                                    <span class="text-sm text-slate-700">Goal amount</span>
+                                </label>
+                                <label class="flex items-center gap-3 rounded-lg border border-slate-200 px-4 py-3 cursor-pointer hover:bg-slate-50 transition">
+                                    <input type="checkbox" wire:model="pageShowDaysLeft" class="size-4 rounded border-slate-300 text-slate-900">
+                                    <span class="text-sm text-slate-700">Days left</span>
+                                </label>
+                                <label class="flex items-center gap-3 rounded-lg border border-slate-200 px-4 py-3 cursor-pointer hover:bg-slate-50 transition">
+                                    <input type="checkbox" wire:model="pageShowRecentSupporters" class="size-4 rounded border-slate-300 text-slate-900">
+                                    <span class="text-sm text-slate-700">Recent supporters</span>
+                                </label>
+                                <label class="flex items-center gap-3 rounded-lg border border-slate-200 px-4 py-3 cursor-pointer hover:bg-slate-50 transition">
+                                    <input type="checkbox" wire:model="pageShowCampaignDetails" class="size-4 rounded border-slate-300 text-slate-900">
+                                    <span class="text-sm text-slate-700">Campaign details sidebar</span>
+                                </label>
+                                <label class="flex items-center gap-3 rounded-lg border border-slate-200 px-4 py-3 cursor-pointer hover:bg-slate-50 transition">
+                                    <input type="checkbox" wire:model="pageShowEmbedCode" class="size-4 rounded border-slate-300 text-slate-900">
+                                    <span class="text-sm text-slate-700">Embed code box</span>
+                                </label>
+                                <label class="flex items-center gap-3 rounded-lg border border-slate-200 px-4 py-3 cursor-pointer hover:bg-slate-50 transition">
+                                    <input type="checkbox" wire:model="pageShowBottomCta" class="size-4 rounded border-slate-300 text-slate-900">
+                                    <span class="text-sm text-slate-700">Bottom CTA section</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        {{-- Section: Text Customization --}}
+                        <div class="px-6 py-5">
+                            <h3 class="text-sm font-semibold text-slate-900 mb-1">Text Customization</h3>
+                            <p class="text-xs text-slate-500 mb-4">Customize headings, buttons, and labels across the page. Leave blank to use defaults.</p>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Hero headline</label>
+                                    <input type="text" wire:model="pageHeroHeadline" class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="{{ $campaign->name }}">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Hero subheadline</label>
+                                    <textarea wire:model="pageHeroSubheadline" rows="2" class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="Your support makes a lasting impact."></textarea>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1.5">Primary CTA text</label>
+                                        <input type="text" wire:model="pagePrimaryCtaText" class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="Donate Now">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1.5">Secondary CTA text</label>
+                                        <input type="text" wire:model="pageSecondaryCtaText" class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="Learn More">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Secondary CTA link</label>
+                                    <input type="text" wire:model="pageSecondaryCtaLink" class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="#about">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1.5">About section heading</label>
+                                    <input type="text" wire:model="pageAboutHeading" class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="About this campaign">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Recent supporters heading</label>
+                                    <input type="text" wire:model="pageRecentSupportersHeading" class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="Recent supporters">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Bottom CTA headline</label>
+                                    <input type="text" wire:model="pageBottomCtaHeadline" class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="Ready to make an impact?">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Bottom CTA body text</label>
+                                    <textarea wire:model="pageBottomCtaBody" rows="2" class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="Leave blank to use donor count"></textarea>
+                                    <p class="mt-1 text-xs text-slate-500">Leave blank to auto-generate from donor count.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Section: Supporter Privacy --}}
+                        <div class="px-6 py-5">
+                            <h3 class="text-sm font-semibold text-slate-900 mb-1">Supporter Privacy</h3>
+                            <p class="text-xs text-slate-500 mb-4">Control what donor information is visible on the public page.</p>
+                            <div class="space-y-3">
+                                <label class="flex items-center gap-3">
+                                    <input type="checkbox" wire:model="pageShowAnonymousDonors" class="size-4 rounded border-slate-300 text-slate-900">
+                                    <span class="text-sm text-slate-700">Show anonymous donors in recent supporters list</span>
+                                </label>
+                                <label class="flex items-center gap-3">
+                                    <input type="checkbox" wire:model="pageShowDonationAmounts" class="size-4 rounded border-slate-300 text-slate-900">
+                                    <span class="text-sm text-slate-700">Show donation amounts in recent supporters list</span>
+                                </label>
+                                <label class="flex items-center gap-3">
+                                    <input type="checkbox" wire:model="pageShowDonorAvatars" class="size-4 rounded border-slate-300 text-slate-900">
+                                    <span class="text-sm text-slate-700">Show donor initials/avatars in recent supporters list</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        {{-- Section: SEO / Sharing --}}
+                        <div class="px-6 py-5">
+                            <h3 class="text-sm font-semibold text-slate-900 mb-1">SEO & Social Sharing</h3>
+                            <p class="text-xs text-slate-500 mb-4">Optimize how your campaign appears in search engines and social media.</p>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1.5">SEO Title</label>
+                                    <input type="text" wire:model="pageSeoTitle" class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="Leave blank to use campaign name">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Meta Description</label>
+                                    <textarea wire:model="pageSeoDescription" rows="2" class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="Brief description for search engines and social cards"></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Social Share Image URL</label>
+                                    <input type="text" wire:model="pageSocialShareImage" class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="https://example.com/image.jpg">
+                                    <p class="mt-1 text-xs text-slate-500">Recommended size: 1200 x 630 pixels.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Section: Advanced --}}
+                        <div class="px-6 py-5">
+                            <h3 class="text-sm font-semibold text-slate-900 mb-1">Advanced</h3>
+                            <p class="text-xs text-slate-500 mb-4">For advanced users and integrations.</p>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Custom CSS</label>
+                                    <textarea wire:model="pageCustomCss" rows="4" class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-mono text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder=".my-class { color: red; }"></textarea>
+                                    <p class="mt-1 text-xs text-slate-500">Injected into the public campaign page head.</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Custom JavaScript</label>
+                                    <textarea wire:model="pageCustomJs" rows="4" class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-mono text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="console.log('Hello');"></textarea>
+                                    <p class="mt-1 text-xs text-slate-500">Useful for tracking pixels (Meta Pixel, Google Analytics, etc.).</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Redirect after donation</label>
+                                    <input type="text" wire:model="pageRedirectAfterDonation" class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="https://yoursite.com/thank-you">
+                                    <p class="mt-1 text-xs text-slate-500">Where donors go after completing a donation. Leave blank for default thank-you page.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Save Button --}}
+                        <div class="px-6 py-5 bg-slate-50 flex justify-end">
+                            <button wire:click="savePageConfig" wire:loading.attr="disabled" class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition disabled:opacity-50">
+                                <span wire:loading.remove>Save Page Settings</span>
+                                <span wire:loading>Saving...</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
