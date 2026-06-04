@@ -87,7 +87,7 @@
                                     @mouseenter="activeIndex = {{ $index }}"
                                     @mouseleave="activeIndex = null"
                                 />
-                            @endforeach
+                            @endforeach>
                         </svg>
 
                         @foreach($chartPoints as $index => $point)
@@ -101,12 +101,12 @@
                                     <div class="text-slate-400 text-[10px]">{{ $point['date'] }}</div>
                                 </div>
                             </div>
-                        @endforeach
+                        @endforeach>
 
                         <div class="flex justify-between px-10 mt-2">
                             @foreach($chartPoints as $index => $point)
                                 <span class="text-[10px] text-slate-400 text-center @if($index % 2 !== 0) hidden lg:block @endif" style="width: 20px;">{{ $point['label'] }}</span>
-                            @endforeach
+                            @endforeach>
                         </div>
                     </div>
                 </div>
@@ -119,6 +119,7 @@
 
                 {{-- Three Charts Row --}}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
                     {{-- Doughnut --}}
                     <div class="rounded-xl border border-slate-200 bg-white p-6">
                         <h2 class="text-base font-semibold text-slate-900 mb-4">Donations by Campaign</h2>
@@ -131,7 +132,7 @@
                                         <span class="text-slate-600 truncate">{{ $campaign['label'] }}</span>
                                         <span class="text-slate-900 font-medium ml-auto">${{ number_format($campaign['value'] / 100, 0) }}</span>
                                     </div>
-                                @endforeach
+                                @endforeach>
                             </div>
                         </div>
                     </div>
@@ -155,9 +156,10 @@
                                 <div class="mx-4 h-1 w-full rounded-full bg-slate-100 overflow-hidden">
                                     <div class="h-full rounded-full" style="width: {{ $loop->index === 0 ? '100%' : '92%' }}; background-color: {{ $step['color'] }}"></div>
                                 </div>
-                            @endforeach
+                            @endforeach>
                         </div>
                     </div>
+
                 </div>
 
             </div>
@@ -198,20 +200,25 @@
                         <a href="/donations" wire:navigate class="text-sm text-blue-600 hover:text-blue-800">View all</a>
                     </div>
 
-                    @empty
-                        <div class="text-center py-12">
-                            <x-empty-state title="No recent donations" description="When donations arrive, they'll appear here">
-                                <template #icon>
-                                    <x-icon name="heart" class="size-10 mx-auto text-slate-300" />
-                                </template>
-                            </x-empty-state>
+                    <div class="space-y-4">
+                        @if($recentDonations->isNotEmpty())
+                            @foreach($recentDonations as $donation)
+                                <a href="/donations/{{ $donation->public_id }}" wire:navigate class="block group">
+                                    <div class="flex items-start gap-3">
+                                        <x-status-badge status="{{ Str::lower(ucwords($donation->status)) }}" />
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-sm font-medium text-slate-900 truncate">
+                                                {{ $donation->profile?->full_name ?? 'Anonymous' }}
+                                            </p>
+                                            <p class="text-sm text-slate-500">
+                                                {{ number_format($donation->amount_cents / 100) }}
                                                 <span class="text-slate-400">·</span>
                                                 {{ $donation->donation_date->diffForHumans() }}
                                             </p>
                                         </div>
                                     </div>
                                 </a>
-                            @endforeach
+                            @endforeach>
                         @else
                             <div class="text-center py-12">
                                 <x-empty-state title="No recent donations" description="When donations arrive, they'll appear here">
@@ -223,6 +230,7 @@
                         @endif
                     </div>
                 </div>
+
             </div>
 
         </div>
