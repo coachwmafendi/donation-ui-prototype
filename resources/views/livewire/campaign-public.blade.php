@@ -50,8 +50,8 @@ $showAvatars = $pageConfig['show_donor_avatars'] ?? true;
             @endif
         @endif
 
-        <div class="relative mx-auto max-w-4xl px-6 py-20 md:py-28">
-            <div class="mx-auto max-w-2xl text-center">
+        <div class="relative mx-auto max-w-5xl px-6 py-20 md:py-28">
+            <div class="mx-auto max-w-3xl text-center">
                 <span class="inline-flex items-center rounded-full {{ $darkHero ? 'bg-white/10 text-white/80' : 'bg-slate-100 text-slate-600' }} px-3 py-1 text-xs font-medium backdrop-blur-sm">
                     {{ ucfirst($campaign->status) }}
                 </span>

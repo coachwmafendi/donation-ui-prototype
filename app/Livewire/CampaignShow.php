@@ -230,6 +230,12 @@ class CampaignShow extends Component
 
     public function savePageConfig(): void
     {
+        if (str_word_count($this->pageHeroSubheadline) > 90) {
+            $this->addError('pageHeroSubheadline', 'The hero subheadline must not exceed 90 words.');
+
+            return;
+        }
+
         $this->saveSetting('page_config', [
             'primary_color' => $this->pagePrimaryColor,
             'dark_hero' => $this->pageDarkHero,
