@@ -27,9 +27,6 @@
             <div class="min-w-0">
                 <p class="text-xs text-slate-500 font-medium uppercase tracking-wider">Campaign</p>
                 <p class="text-sm font-semibold text-slate-900 truncate">{{ $campaignName }}</p>
-                @if($campaignPublicId)
-                    <p class="text-xs text-slate-500 font-mono">ID {{ $campaignPublicId }}</p>
-                @endif
             </div>
         </div>
     </div>
@@ -142,7 +139,7 @@
                     class="block w-full rounded-l-lg border border-r-0 border-slate-300 bg-white pl-8 pr-4 py-3 text-lg text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" 
                     placeholder="0.00"
                 >
-                <select wire:model="currency" class="rounded-r-lg border border-slate-300 bg-slate-50 px-3 py-3 text-sm font-medium text-slate-700 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200 cursor-pointer hover:bg-slate-100">
+                <select wire:model="currency" class="rounded-r-lg border border-l-0 border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-700 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200 cursor-pointer hover:bg-slate-50 h-full">
                     <option value="USD">USD</option>
                     <option value="EUR">EUR</option>
                     <option value="GBP">GBP</option>
