@@ -512,7 +512,33 @@
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">iframe code</label>
-                            <button onclick="navigator.clipboard.writeText(document.getElementById('embed-code').innerText).then(() => alert('Copied!'))" class="text-xs font-medium text-blue-600 hover:text-blue-800">Copy</button>
+                            <div class="relative inline-block" x-data="{ copied: false, timer: null }">
+                                <button
+                                    type="button"
+                                    @click="
+                                        navigator.clipboard.writeText(document.getElementById('embed-code').innerText).then(() => {
+                                            copied = true;
+                                            clearTimeout(timer);
+                                            timer = setTimeout(() => copied = false, 2000);
+                                        })
+                                    "
+                                    class="text-xs font-medium text-blue-600 hover:text-blue-800"
+                                >Copy</button>
+                                <div
+                                    x-show="copied"
+                                    x-transition:enter="transition ease-out duration-200"
+                                    x-transition:enter-start="opacity-0 scale-75 -translate-y-1"
+                                    x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                                    x-transition:leave="transition ease-in duration-150"
+                                    x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                                    x-transition:leave-end="opacity-0 scale-75 -translate-y-1"
+                                    class="pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-slate-900 px-2.5 py-1 text-xs font-medium text-white shadow-lg"
+                                    style="display: none;"
+                                >
+                                    Copied!
+                                    <div class="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-slate-900"></div>
+                                </div>
+                            </div>
                         </div>
                         <pre id="embed-code" class="rounded-lg bg-slate-50 border border-slate-200 text-slate-700 p-4 text-xs overflow-x-auto whitespace-pre-wrap">&lt;iframe
   src="{{ config('app.url') }}/embed/{{ $campaign->slug }}"
