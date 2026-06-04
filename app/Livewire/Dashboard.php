@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Campaign;
 use App\Models\Donation;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 class Dashboard extends Component
@@ -81,6 +82,61 @@ class Dashboard extends Component
             ->limit(4)
             ->get();
 
+        // Sparkline data (last 30 days trend for each stat)
+        $sparklineData = collect(range(0, 29))->map(function ($daysAgo) use ($now) {
+            $date = $now->copy()->subDays($daysAgo);
+
+            return Donation::where('status', 'succeeded')
+                ->whereDate('donation_date', '<=', $date)
+                ->whereDate('donation_date', '>=', $date->copy()->subDays(14))
+                ->sum('amount_cents');
+        })->reverse()->values()->toArray();
+
+        // Doughnut: donations by campaign
+        $campaignSplits = Campaign::withSum('donations as total', 'amount_cents')
+            ->whereHas('donations')
+            ->orderByDesc('total')
+            ->limit(5)
+            ->get()
+            ->map(fn ($c) => [
+                'label' => Str::limit($c->name, 20),
+                'value' => (int) $c->total,
+                'color' => match ($c->id % 3) {
+                    0 => '#10b981',
+                    1 => '#3b82f6',
+                    2 => '#f59e0b',
+                    default => '#6366f1',
+                },
+            ]);
+
+        // Range bar: donation size distribution
+        $donationRanges = Donation::where('status', 'succeeded')
+            ->selectRaw('
+                CASE
+                    WHEN amount_cents < 1000 THEN "$0-10"
+                    WHEN amount_cents < 2500 THEN "$10-25"
+                    WHEN amount_cents < 5000 THEN "$25-50"
+                    WHEN amount_cents < 10000 THEN "$50-100"
+                    WHEN amount_cents < 25000 THEN "$100-250"
+                    ELSE "$250+"
+                END as label,
+                COUNT(*) as count
+            ')
+            ->groupBy('label')
+            ->orderByRaw('MIN(amount_cents)')
+            ->get()
+            ->map(fn ($r) => [
+                'label' => $r->label,
+                'count' => (int) $r->count,
+            ]);
+
+        // Funnel: donation pipeline by status
+        $donationFunnel = [
+            ['label' => 'Started', 'value' => Donation::count(), 'color' => '#3b82f6'],
+            ['label' => 'Payment', 'value' => Donation::whereIn('status', ['succeeded', 'failed'])->count(), 'color' => '#8b5cf6'],
+            ['label' => 'Succeeded', 'value' => Donation::where('status', 'succeeded')->count(), 'color' => '#10b981'],
+        ];
+
         return view('livewire.dashboard', [
             'stats' => [
                 ['label' => 'Total donations', 'value' => number_format($totalDonations), 'trend' => '+12%', 'trendUp' => true],
@@ -98,6 +154,10 @@ class Dashboard extends Component
             'paddingX' => $paddingX,
             'paddingY' => $paddingY,
             'baselineY' => $baselineY,
+            'sparklineData' => $sparklineData,
+            'campaignSplits' => $campaignSplits,
+            'donationRanges' => $donationRanges,
+            'donationFunnel' => $donationFunnel,
             'trend' => $trendDays,
             'topCampaigns' => $topCampaigns,
         ])->layout('components.layouts.admin');

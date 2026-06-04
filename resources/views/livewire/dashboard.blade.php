@@ -7,18 +7,29 @@
             <p class="mt-1 text-sm text-slate-500">Overview of your fundraising activity</p>
         </div>
 
-        {{-- Stats Cards --}}
+        {{-- Stats Cards with Sparklines --}}
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             @foreach ($stats as $stat)
                 <div class="rounded-xl border border-slate-200 bg-white p-6">
-                    <div class="text-sm font-medium text-slate-500">{{ $stat['label'] }}</div>
-                    <div class="mt-2 flex items-baseline gap-2">
-                        <span class="text-3xl font-bold text-slate-900">{{ $stat['value'] }}</span>
-                        @if($stat['trend'])
-                            <span class="text-xs font-medium {{ $stat['trendUp'] ? 'text-emerald-600' : 'text-red-600' }}">
-                                {{ $stat['trend'] }}
-                            </span>
-                        @endif
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <div class="text-sm font-medium text-slate-500">{{ $stat['label'] }}</div>
+                            <div class="mt-2 flex items-baseline gap-2">
+                                <span class="text-3xl font-bold text-slate-900">{{ $stat['value'] }}</span>
+                                @if($stat['trend'])
+                                    <span class="text-xs font-medium {{ $stat['trendUp'] ? 'text-emerald-600' : 'text-red-600' }}">
+                                        {{ $stat['trend'] }}
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                        <x-charts.sparkline
+                            :data="collect($sparklineData)->slice(-14)->values()->toArray()"
+                            :width="100"
+                            :height="32"
+                            fill
+                            class="opacity-60"
+                        />
                     </div>
                 </div>
             @endforeach
