@@ -118,7 +118,7 @@
                 </div>
 
                 {{-- Three Charts Row --}}
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {{-- Doughnut --}}
                     <div class="rounded-xl border border-slate-200 bg-white p-6">
                         <h2 class="text-base font-semibold text-slate-900 mb-4">Donations by Campaign</h2>

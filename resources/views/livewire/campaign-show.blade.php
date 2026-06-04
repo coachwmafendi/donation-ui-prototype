@@ -1,7 +1,12 @@
 <div
     x-data="{
-        activeTab: 'overview',
+        activeTab: localStorage.getItem('campaign-tab-{{ $campaign->public_id }}') || 'overview',
         showArchiveModal: false,
+
+        setTab(tab) {
+            this.activeTab = tab;
+            localStorage.setItem('campaign-tab-{{ $campaign->public_id }}', tab);
+        }
     }"
     class="min-h-screen bg-[#f7f7fb] px-6 py-8 text-slate-900"
 >
@@ -39,7 +44,7 @@
                 ] as $tab)
                     <button
                         type="button"
-                        @click="activeTab = '{{ $tab['id'] }}'"
+                        @click="setTab('{{ $tab['id'] }}')"
                         class="px-5 py-3 text-sm font-medium border-b-2 transition"
                         :class="activeTab === '{{ $tab['id'] }}'
                             ? 'border-slate-900 text-slate-900'
