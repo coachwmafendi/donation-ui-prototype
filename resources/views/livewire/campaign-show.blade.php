@@ -415,27 +415,24 @@
                         </div>
 
                          {{-- Preset inputs per frequency --}}
-                         @foreach($frequencies as $freqId)
-                             <div x-show="amountsFreq === '{{ $freqId }}'" x-cloak>
+                         <template x-for="freq in frequencies" :key="freq.id">
+                             <div x-show="amountsFreq === freq.id" x-cloak>
                                  <h3 class="text-base font-semibold text-slate-900 mb-3">Suggested donation amount presets</h3>
                                  <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                                     @php
-                                         $freqPresets = $frequencyPresets[$freqId] ?? [50, 25, 10];
-                                     @endphp
-                                     @foreach($freqPresets as $index => $preset)
+                                     <template x-for="(preset, idx) in ($wire.frequencyPresets[freq.id] || [])" :key="idx">
                                          <div class="relative">
                                              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">$</span>
                                              <input
                                                  type="number"
-                                                 wire:model="frequencyPresets.{{ $freqId }}.{{ $index }}"
+                                                 x-model.number="$wire.frequencyPresets[freq.id][idx]"
                                                  class="block w-full rounded-lg border border-slate-300 bg-white pl-7 pr-3 py-2.5 text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"
                                                  placeholder="0"
                                              >
                                          </div>
-                                     @endforeach
+                                     </template>
                                  </div>
                              </div>
-                         @endforeach
+                         </template>
 
                         {{-- Default amount --}}
                         <template x-for="freq in frequencies" :key="freq.id">

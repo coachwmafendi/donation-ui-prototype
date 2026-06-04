@@ -127,7 +127,7 @@ class CampaignShow extends Component
             }
         }
 
-        // Ensure all configured frequencies have preset arrays with sensible defaults
+        // Ensure all configured frequencies have preset arrays with sensible defaults (always 6 values)
         $defaultPresets = [
             'one-time' => [500, 300, 200, 100, 50, 25],
             'monthly' => [300, 200, 100, 50, 30, 10],
@@ -137,7 +137,15 @@ class CampaignShow extends Component
         ];
         foreach ($this->frequencies as $freq) {
             if (! isset($this->frequencyPresets[$freq]) || ! is_array($this->frequencyPresets[$freq]) || empty($this->frequencyPresets[$freq])) {
-                $this->frequencyPresets[$freq] = $defaultPresets[$freq] ?? [50, 25, 10];
+                $this->frequencyPresets[$freq] = $defaultPresets[$freq] ?? [50, 25, 10, 10, 10, 10];
+            }
+            // Ensure exactly 6 values (pad or trim)
+            $current = array_values($this->frequencyPresets[$freq]);
+            $defaults = $defaultPresets[$freq] ?? [50, 25, 10, 10, 10, 10];
+            if (count($current) < 6) {
+                $this->frequencyPresets[$freq] = array_merge($current, array_slice($defaults, count($current)));
+            } elseif (count($current) > 6) {
+                $this->frequencyPresets[$freq] = array_slice($current, 0, 6);
             }
         }
 
@@ -243,7 +251,15 @@ class CampaignShow extends Component
 
         foreach ($this->frequencies as $freq) {
             if (! isset($this->frequencyPresets[$freq]) || empty($this->frequencyPresets[$freq])) {
-                $this->frequencyPresets[$freq] = $defaultPresets[$freq] ?? [50, 25, 10];
+                $this->frequencyPresets[$freq] = $defaultPresets[$freq] ?? [50, 25, 10, 10, 10, 10];
+            }
+            // Ensure exactly 6 values
+            $current = array_values($this->frequencyPresets[$freq]);
+            $defaults = $defaultPresets[$freq] ?? [50, 25, 10, 10, 10, 10];
+            if (count($current) < 6) {
+                $this->frequencyPresets[$freq] = array_merge($current, array_slice($defaults, count($current)));
+            } elseif (count($current) > 6) {
+                $this->frequencyPresets[$freq] = array_slice($current, 0, 6);
             }
             if (! isset($this->defaultAmounts[$freq])) {
                 $this->defaultAmounts[$freq] = $defaultAmounts[$freq] ?? 10;
