@@ -99,16 +99,10 @@
                 @endforeach
             </div>
 
-            <button type="button" wire:click="selectCustom" class="w-full rounded-lg border-2 px-4 py-3 text-sm font-semibold transition {{ $customAmount ? 'border-slate-900 bg-slate-900 text-white' : 'border-slate-200 text-slate-700 hover:border-slate-300' }}">
-                Custom amount
-            </button>
-
-            @if($customAmount)
-                <div class="relative">
-                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">$</span>
-                    <input wire:model="amount" type="number" step="0.01" min="{{ $campaignMinAmount }}" class="block w-full rounded-lg border border-slate-300 bg-white pl-8 pr-4 py-3 text-lg text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="0.00" autofocus>
-                </div>
-            @endif
+            <div class="relative">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">$</span>
+                <input wire:model="amount" type="number" step="0.01" min="{{ $campaignMinAmount }}" class="block w-full rounded-lg border border-slate-300 bg-white pl-8 pr-4 py-3 text-lg text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="0.00">
+            </div>
 
             @error('amount')
                 <p class="text-sm text-red-600">{{ $message }}</p>
