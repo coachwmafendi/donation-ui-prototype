@@ -21,9 +21,16 @@ class DonationEmbed extends Component
 
     public array $campaignPresets = [10, 25, 50, 100, 250, 500];
 
+    public array $frequencyPresets = [];
+
     public ?float $campaignMinAmount = 1;
 
     public string $campaignDefaultFrequency = 'one-time';
+
+    public function getCurrentPresetsProperty(): array
+    {
+        return $this->frequencyPresets[$this->frequency] ?? $this->campaignPresets;
+    }
 
     // Amount
     public ?float $amount = null;
@@ -98,8 +105,20 @@ class DonationEmbed extends Component
             $this->campaignFrequencies = $settings['frequencies'];
         }
 
-        if (! empty($settings['presets'])) {
-            $this->campaignPresets = $settings['presets'];
+        // Load per-frequency presets
+        if (! empty($settings['frequency_presets'])) {
+            $this->frequencyPresets = $settings['frequency_presets'];
+        } elseif (! empty($settings['presets'])) {
+            foreach ($this->campaignFrequencies as $freq) {
+                $this->frequencyPresets[$freq] = $settings['presets'];
+            }
+        }
+
+        // Ensure all frequencies have presets
+        foreach ($this->campaignFrequencies as $freq) {
+            if (! isset($this->frequencyPresets[$freq]) || ! is_array($this->frequencyPresets[$freq])) {
+                $this->frequencyPresets[$freq] = [50, 25, 10];
+            }
         }
 
         if (isset($settings['min_amount'])) {
