@@ -17,14 +17,6 @@
         </div>
     @else
 
-    {{-- Header --}}
-    @if(!$embed)
-    <div class="text-center mb-10">
-        <h1 class="text-3xl font-bold tracking-tight text-slate-900">Make a donation</h1>
-        <p class="mt-2 text-slate-600">Your contribution makes a difference.</p>
-    </div>
-    @endif
-
     {{-- Campaign Info --}}
     @if($campaignName)
     <div class="rounded-lg border border-slate-200 bg-slate-50 p-4 mb-8">

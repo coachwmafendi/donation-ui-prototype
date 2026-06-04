@@ -13,15 +13,6 @@
 </head>
 <body class="font-sans antialiased bg-white text-slate-900">
 
-    {{-- Simple header --}}
-    <header class="border-b border-slate-100">
-        <div class="mx-auto max-w-2xl px-6 py-5">
-            <a href="/" class="text-xl font-bold text-slate-900 tracking-tight">
-                Donation UI
-            </a>
-        </div>
-    </header>
-
     {{-- Main content --}}
     <main class="min-h-screen">
         @isset($slot)
