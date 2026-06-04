@@ -90,21 +90,22 @@
                             x-data="{ }"
                             @click="
                                 const container = $el.querySelector('.heart-container');
+                                container.querySelectorAll('div').forEach(h => h.remove());
                                 for (let i = 0; i < 7; i++) {
                                     const heart = document.createElement('div');
                                     heart.innerHTML = '<svg class=\"text-emerald-500\" style=\"width:100%;height:100%\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z\"/></svg>';
-                                    heart.style.cssText = 'position: absolute; left: 50%; top: 0; width: ' + (8 + Math.random() * 12) + 'px; height: ' + (8 + Math.random() * 12) + 'px; pointer-events: none; opacity: 0;';
+                                    heart.style.cssText = 'position: absolute; width: ' + (10 + Math.random() * 14) + 'px; height: ' + (10 + Math.random() * 14) + 'px; pointer-events: none; opacity: 0;';
                                     container.appendChild(heart);
                                     
-                                    const xEnd = (Math.random() - 0.5) * 60;
-                                    const yEnd = -40 - Math.random() * 50;
-                                    const rotation = (Math.random() - 0.5) * 60;
-                                    const duration = 800 + Math.random() * 700;
+                                    const xEnd = (Math.random() - 0.5) * 50;
+                                    const yEnd = -30 - Math.random() * 40;
+                                    const rotation = (Math.random() - 0.5) * 40;
+                                    const duration = 900 + Math.random() * 600;
                                     
                                     heart.animate([
-                                        { transform: 'translate(-50%, 0) scale(0) rotate(0deg)', opacity: 0 },
-                                        { transform: 'translate(' + (xEnd * 0.3 - 50) + '%, ' + (yEnd * 0.3) + 'px) scale(0.8) rotate(' + (rotation * 0.3) + 'deg)', opacity: 1, offset: 0.2 },
-                                        { transform: 'translate(' + (xEnd - 50) + '%, ' + yEnd + 'px) scale(0) rotate(' + rotation + 'deg)', opacity: 0 }
+                                        { transform: 'translateX(-50%) translateY(0) scale(0.3) rotate(0deg)', opacity: 0 },
+                                        { transform: 'translateX(calc(-50% + ' + xEnd + 'px)) translateY(' + (yEnd * 0.4) + 'px) scale(1) rotate(' + (rotation * 0.3) + 'deg)', opacity: 1, offset: 0.25 },
+                                        { transform: 'translateX(calc(-50% + ' + (xEnd * 1.5) + 'px)) translateY(' + yEnd + 'px) scale(0.2) rotate(' + rotation + 'deg)', opacity: 0 }
                                     ], {
                                         duration: duration,
                                         easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
