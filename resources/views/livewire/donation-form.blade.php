@@ -96,18 +96,8 @@
                 @endforeach
             </div>
 
-            <div class="relative flex items-center">
-                <style>
-                    input[type=number]::-webkit-inner-spin-button,
-                    input[type=number]::-webkit-outer-spin-button {
-                        -webkit-appearance: none;
-                        margin: 0;
-                    }
-                    input[type=number] {
-                        -moz-appearance: textfield;
-                    }
-                </style>
-                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">$</span>
+            <div class="relative flex items-stretch rounded-xl border border-slate-300 bg-white overflow-hidden focus-within:border-slate-500 focus-within:ring-2 focus-within:ring-slate-200">
+                <span class="flex items-center pl-4 text-slate-400 text-lg select-none">$</span>
                 <input 
                     wire:model="amount" 
                     type="text" 
@@ -136,10 +126,10 @@
                             $wire.amount = formatted;
                         }
                     "
-                    class="block w-full rounded-l-lg border border-r-0 border-slate-300 bg-white pl-8 pr-4 py-3 text-lg text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" 
+                    class="block w-full border-0 bg-transparent py-3.5 pl-4 pr-4 text-lg text-slate-900 focus:outline-none focus:ring-0" 
                     placeholder="0.00"
                 >
-                <select wire:model="currency" class="rounded-r-lg border border-l-0 border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-700 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200 cursor-pointer hover:bg-slate-50 h-full">
+                <select wire:model="currency" class="border-0 border-l border-slate-200 bg-transparent px-4 py-3.5 text-sm font-medium text-slate-700 focus:outline-none focus:ring-0 cursor-pointer hover:bg-slate-50">
                     <option value="USD">USD</option>
                     <option value="EUR">EUR</option>
                     <option value="GBP">GBP</option>
