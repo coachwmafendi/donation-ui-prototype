@@ -58,7 +58,7 @@ $showAvatars = $pageConfig['show_donor_avatars'] ?? true;
                 <h1 class="mt-6 text-4xl font-bold tracking-tight md:text-5xl">
                     {{ $heroHeadline }}
                 </h1>
-                <p class="mt-4 text-lg {{ $darkHero ? 'text-white/70' : 'text-slate-600' }}">
+                <p class="mt-4 text-lg whitespace-pre-line {{ $darkHero ? 'text-white/70' : 'text-slate-600' }}">
                     {{ $heroSubheadline }}
                 </p>
                 <div class="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
