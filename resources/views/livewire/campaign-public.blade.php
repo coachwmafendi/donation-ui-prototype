@@ -249,4 +249,16 @@ $showAvatars = $pageConfig['show_donor_avatars'] ?? true;
     </div>
     @endif
 
+    <script>
+        (function () {
+            const iframe = document.getElementById('donation-embed');
+            if (!iframe) return;
+
+            window.addEventListener('message', function (e) {
+                if (e.data && e.data.type === 'donation-form-height') {
+                    iframe.style.height = e.data.height + 'px';
+                }
+            }, false);
+        })();
+    </script>
 </div>
