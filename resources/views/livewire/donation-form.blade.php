@@ -125,11 +125,6 @@
                     </button>
                 @endforeach
             </div>
-                            </template>
-                        @endif
-                    </button>
-                @endforeach
-            </div>
 
             <div class="grid grid-cols-3 gap-3">
                 @foreach($this->currentPresets as $preset)
