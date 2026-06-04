@@ -22,13 +22,6 @@
         @endisset
     </main>
 
-    {{-- Simple footer --}}
-    <footer class="border-t border-slate-100 py-8">
-        <div class="mx-auto max-w-2xl px-6 text-center text-sm text-slate-400">
-             Donation UI. All rights reserved.
-        </div>
-    </footer>
-
     @livewireScripts
 </body>
 </html>
