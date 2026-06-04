@@ -111,7 +111,37 @@
                     }
                 </style>
                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">$</span>
-                <input wire:model="amount" type="number" step="0.01" min="{{ $campaignMinAmount }}" max="99999" class="block w-full rounded-lg border border-slate-300 bg-white pl-8 pr-4 py-3 text-lg text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200 [appearance:textfield]" placeholder="0.00">
+                <input 
+                    wire:model="amount" 
+                    type="text" 
+                    inputmode="decimal"
+                    @input="
+                        let el = $event.target;
+                        let val = el.value.replace(/[^\d.]/g, '');
+                        let parts = val.split('.');
+                        
+                        if (parts.length > 2) {
+                            val = parts[0] + '.' + parts.slice(1).join('');
+                            parts = val.split('.');
+                        }
+                        
+                        if (parts[0].length > 5) {
+                            parts[0] = parts[0].substring(0, 5);
+                        }
+                        
+                        if (parts[1] && parts[1].length > 2) {
+                            parts[1] = parts[1].substring(0, 2);
+                        }
+                        
+                        let formatted = parts.join('.');
+                        if (el.value !== formatted) {
+                            el.value = formatted;
+                            $wire.amount = formatted;
+                        }
+                    "
+                    class="block w-full rounded-lg border border-slate-300 bg-white pl-8 pr-4 py-3 text-lg text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" 
+                    placeholder="0.00"
+                >
             </div>
 
             @error('amount')
