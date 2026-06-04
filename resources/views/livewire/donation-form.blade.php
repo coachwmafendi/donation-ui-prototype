@@ -90,7 +90,7 @@
         <div class="px-6 py-5 space-y-5">
 
             {{-- Frequency tabs --}}
-            <div class="flex gap-2 justify-center">
+            <div class="flex gap-3 justify-center">
                 @foreach($campaignFrequencies as $freq)
                     @php
                         $label = $freq === 'one-time' ? 'One Time' : 'Monthly';
@@ -100,25 +100,24 @@
                         type="button"
                         wire:click="$set('frequency', '{{ $freq }}')"
                         @class([
-                            'flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-bold transition-all duration-300 ease-in-out transform',
-                            'bg-emerald-600 text-white shadow-md scale-100' => $isActive,
-                            'bg-white text-slate-600 border border-slate-200 hover:border-emerald-300 hover:text-emerald-600 scale-95 hover:scale-100' => !$isActive,
+                            'flex items-center gap-2.5 rounded-full px-7 py-3 text-base font-bold transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] transform',
+                            'bg-emerald-600 text-white shadow-lg shadow-emerald-600/25 scale-100' => $isActive,
+                            'bg-white text-slate-600 border-2 border-slate-200 hover:border-emerald-400 hover:text-emerald-600 hover:shadow-md scale-[0.92] hover:scale-100' => !$isActive,
                         ])
                         @if($freq === 'monthly')
                             x-data="{ showHearts: false }"
                             @click="showHearts = true; setTimeout(() => showHearts = false, 1500)"
                         @endif
                     >
-                        {{ $label }}
                         @if($freq === 'monthly')
-                            <span class="relative">
-                                <svg class="size-4 text-current" viewBox="0 0 24 24" fill="currentColor">
+                            <span class="relative flex items-center">
+                                <svg class="size-5 text-current transition-transform duration-300 group-hover:scale-110" viewBox="0 0 24 24" fill="currentColor">
                                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                                 </svg>
                                 <template x-if="showHearts">
-                                    <div class="absolute -top-8 left-1/2 -translate-x-1/2 pointer-events-none">
+                                    <div class="absolute -top-10 left-1/2 -translate-x-1/2 pointer-events-none">
                                         <div class="animate-float-up text-emerald-500">
-                                            <svg class="size-5 opacity-75" viewBox="0 0 24 24" fill="currentColor">
+                                            <svg class="size-6 opacity-80" viewBox="0 0 24 24" fill="currentColor">
                                                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                                             </svg>
                                         </div>
@@ -126,6 +125,7 @@
                                 </template>
                             </span>
                         @endif
+                        {{ $label }}
                     </button>
                 @endforeach
             </div>
