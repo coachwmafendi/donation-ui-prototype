@@ -27,7 +27,7 @@
         {{-- Main Row: Trend Chart + Quick Actions --}}
         <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
 
-            {{-- Trend Chart (CSS Bar Chart) --}}
+            {{-- Trend Chart --}}
             <div class="lg:col-span-2 space-y-6">
                 <div class="rounded-xl border border-slate-200 bg-white p-6">
                     <div class="flex items-center justify-between mb-6">
@@ -40,31 +40,69 @@
                         </div>
                     </div>
 
-                    {{-- CSS Bar Chart --}}
-                    @php
-                        $maxAmount = max(collect($trend)->max('amount'), 1);
-                    @endphp
-                    <div class="flex items-end justify-between gap-2 h-40">
-                        @foreach($trend as $day)
-                            @php
-                                $height = max(($day['amount'] / $maxAmount) * 100, 4);
-                            @endphp
-                            <div class="flex flex-col items-center gap-2 flex-1">
-                                <div class="w-full flex-1 flex items-end">
-                                    <div
-                                        class="w-full rounded-t-md bg-slate-900 transition-all duration-500 hover:bg-blue-600 relative group"
-                                        style="height: {{ $height }}%"
-                                        title="${{ number_format($day['amount'] / 100, 2) }}"
-                                    >
-                                        {{-- Tooltip on hover --}}
-                                        <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs rounded px-2 py-1 whitespace-nowrap pointer-events-none">
-                                            ${{ number_format($day['amount'] / 100, 0) }}
-                                        </div>
-                                    </div>
+                    {{-- SVG Area Chart --}}
+                    <div
+                        class="relative"
+                        x-data="{ activeIndex: null }"
+                        style="height: 280px;"
+                    >
+                        <svg class="w-full h-full" viewBox="0 0 {{ $chartWidth }} {{ $chartHeight }}" preserveAspectRatio="none">
+                            <defs>
+                                <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#10b981" stop-opacity="0.15"/>
+                                    <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
+                                </linearGradient>
+                            </defs>
+
+                            {{-- Grid lines --}}
+                            @foreach([0, 0.25, 0.5, 0.75, 1] as $grid)
+                                @php $gridY = $paddingY + ($chartHeight * $grid); @endphp
+                                <line x1="{{ $paddingX }}" y1="{{ $gridY }}" x2="{{ $chartWidth - $paddingX }}" y2="{{ $gridY }}" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 4"/>
+                            @endforeach
+
+                            {{-- Area fill --}}
+                            <path d="{{ $areaPath }}" fill="url(#areaGradient)"/>
+
+                            {{-- Line --}}
+                            <path d="{{ $pathPoints }}" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+                            {{-- Data points --}}
+                            @foreach($chartPoints as $index => $point)
+                                <circle
+                                    cx="{{ $point['x'] }}"
+                                    cy="{{ $point['y'] }}"
+                                    r="4"
+                                    fill="white"
+                                    stroke="#10b981"
+                                    stroke-width="2"
+                                    class="transition-all duration-200 cursor-pointer"
+                                    :class="activeIndex === {{ $index }} ? 'r-[6px] stroke-slate-900' : ''"
+                                    @mouseenter="activeIndex = {{ $index }}"
+                                    @mouseleave="activeIndex = null"
+                                />
+                            @endforeach
+                        </svg>
+
+                        {{-- Tooltips (rendered by PHP, shown by Alpine) --}}
+                        @foreach($chartPoints as $index => $point)
+                            <div
+                                class="absolute pointer-events-none transition-opacity duration-200"
+                                style="left: {{ ($point['x'] / $chartWidth) * 100 }}%; top: {{ ($point['y'] / $chartHeight) * 100 }}%; transform: translate(-50%, -130%);"
+                                :class="activeIndex === {{ $index }} ? 'opacity-100' : 'opacity-0'"
+                            >
+                                <div class="bg-slate-900 text-white text-xs rounded-lg px-3 py-2 shadow-lg whitespace-nowrap">
+                                    <div class="font-semibold">${{ number_format($point['amount'] / 100, 2) }}</div>
+                                    <div class="text-slate-400 text-[10px]">{{ $point['date'] }}</div>
                                 </div>
-                                <span class="text-xs text-slate-500">{{ $day['label'] }}</span>
                             </div>
                         @endforeach
+
+                        {{-- X-axis labels --}}
+                        <div class="flex justify-between px-10 mt-2">
+                            @foreach($chartPoints as $point)
+                                <span class="text-[10px] text-slate-400 text-center" style="width: 20px;">{{ $point['label'] }}</span>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
 

@@ -74,7 +74,7 @@ class Dashboard extends Component
         $lastPoint = $chartPoints->last();
         $firstPoint = $chartPoints->first();
         $baselineY = $paddingY + $chartHeight;
-        $areaPath = $pathPoints . " L {$lastPoint['x']} {$baselineY} L {$firstPoint['x']} {$baselineY} Z";
+        $areaPath = $pathPoints." L {$lastPoint['x']} {$baselineY} L {$firstPoint['x']} {$baselineY} Z";
 
         // Top campaigns by raised amount
         $topCampaigns = Campaign::orderByDesc('raised_amount_cents')
