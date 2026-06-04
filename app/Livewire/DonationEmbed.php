@@ -103,7 +103,7 @@ class DonationEmbed extends Component
     // Payment
     public string $paymentMethod = 'credit_card';
 
-    public bool $coverTransactionFee = false;
+    public bool $coverTransactionFee = true;
 
     // Optional fields
     public string $comment = '';
