@@ -130,11 +130,11 @@
                     placeholder="0.00"
                 >
                 <select wire:model="currency" class="border-0 border-l border-slate-200 bg-transparent px-4 py-3.5 text-sm font-medium text-slate-700 focus:outline-none focus:ring-0 cursor-pointer hover:bg-slate-50">
-                    <option value="USD">USD</option>
-                    <option value="EUR">EUR</option>
-                    <option value="GBP">GBP</option>
-                    <option value="SGD">SGD</option>
-                    <option value="MYR">MYR</option>
+                    <option value="USD">🇺🇸 USD</option>
+                    <option value="EUR">🇪🇺 EUR</option>
+                    <option value="GBP">🇬🇧 GBP</option>
+                    <option value="SGD">🇸🇬 SGD</option>
+                    <option value="MYR">🇲🇾 MYR</option>
                 </select>
             </div>
 
@@ -250,7 +250,7 @@
                 </div>
                 <div class="flex justify-between">
                     <span class="text-sm text-slate-500">Amount</span>
-                    <span class="text-sm font-semibold text-slate-900">${{ number_format($amount, 2) }} {{ strtoupper($currency) }}</span>
+                    <span class="text-sm font-semibold text-slate-900">{{ match(strtoupper($currency)) { 'USD' => '🇺🇸', 'EUR' => '🇪🇺', 'GBP' => '🇬🇧', 'SGD' => '🇸🇬', 'MYR' => '🇲🇾', default => '' } }} ${{ number_format($amount, 2) }}</span>
                 </div>
                 <div class="flex justify-between">
                     <span class="text-sm text-slate-500">Frequency</span>
