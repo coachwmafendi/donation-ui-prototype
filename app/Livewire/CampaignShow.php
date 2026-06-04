@@ -217,6 +217,45 @@ class CampaignShow extends Component
     {
         $this->saveSetting('frequencies', $this->frequencies);
         $this->saveSetting('default_frequency', $this->defaultFrequency);
+
+        // Auto-populate defaults for any new frequencies added
+        $defaultPresets = [
+            'one-time' => [500, 300, 200, 100, 50, 25],
+            'monthly' => [300, 200, 100, 50, 30, 10],
+            'weekly' => [50, 30, 20, 10, 5, 3],
+            'yearly' => [1000, 500, 300, 200, 100, 50],
+            'quarterly' => [400, 300, 200, 100, 75, 50],
+        ];
+        $defaultAmounts = [
+            'one-time' => 50,
+            'monthly' => 25,
+            'weekly' => 10,
+            'yearly' => 300,
+            'quarterly' => 75,
+        ];
+        $defaultMins = [
+            'one-time' => 10,
+            'monthly' => 10,
+            'weekly' => 5,
+            'yearly' => 100,
+            'quarterly' => 25,
+        ];
+
+        foreach ($this->frequencies as $freq) {
+            if (! isset($this->frequencyPresets[$freq]) || empty($this->frequencyPresets[$freq])) {
+                $this->frequencyPresets[$freq] = $defaultPresets[$freq] ?? [50, 25, 10];
+            }
+            if (! isset($this->defaultAmounts[$freq])) {
+                $this->defaultAmounts[$freq] = $defaultAmounts[$freq] ?? 10;
+            }
+            if (! isset($this->minAmounts[$freq])) {
+                $this->minAmounts[$freq] = $defaultMins[$freq] ?? 1;
+            }
+        }
+
+        $this->saveSetting('frequency_presets', $this->frequencyPresets);
+        $this->saveSetting('default_amounts', $this->defaultAmounts);
+        $this->saveSetting('min_amounts', $this->minAmounts);
     }
 
     public function saveAmounts(): void

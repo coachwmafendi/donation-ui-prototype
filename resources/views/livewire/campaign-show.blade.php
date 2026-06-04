@@ -162,6 +162,14 @@
                 },
                 amountsFreq: $wire.frequencies[0] || 'one-time',
 
+                init() {
+                    this.$watch('$wire.frequencies', (val) => {
+                        if (! val.includes(this.amountsFreq)) {
+                            this.amountsFreq = val[0] || 'one-time'
+                        }
+                    })
+                },
+
                 addFrequency() {
                     const used = $wire.frequencies
                     const available = this.allOptions.filter(o => !used.includes(o.id))
