@@ -75,11 +75,11 @@
             <style>
                 @keyframes heartFloat {
                     0% { opacity: 0; transform: translateY(0) scale(0.4); }
-                    15% { opacity: 1; transform: translateY(-10px) scale(1); }
-                    100% { opacity: 0; transform: translateY(-50px) scale(0.6); }
+                    15% { opacity: 1; transform: translateY(-15px) scale(1); }
+                    100% { opacity: 0; transform: translateY(-90px) scale(0.5); }
                 }
                 .heart-particle {
-                    animation: heartFloat 1s ease-out forwards;
+                    animation: heartFloat 1.3s ease-out forwards;
                 }
             </style>
             <div class="flex gap-3 justify-center">
