@@ -15,6 +15,28 @@
         html, body { margin: 0; padding: 0; overflow-x: hidden; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background: transparent; }
     </style>
+
+    <script>
+        (function () {
+            function sendHeight () {
+                const height = document.documentElement.scrollHeight;
+                window.parent.postMessage({ type: 'donation-form-height', height }, '*');
+            }
+
+            // Send on load
+            window.addEventListener('load', sendHeight);
+
+            // Send when DOM changes (Livewire re-renders, etc.)
+            const observer = new MutationObserver(sendHeight);
+            observer.observe(document.body, { childList: true, subtree: true, attributes: true });
+
+            // Send on resize
+            window.addEventListener('resize', sendHeight);
+
+            // Send periodically to catch late changes
+            setInterval(sendHeight, 500);
+        })();
+    </script>
 </head>
 <body class="antialiased">
     {{ $slot }}

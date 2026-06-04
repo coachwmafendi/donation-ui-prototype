@@ -135,11 +135,12 @@ $showAvatars = $pageConfig['show_donor_avatars'] ?? true;
                 <section id="donate">
                     <div class="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
                         <iframe
+                            id="donation-embed"
                             src="{{ config('app.url') }}/embed/{{ $campaign->slug }}"
                             width="100%"
-                            height="720"
+                            height="600"
                             frameborder="0"
-                            style="border: none; display: block;"
+                            style="border: none; display: block; transition: height 0.3s ease;"
                             title="Donate to {{ $campaign->name }}"
                         ></iframe>
                     </div>

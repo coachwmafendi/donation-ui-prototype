@@ -110,7 +110,7 @@ class DonationEmbed extends Component
             return;
         }
 
-        $this->currency = $this->campaign->currency ?? 'USD';
+        $this->currency = $this->campaign->currency ?? 'MYR';
         $settings = $this->campaign->settings ?? [];
 
         if (! empty($settings['frequencies'])) {

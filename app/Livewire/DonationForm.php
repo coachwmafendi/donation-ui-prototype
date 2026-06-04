@@ -104,7 +104,7 @@ class DonationForm extends Component
 
         $this->selectedCampaign = $campaign;
         $this->campaignId = $campaign->id;
-        $this->currency = $campaign->currency ?? 'USD';
+        $this->currency = $campaign->currency ?? 'MYR';
 
         $settings = $campaign->settings ?? [];
 
