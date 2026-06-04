@@ -66,7 +66,7 @@
                             </div>
                             @if($campaign->end_date)
                             <div>
-                                <div class="text-2xl font-bold text-slate-900">{{ max(0, now()->diffInDays($campaign->end_date, false)) }}</div>
+                                <div class="text-2xl font-bold text-slate-900">{{ max(0, round(now()->diffInDays($campaign->end_date, false))) }}</div>
                                 <div class="text-xs text-slate-500">Days Left</div>
                             </div>
                             @endif
@@ -89,7 +89,6 @@
 
                 {{-- Donate Form --}}
                 <section id="donate">
-                    <h2 class="text-2xl font-bold text-slate-900 mb-6">Make a donation</h2>
                     <div class="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
                         <iframe
                             src="{{ config('app.url') }}/embed/{{ $campaign->slug }}"

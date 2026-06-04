@@ -40,12 +40,20 @@
                             <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Donations</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Total donated</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Last donation</th>
-                            <th class="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+                            <th class="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider"></th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200">
                         @forelse ($supporters as $supporter)
-                            <tr class="hover:bg-slate-50 transition-colors">
+                            <tr
+                                wire:key="supporter-{{ $supporter->id }}"
+                                @click="Livewire.navigate('/supporters/{{ $supporter->public_id }}')"
+                                @keydown.enter="Livewire.navigate('/supporters/{{ $supporter->public_id }}')"
+                                @keydown.space.prevent="Livewire.navigate('/supporters/{{ $supporter->public_id }}')"
+                                role="link"
+                                tabindex="0"
+                                class="cursor-pointer hover:bg-slate-50 transition-colors"
+                            >
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
                                         <div class="size-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-medium text-slate-600 mr-3">
@@ -100,13 +108,7 @@
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right">
-                                    <a
-                                        href="/supporters/{{ $supporter->public_id }}"
-                                        wire:navigate
-                                        class="text-sm font-medium text-blue-600 hover:text-blue-800"
-                                    >
-                                        View
-                                    </a>
+                                    <span class="text-sm text-slate-400">&rarr;</span>
                                 </td>
                             </tr>
                         @empty
