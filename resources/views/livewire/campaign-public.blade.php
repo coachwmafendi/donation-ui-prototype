@@ -73,11 +73,11 @@ $showAvatars = $pageConfig['show_donor_avatars'] ?? true;
         </div>
     </div>
 
-    <div class="mx-auto max-w-4xl px-6 py-12">
-        <div class="grid grid-cols-1 gap-12 lg:grid-cols-3">
+    <div class="mx-auto max-w-6xl px-6 py-12">
+        <div class="grid grid-cols-1 gap-12 lg:grid-cols-4">
 
             {{-- Main Content --}}
-            <div class="lg:col-span-2 space-y-10">
+            <div class="lg:col-span-3 space-y-10">
 
                 @if($showProgress)
                 {{-- Progress Card --}}
