@@ -14,7 +14,7 @@
 <body class="font-sans antialiased bg-[#f7f7fb] text-slate-900">
 
     <div
-        x-data="{ sidebarOpen: false, accountOpen: true }"
+        x-data="{ sidebarOpen: false, accountOpen: false }"
         class="min-h-screen flex"
     >
         {{-- Mobile overlay --}}
@@ -105,10 +105,15 @@
                     <button
                         type="button"
                         @click="accountOpen = !accountOpen"
-                        class="w-full flex items-center justify-between px-4 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider hover:text-slate-600 transition"
+                        class="w-full flex items-center justify-between px-4 py-2 rounded-lg hover:bg-slate-50 transition"
                     >
-                        <span>Account</span>
-                        <x-icon name="chevron-down" class="size-3 transition-transform" x-bind:class="accountOpen ? 'rotate-180' : ''" />
+                        <div class="flex items-center gap-3">
+                            <div class="size-8 rounded-full bg-slate-200 flex items-center justify-center text-sm font-medium text-slate-600">
+                                {{ substr(auth()->user()->name ?? 'A', 0, 1) }}
+                            </div>
+                            <span class="text-sm font-medium text-slate-700">{{ auth()->user()->name ?? 'Guest' }}</span>
+                        </div>
+                        <x-icon name="chevron-down" class="size-4 text-slate-400 transition-transform" x-bind:class="accountOpen ? 'rotate-180' : ''" />
                     </button>
 
                     <div x-show="accountOpen" x-collapse class="space-y-1 mt-1">
@@ -139,15 +144,6 @@
                 >
                     <x-icon name="menu" class="size-6" />
                 </button>
-
-                <div class="flex items-center gap-3 ml-auto">
-                    <div class="size-8 rounded-full bg-slate-200 flex items-center justify-center text-sm font-medium text-slate-600">
-                        {{ substr(auth()->user()->name ?? 'A', 0, 1) }}
-                    </div>
-                    <div class="hidden sm:block text-left">
-                        <p class="text-sm font-medium text-slate-900">{{ auth()->user()->name ?? 'Guest' }}</p>
-                    </div>
-                </div>
             </header>
 
             {{-- Page content --}}

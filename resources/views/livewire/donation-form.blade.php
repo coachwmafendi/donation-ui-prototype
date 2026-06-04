@@ -85,7 +85,14 @@
             <div class="flex gap-3 justify-center">
                 @foreach($campaignFrequencies as $freq)
                     @php
-                        $label = $freq === 'one-time' ? 'One Time' : 'Monthly';
+                        $label = match($freq) {
+                            'one-time' => 'One Time',
+                            'monthly' => 'Monthly',
+                            'weekly' => 'Weekly',
+                            'yearly' => 'Yearly',
+                            'quarterly' => 'Quarterly',
+                            default => Illuminate\Support\Str::title(str_replace('-', ' ', $freq)),
+                        };
                         $isActive = $frequency === $freq;
                     @endphp
                     <button
