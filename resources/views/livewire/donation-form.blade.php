@@ -81,8 +81,26 @@
             <h2 class="text-lg font-semibold">Step 1: Select donation amount</h2>
         </div>
         <div class="px-6 py-5 space-y-5">
+
+            {{-- Frequency tabs --}}
+            <div class="flex gap-1 border-b border-slate-200 bg-slate-50/50 p-1 rounded-t-xl">
+                @foreach($campaignFrequencies as $freq)
+                    <button
+                        type="button"
+                        wire:click="$set('frequency', '{{ $freq }}')"
+                        @class([
+                            'flex-1 rounded-lg py-2.5 text-sm font-bold tracking-wide transition',
+                            'bg-slate-900 text-white shadow-sm' => $frequency === $freq,
+                            'text-slate-500 hover:text-slate-700 hover:bg-slate-100' => $frequency !== $freq,
+                        ])
+                    >
+                        {{ Illuminate\Support\Str::title(str_replace('-', ' ', $freq)) }}
+                    </button>
+                @endforeach
+            </div>
+
             <div class="grid grid-cols-3 gap-3">
-                @foreach($campaignPresets as $preset)
+                @foreach($this->currentPresets as $preset)
                     <button type="button" wire:click="selectPreset({{ $preset }})" class="rounded-lg border-2 px-4 py-3 text-sm font-semibold transition {{ $amount == $preset && !$customAmount ? 'border-slate-900 bg-slate-900 text-white' : 'border-slate-200 text-slate-700 hover:border-slate-300' }}">
                         ${{ $preset }}
                     </button>
@@ -104,25 +122,15 @@
                 <p class="text-sm text-red-600">{{ $message }}</p>
             @enderror
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                <div>
-                    <label for="currency" class="block text-sm font-medium text-slate-700 mb-1.5">Currency</label>
-                    <select wire:model="currency" id="currency" class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200">
-                        <option value="USD">USD — US Dollar</option>
-                        <option value="EUR">EUR — Euro</option>
-                        <option value="GBP">GBP — British Pound</option>
-                        <option value="SGD">SGD — Singapore Dollar</option>
-                        <option value="MYR">MYR — Malaysian Ringgit</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="frequency" class="block text-sm font-medium text-slate-700 mb-1.5">Frequency</label>
-                    <select wire:model="frequency" id="frequency" class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200">
-                        @foreach($campaignFrequencies as $freq)
-                            <option value="{{ $freq }}">{{ ucfirst($freq) }}</option>
-                        @endforeach
-                    </select>
-                </div>
+            <div class="pt-2">
+                <label for="currency" class="block text-sm font-medium text-slate-700 mb-1.5">Currency</label>
+                <select wire:model="currency" id="currency" class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200">
+                    <option value="USD">USD — US Dollar</option>
+                    <option value="EUR">EUR — Euro</option>
+                    <option value="GBP">GBP — British Pound</option>
+                    <option value="SGD">SGD — Singapore Dollar</option>
+                    <option value="MYR">MYR — Malaysian Ringgit</option>
+                </select>
             </div>
         </div>
         <div class="flex justify-between px-6 py-4 bg-slate-50 border-t border-slate-200">
@@ -158,7 +166,7 @@
                     @error('email')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                 </div>
                 <div>
-                    <label for="phone" class="block text-sm font-medium text-slate-700">Phone</label>
+                    <label for="phone" class="block text-sm font-medium text-slate-700">Phone (optional)</label>
                     <input wire:model="phone" id="phone" type="tel" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="+1 234 567 890">
                 </div>
             </div>

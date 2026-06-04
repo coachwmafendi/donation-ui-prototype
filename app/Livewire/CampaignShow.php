@@ -22,8 +22,8 @@ class CampaignShow extends Component
 
     public string $defaultFrequency = 'one-time';
 
-    // Settings: Suggested Amounts (presets shared across frequencies for now)
-    public array $presets = [200, 100, 50, 30, 10, 5];
+    // Settings: Suggested Amounts (presets per frequency)
+    public array $frequencyPresets = [];
 
     public array $defaultAmounts = [];
 
@@ -108,7 +108,6 @@ class CampaignShow extends Component
         $this->frequencies = $settings['frequencies'] ?? ['one-time', 'monthly'];
         $this->defaultFrequency = $settings['default_frequency'] ?? 'one-time';
 
-        $this->presets = $settings['presets'] ?? [200, 100, 50, 30, 10, 5];
         $this->defaultAmounts = $settings['default_amounts'] ?? [
             'one-time' => 50,
             'monthly' => 25,
@@ -116,6 +115,19 @@ class CampaignShow extends Component
             'weekly' => 10,
             'quarterly' => 75,
         ];
+
+        // Per-frequency presets
+        $this->frequencyPresets = $settings['frequency_presets'] ?? [
+            'one-time' => [200, 100, 50, 30, 10, 5],
+            'monthly' => [50, 25, 10],
+        ];
+
+        // Ensure all configured frequencies have preset arrays
+        foreach ($this->frequencies as $freq) {
+            if (! isset($this->frequencyPresets[$freq]) || ! is_array($this->frequencyPresets[$freq])) {
+                $this->frequencyPresets[$freq] = [50, 25, 10];
+            }
+        }
 
         $this->minAmounts = $settings['min_amounts'] ?? [
             'one-time' => 10,
@@ -197,7 +209,12 @@ class CampaignShow extends Component
 
     public function saveAmounts(): void
     {
-        $this->saveSetting('presets', array_values(array_filter($this->presets, fn ($v) => $v !== null && $v !== '')));
+        // Clean up empty/null values from each frequency's presets
+        $cleanPresets = [];
+        foreach ($this->frequencyPresets as $freq => $values) {
+            $cleanPresets[$freq] = array_values(array_filter($values, fn ($v) => $v !== null && $v !== ''));
+        }
+        $this->saveSetting('frequency_presets', $cleanPresets);
         $this->saveSetting('default_amounts', $this->defaultAmounts);
     }
 

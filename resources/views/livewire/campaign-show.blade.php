@@ -401,23 +401,28 @@
                             </template>
                         </div>
 
-                        {{-- Preset inputs --}}
-                        <div>
-                            <h3 class="text-base font-semibold text-slate-900 mb-3">Suggested donation amount presets</h3>
-                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                                @foreach($presets as $index => $preset)
-                                    <div class="relative">
-                                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">$</span>
-                                        <input
-                                            type="number"
-                                            wire:model="presets.{{ $index }}"
-                                            class="block w-full rounded-lg border border-slate-300 bg-white pl-7 pr-3 py-2.5 text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"
-                                            placeholder="0"
-                                        >
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
+                         {{-- Preset inputs per frequency --}}
+                         @foreach($frequencies as $freqId)
+                             <div x-show="amountsFreq === '{{ $freqId }}'" x-cloak>
+                                 <h3 class="text-base font-semibold text-slate-900 mb-3">Suggested donation amount presets</h3>
+                                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                     @php
+                                         $freqPresets = $frequencyPresets[$freqId] ?? [50, 25, 10];
+                                     @endphp
+                                     @foreach($freqPresets as $index => $preset)
+                                         <div class="relative">
+                                             <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">$</span>
+                                             <input
+                                                 type="number"
+                                                 wire:model="frequencyPresets.{{ $freqId }}.{{ $index }}"
+                                                 class="block w-full rounded-lg border border-slate-300 bg-white pl-7 pr-3 py-2.5 text-sm text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"
+                                                 placeholder="0"
+                                             >
+                                         </div>
+                                     @endforeach
+                                 </div>
+                             </div>
+                         @endforeach
 
                         {{-- Default amount --}}
                         <template x-for="freq in frequencies" :key="freq.id">
@@ -558,7 +563,7 @@
         </div>
 
         {{-- Tab: Campaign Page --}}
-        <div x-show="activeTab === 'page'" class="max-w-3xl" x-cloak>
+        <div x-show="activeTab === 'page'" class="max-w-5xl" x-cloak>
             <div class="space-y-6">
 
                 {{-- Preview & URL Card --}}
@@ -646,10 +651,6 @@
                                 <label class="flex items-center gap-3 rounded-lg border border-slate-200 px-4 py-3 cursor-pointer hover:bg-slate-50 transition">
                                     <input type="checkbox" wire:model="pageShowCampaignDetails" class="size-4 rounded border-slate-300 text-slate-900">
                                     <span class="text-sm text-slate-700">Campaign details sidebar</span>
-                                </label>
-                                <label class="flex items-center gap-3 rounded-lg border border-slate-200 px-4 py-3 cursor-pointer hover:bg-slate-50 transition">
-                                    <input type="checkbox" wire:model="pageShowEmbedCode" class="size-4 rounded border-slate-300 text-slate-900">
-                                    <span class="text-sm text-slate-700">Embed code box</span>
                                 </label>
                                 <label class="flex items-center gap-3 rounded-lg border border-slate-200 px-4 py-3 cursor-pointer hover:bg-slate-50 transition">
                                     <input type="checkbox" wire:model="pageShowBottomCta" class="size-4 rounded border-slate-300 text-slate-900">
@@ -747,10 +748,17 @@
                         </div>
 
                         {{-- Section: Advanced --}}
-                        <div class="px-6 py-5">
-                            <h3 class="text-sm font-semibold text-slate-900 mb-1">Advanced</h3>
-                            <p class="text-xs text-slate-500 mb-4">For advanced users and integrations.</p>
-                            <div class="space-y-4">
+                        <div class="px-6 py-5" x-data="{ open: false }">
+                            <button type="button" @click="open = !open" class="flex w-full items-center justify-between">
+                                <div class="text-left">
+                                    <h3 class="text-sm font-semibold text-slate-900 mb-1">Advanced</h3>
+                                    <p class="text-xs text-slate-500">For advanced users and integrations.</p>
+                                </div>
+                                <svg class="size-5 text-slate-400 transition-transform" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                                </svg>
+                            </button>
+                            <div x-show="open" x-collapse class="mt-4 space-y-4">
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700 mb-1.5">Custom CSS</label>
                                     <textarea wire:model="pageCustomCss" rows="4" class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-mono text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder=".my-class { color: red; }"></textarea>

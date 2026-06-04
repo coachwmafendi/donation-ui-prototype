@@ -25,6 +25,8 @@ class DonationForm extends Component
 
     public array $campaignPresets = [10, 25, 50, 100, 250, 500];
 
+    public array $frequencyPresets = [];
+
     public ?float $campaignMinAmount = 1;
 
     public string $campaignDefaultFrequency = 'one-time';
@@ -110,8 +112,14 @@ class DonationForm extends Component
             $this->campaignFrequencies = $settings['frequencies'];
         }
 
-        if (! empty($settings['presets'])) {
-            $this->campaignPresets = $settings['presets'];
+        // Load per-frequency presets, fallback to flat presets for backward compatibility
+        if (! empty($settings['frequency_presets'])) {
+            $this->frequencyPresets = $settings['frequency_presets'];
+        } elseif (! empty($settings['presets'])) {
+            // Backward compatibility: assign flat presets to all frequencies
+            foreach ($this->campaignFrequencies as $freq) {
+                $this->frequencyPresets[$freq] = $settings['presets'];
+            }
         }
 
         if (isset($settings['min_amount'])) {
@@ -123,6 +131,11 @@ class DonationForm extends Component
         }
 
         $this->frequency = $this->campaignDefaultFrequency;
+    }
+
+    public function getCurrentPresetsProperty(): array
+    {
+        return $this->frequencyPresets[$this->frequency] ?? $this->campaignPresets;
     }
 
     public function selectPreset(float $amount): void

@@ -202,10 +202,6 @@ $showAvatars = $pageConfig['show_donor_avatars'] ?? true;
                                 <span class="text-slate-500">Ends</span>
                                 <span class="font-medium text-slate-900">{{ $campaign->end_date?->format('M d, Y') ?? 'Ongoing' }}</span>
                             </div>
-                            <div class="flex justify-between">
-                                <span class="text-slate-500">Campaign ID</span>
-                                <span class="font-mono text-xs text-slate-900">{{ $campaign->public_id }}</span>
-                            </div>
                         </div>
                     </div>
                     @endif
