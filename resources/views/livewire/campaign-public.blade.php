@@ -241,7 +241,7 @@ $showAvatars = $pageConfig['show_donor_avatars'] ?? true;
             <p class="mt-4 text-lg text-slate-600">
                 {{ $bottomBody ?: 'Join '.$campaign->donor_count.' donors who have already supported this campaign.' }}
             </p>
-            <a href="/donate/{{ $campaign->public_id }}" class="mt-8 inline-block rounded-lg bg-slate-900 px-8 py-3.5 text-base font-semibold text-white shadow-lg hover:bg-slate-800 transition">
+            <a href="#donate" class="mt-8 inline-block rounded-lg bg-slate-900 px-8 py-3.5 text-base font-semibold text-white shadow-lg hover:bg-slate-800 transition">
                 {{ $primaryCta }}
             </a>
         </div>
