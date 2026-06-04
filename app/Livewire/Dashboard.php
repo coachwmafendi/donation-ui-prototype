@@ -98,16 +98,13 @@ class Dashboard extends Component
             ->orderByDesc('total')
             ->limit(5)
             ->get()
-            ->map(fn ($c) => [
-                'label' => Str::limit($c->name, 20),
-                'value' => (int) $c->total,
-                'color' => match ($c->id % 3) {
-                    0 => '#10b981',
-                    1 => '#3b82f6',
-                    2 => '#f59e0b',
-                    default => '#6366f1',
-                },
-            ]);
+            ->map(function ($c, $index) {
+                return [
+                    'label' => Str::limit($c->name, 20),
+                    'value' => (int) $c->total,
+                    'color' => ['#10b981', '#3b82f6', '#f59e0b', '#6366f1', '#ec4899'][$index % 5],
+                ];
+            });
 
         // Range bar: donation size distribution
         $donationRanges = Donation::where('status', 'succeeded')
