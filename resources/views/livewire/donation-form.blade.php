@@ -125,7 +125,7 @@
                             $wire.amount = formatted;
                         }
                     "
-                    class="block w-full border-0 bg-transparent py-3.5 pl-4 pr-4 text-lg text-emerald-600 focus:outline-none focus:ring-0" 
+                    class="block w-full border-0 bg-transparent py-3.5 pl-4 pr-4 text-lg text-slate-900 focus:outline-none focus:ring-0" 
                     placeholder="0.00"
                 >
                 <select :value="$wire.currency" wire:change="setCurrency($event.target.value)" class="border-0 border-l border-slate-200 bg-transparent px-4 py-3.5 text-sm font-medium text-slate-700 focus:outline-none focus:ring-0 cursor-pointer hover:bg-slate-50">
@@ -157,42 +157,42 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label for="firstName" class="block text-sm font-medium text-slate-700">First name <span class="text-red-500">*</span></label>
-                    <input wire:model="firstName" id="firstName" type="text" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-emerald-600 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="e.g. Linda">
+                    <input wire:model="firstName" id="firstName" type="text" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="e.g. Linda">
                     @error('firstName')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                 </div>
                 <div>
                     <label for="lastName" class="block text-sm font-medium text-slate-700">Last name <span class="text-red-500">*</span></label>
-                    <input wire:model="lastName" id="lastName" type="text" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-emerald-600 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="e.g. Ahmad">
+                    <input wire:model="lastName" id="lastName" type="text" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="e.g. Ahmad">
                     @error('lastName')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                 </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label for="email" class="block text-sm font-medium text-slate-700">Email <span class="text-red-500">*</span></label>
-                    <input wire:model="email" id="email" type="email" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-emerald-600 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="you@example.com">
+                    <input wire:model="email" id="email" type="email" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="you@example.com">
                     @error('email')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                 </div>
                 <div>
                     <label for="phone" class="block text-sm font-medium text-slate-700">Phone (optional)</label>
-                    <input wire:model="phone" id="phone" type="tel" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-emerald-600 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="+1 234 567 890">
+                    <input wire:model="phone" id="phone" type="tel" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="+1 234 567 890">
                 </div>
             </div>
 
             {{-- Address toggle --}}
             <div class="pt-2">
-                <button type="button" wire:click="$toggle('showAddress')" class="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-emerald-600 transition">
+                <button type="button" wire:click="$toggle('showAddress')" class="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 transition">
                     <x-icon name="settings" class="size-4" />
                     {{ $showAddress ? 'Hide address' : 'Add address (optional)' }}
                 </button>
                 @if($showAddress)
                     <div class="mt-4 space-y-4 rounded-lg bg-slate-50 p-4">
-                        <div><label for="country" class="block text-sm font-medium text-slate-700">Country</label><input wire:model="country" id="country" type="text" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-emerald-600 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"></div>
-                        <div><label for="addressLine1" class="block text-sm font-medium text-slate-700">Address line 1</label><input wire:model="addressLine1" id="addressLine1" type="text" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-emerald-600 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"></div>
-                        <div><label for="addressLine2" class="block text-sm font-medium text-slate-700">Address line 2</label><input wire:model="addressLine2" id="addressLine2" type="text" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-emerald-600 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"></div>
+                        <div><label for="country" class="block text-sm font-medium text-slate-700">Country</label><input wire:model="country" id="country" type="text" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"></div>
+                        <div><label for="addressLine1" class="block text-sm font-medium text-slate-700">Address line 1</label><input wire:model="addressLine1" id="addressLine1" type="text" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"></div>
+                        <div><label for="addressLine2" class="block text-sm font-medium text-slate-700">Address line 2</label><input wire:model="addressLine2" id="addressLine2" type="text" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"></div>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <div><label for="city" class="block text-sm font-medium text-slate-700">City</label><input wire:model="city" id="city" type="text" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-emerald-600 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"></div>
-                            <div><label for="state" class="block text-sm font-medium text-slate-700">State</label><input wire:model="state" id="state" type="text" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-emerald-600 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"></div>
-                            <div><label for="postalCode" class="block text-sm font-medium text-slate-700">Postal code</label><input wire:model="postalCode" id="postalCode" type="text" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-emerald-600 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"></div>
+                            <div><label for="city" class="block text-sm font-medium text-slate-700">City</label><input wire:model="city" id="city" type="text" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"></div>
+                            <div><label for="state" class="block text-sm font-medium text-slate-700">State</label><input wire:model="state" id="state" type="text" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"></div>
+                            <div><label for="postalCode" class="block text-sm font-medium text-slate-700">Postal code</label><input wire:model="postalCode" id="postalCode" type="text" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"></div>
                         </div>
                     </div>
                 @endif
@@ -254,43 +254,43 @@
             <div class="rounded-lg bg-slate-50 p-5 space-y-3">
                 <div class="flex justify-between">
                     <span class="text-sm text-slate-500">Campaign</span>
-                    <span class="text-sm font-semibold text-emerald-600">{{ $campaignName ?? '—' }}</span>
+                    <span class="text-sm font-semibold text-slate-900">{{ $campaignName ?? '—' }}</span>
                 </div>
                 @if($coverTransactionFee)
                 <div class="flex justify-between">
                     <span class="text-sm text-slate-500">Donation</span>
-                    <span class="text-sm font-semibold text-emerald-600">{{ $this->currencySymbol }}{{ number_format($amount, 2) }}</span>
+                    <span class="text-sm font-semibold text-slate-900">{{ $this->currencySymbol }}{{ number_format($amount, 2) }}</span>
                 </div>
                 <div class="flex justify-between">
                     <span class="text-sm text-slate-500">Transaction cost (1%)</span>
-                    <span class="text-sm font-semibold text-emerald-600">{{ $this->currencySymbol }}{{ number_format($this->processingFee, 2) }}</span>
+                    <span class="text-sm font-semibold text-slate-900">{{ $this->currencySymbol }}{{ number_format($this->processingFee, 2) }}</span>
                 </div>
                 <div class="border-t border-slate-200 pt-2 mt-1 flex justify-between">
-                    <span class="text-sm font-semibold text-emerald-600">Total</span>
-                    <span class="text-sm font-bold text-emerald-600">{{ $this->currencySymbol }}{{ number_format($this->paymentTotal, 2) }}</span>
+                    <span class="text-sm font-semibold text-slate-900">Total</span>
+                    <span class="text-sm font-bold text-slate-900">{{ $this->currencySymbol }}{{ number_format($this->paymentTotal, 2) }}</span>
                 </div>
                 @else
                 <div class="flex justify-between">
                     <span class="text-sm text-slate-500">Amount</span>
-                    <span class="text-sm font-semibold text-emerald-600">{{ match(strtoupper($currency)) { 'USD' => '🇺🇸', 'EUR' => '🇪🇺', 'GBP' => '🇬🇧', 'SGD' => '🇸🇬', 'MYR' => '🇲🇾', default => '' } }} {{ $this->currencySymbol }}{{ number_format($amount, 2) }}</span>
+                    <span class="text-sm font-semibold text-slate-900">{{ match(strtoupper($currency)) { 'USD' => '🇺🇸', 'EUR' => '🇪🇺', 'GBP' => '🇬🇧', 'SGD' => '🇸🇬', 'MYR' => '🇲🇾', default => '' } }} {{ $this->currencySymbol }}{{ number_format($amount, 2) }}</span>
                 </div>
                 @endif
                 <div class="flex justify-between">
                     <span class="text-sm text-slate-500">Frequency</span>
-                    <span class="text-sm font-semibold text-emerald-600">{{ ucfirst($frequency) }}</span>
+                    <span class="text-sm font-semibold text-slate-900">{{ ucfirst($frequency) }}</span>
                 </div>
                 <div class="flex justify-between">
                     <span class="text-sm text-slate-500">Payment method</span>
-                    <span class="text-sm font-semibold text-emerald-600">{{ ucfirst(str_replace('_', ' ', $paymentMethod)) }}</span>
+                    <span class="text-sm font-semibold text-slate-900">{{ ucfirst(str_replace('_', ' ', $paymentMethod)) }}</span>
                 </div>
                 <div class="border-t border-slate-200 pt-3 mt-3">
                     <div class="flex justify-between">
                         <span class="text-sm text-slate-500">Donor</span>
-                        <span class="text-sm font-semibold text-emerald-600">{{ $firstName }} {{ $lastName }}</span>
+                        <span class="text-sm font-semibold text-slate-900">{{ $firstName }} {{ $lastName }}</span>
                     </div>
                     <div class="flex justify-between mt-1">
                         <span class="text-sm text-slate-500">Email</span>
-                        <span class="text-sm font-semibold text-emerald-600">{{ $email }}</span>
+                        <span class="text-sm font-semibold text-slate-900">{{ $email }}</span>
                     </div>
                 </div>
             </div>
