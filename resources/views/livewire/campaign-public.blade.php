@@ -135,13 +135,11 @@ $showAvatars = $pageConfig['show_donor_avatars'] ?? true;
                 <section id="donate">
                     <div class="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
                         <iframe
-                            id="donation-embed"
                             src="{{ config('app.url') }}/embed/{{ $campaign->slug }}"
                             width="100%"
-                            height="800"
+                            height="720"
                             frameborder="0"
-                            scrolling="no"
-                            style="border: none; display: block; overflow: hidden;"
+                            style="border: none; display: block;"
                             title="Donate to {{ $campaign->name }}"
                         ></iframe>
                     </div>
@@ -250,20 +248,4 @@ $showAvatars = $pageConfig['show_donor_avatars'] ?? true;
     </div>
     @endif
 
-    <script>
-        (function () {
-            const iframe = document.getElementById('donation-embed');
-            if (!iframe) return;
-
-            function resize () {
-                try {
-                    const height = iframe.contentWindow.document.documentElement.scrollHeight;
-                    iframe.style.height = (height + 32) + 'px';
-                } catch (e) {}
-            }
-
-            iframe.addEventListener('load', resize);
-            setInterval(resize, 500);
-        })();
-    </script>
 </div>
