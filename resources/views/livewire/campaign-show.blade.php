@@ -1,7 +1,6 @@
 <div
     x-data="{
         activeTab: localStorage.getItem('campaign-tab-{{ $campaign->public_id }}') || 'overview',
-        showArchiveModal: false,
 
         setTab(tab) {
             this.activeTab = tab;
@@ -38,7 +37,6 @@
                 @foreach([
                     ['id' => 'overview', 'label' => 'Overview'],
                     ['id' => 'settings', 'label' => 'Settings'],
-                    ['id' => 'embed', 'label' => 'Embed Code'],
                     ['id' => 'page', 'label' => 'Campaign Page'],
                     ['id' => 'actions', 'label' => 'Actions'],
                 ] as $tab)
@@ -269,8 +267,40 @@
                             <label class="block text-sm font-medium text-slate-700">Description</label>
                             <textarea rows="3" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200" readonly>{{ $campaign->description }}</textarea>
                         </div>
+
+                        <div class="border-t border-slate-200 pt-5">
+                            <h3 class="text-sm font-semibold text-slate-900 mb-1">Campaign end date</h3>
+                            <p class="text-xs text-slate-500 mb-4">Select a specific end date for this campaign. On that date, the campaign will be disabled and moved to your archive.</p>
+
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    wire:model.live="hasEndDate"
+                                    class="size-4 rounded border-slate-300 text-slate-900"
+                                >
+                                <span class="text-sm font-medium text-slate-700">Set a date to this campaign to end</span>
+                            </label>
+
+                            @if($hasEndDate)
+                                <div class="mt-3">
+                                    <label class="block text-sm font-medium text-slate-700 mb-1.5">End date</label>
+                                    <input
+                                        type="date"
+                                        wire:model="endDate"
+                                        class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-200"
+                                    >
+                                    @error('endDate')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            @endif
+                        </div>
+
                         <div class="flex justify-end pt-2">
-                            <button class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition">Save Changes</button>
+                            <button wire:click="saveGeneral" wire:loading.attr="disabled" class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-slate-800 transition disabled:opacity-50">
+                                <span wire:loading.remove>Save Changes</span>
+                                <span wire:loading>Saving...</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -518,63 +548,6 @@
             </div>
         </div>
 
-        {{-- Tab: Embed Code --}}
-        <div x-show="activeTab === 'embed'" class="max-w-2xl" x-cloak>
-            <div class="rounded-xl border border-slate-200 bg-white overflow-hidden">
-                <div class="border-b border-slate-200 px-6 py-4">
-                    <h2 class="text-lg font-semibold">Embed on your website</h2>
-                </div>
-                <div class="px-6 py-5 space-y-5">
-                    <p class="text-sm text-slate-600">Copy this code and paste it into your website HTML to embed a donation form for this campaign.</p>
-
-                    <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">iframe code</label>
-                            <div class="relative inline-block" x-data="{ copied: false, timer: null }">
-                                <button
-                                    type="button"
-                                    @click="
-                                        navigator.clipboard.writeText(document.getElementById('embed-code').innerText).then(() => {
-                                            copied = true;
-                                            clearTimeout(timer);
-                                            timer = setTimeout(() => copied = false, 2000);
-                                        })
-                                    "
-                                    class="text-xs font-medium text-blue-600 hover:text-blue-800"
-                                >Copy</button>
-                                <div
-                                    x-show="copied"
-                                    x-transition:enter="transition ease-out duration-200"
-                                    x-transition:enter-start="opacity-0 scale-75 -translate-y-1"
-                                    x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-                                    x-transition:leave="transition ease-in duration-150"
-                                    x-transition:leave-start="opacity-100 scale-100 translate-y-0"
-                                    x-transition:leave-end="opacity-0 scale-75 -translate-y-1"
-                                    class="pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-slate-900 px-2.5 py-1 text-xs font-medium text-white shadow-lg"
-                                    style="display: none;"
-                                >
-                                    Copied!
-                                    <div class="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-slate-900"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <pre id="embed-code" class="rounded-lg bg-slate-50 border border-slate-200 text-slate-700 p-4 text-xs overflow-x-auto whitespace-pre-wrap">&lt;iframe
-  src="{{ config('app.url') }}/embed/{{ $campaign->slug }}?v={{ $campaign->updated_at->timestamp }}"
-  width="100%"
-  height="650"
-  frameborder="0"
-  style="border: none; border-radius: 12px;"
-  title="Donate to {{ $campaign->name }}"
-&gt;&lt;/iframe&gt;</pre>
-                    </div>
-
-                    <div class="rounded-lg bg-amber-50 border border-amber-200 p-4">
-                        <p class="text-sm text-amber-800"><strong>Note:</strong> Make sure <code class="bg-amber-100 px-1 rounded">APP_URL</code> is set to your production domain before sharing this embed code.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         {{-- Tab: Campaign Page --}}
         <div x-show="activeTab === 'page'" class="max-w-5xl" x-cloak>
             <div class="space-y-6">
@@ -818,86 +791,67 @@
         </div>
 
         {{-- Tab: Actions --}}
-        <div x-show="activeTab === 'actions'" class="max-w-2xl" x-cloak>
-            <div class="rounded-xl border border-slate-200 bg-white overflow-hidden">
-                <div class="border-b border-slate-200 px-6 py-4">
-                    <h2 class="text-lg font-semibold">Actions</h2>
+        <div x-show="activeTab === 'actions'" class="max-w-2xl space-y-4" x-cloak>
+            {{-- Disable/Enable campaign --}}
+            <div class="rounded-xl border border-slate-200 bg-slate-50 p-6">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <h3 class="text-base font-semibold text-slate-900">
+                            @if($campaign->status === 'active')
+                                Disable campaign
+                            @else
+                                Enable campaign
+                            @endif
+                        </h3>
+                        <p class="mt-1 text-sm text-slate-600">
+                            @if($campaign->status === 'active')
+                                Disabling this campaign will disable its checkout on your website. The campaign will still appear on the Campaigns page. You can re-enable a disabled campaign at any time.
+                            @else
+                                Re-enable this campaign to accept donations again.
+                            @endif
+                        </p>
+                    </div>
+                    <button
+                        wire:click="toggleStatus"
+                        wire:loading.attr="disabled"
+                        class="shrink-0 rounded-lg border px-4 py-2 text-sm font-medium transition disabled:opacity-50
+                            @if($campaign->status === 'active')
+                                border-red-200 bg-white text-red-600 hover:bg-red-50
+                            @else
+                                border-emerald-200 bg-white text-emerald-600 hover:bg-emerald-50
+                            @endif
+                        "
+                    >
+                        <span wire:loading.remove>
+                            @if($campaign->status === 'active')
+                                Disable
+                            @else
+                                Enable
+                            @endif
+                        </span>
+                        <span wire:loading>Saving...</span>
+                    </button>
                 </div>
-                <div class="divide-y divide-slate-200">
-                    <div class="flex items-center justify-between px-6 py-5">
-                        <div>
-                            <h3 class="text-sm font-semibold text-slate-900">Edit campaign</h3>
-                            <p class="text-sm text-slate-500">Update campaign name, description, goal, and date range.</p>
-                        </div>
-                        <a href="/campaigns/{{ $campaign->public_id }}/edit" wire:navigate class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-                            Edit
-                        </a>
-                    </div>
+            </div>
 
-                    <div class="flex items-center justify-between px-6 py-5">
-                        <div>
-                            <h3 class="text-sm font-semibold text-slate-900">Archive campaign</h3>
-                            <p class="text-sm text-slate-500">Hide from public view but keep all donation records. Can be reactivated later.</p>
-                        </div>
-                        <button @click="showArchiveModal = true" class="rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-100 transition">
-                            Archive
-                        </button>
+            {{-- Clone campaign --}}
+            <div class="rounded-xl border border-slate-200 bg-slate-50 p-6">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <h3 class="text-base font-semibold text-slate-900">Clone campaign</h3>
+                        <p class="mt-1 text-sm text-slate-600">Clone this campaign to reuse its checkout, emails, and settings for a new campaign.</p>
                     </div>
-
-                    <div class="flex items-center justify-between px-6 py-5">
-                        <div>
-                            <h3 class="text-sm font-semibold text-slate-900">Export donations</h3>
-                            <p class="text-sm text-slate-500">Download CSV of all donations for this campaign.</p>
-                        </div>
-                        <button class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition opacity-50 cursor-not-allowed" disabled>
-                            Coming soon
-                        </button>
-                    </div>
+                    <button
+                        wire:click="cloneCampaign"
+                        wire:loading.attr="disabled"
+                        class="shrink-0 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition disabled:opacity-50"
+                    >
+                        <span wire:loading.remove>Clone</span>
+                        <span wire:loading>Cloning...</span>
+                    </button>
                 </div>
             </div>
         </div>
 
-    </div>
-
-    {{-- Archive Modal --}}
-    <div
-        x-show="showArchiveModal"
-        x-transition:enter="transition ease-out duration-200"
-        x-transition:enter-start="opacity-0"
-        x-transition:enter-end="opacity-100"
-        x-transition:leave="transition ease-in duration-150"
-        x-transition:leave-start="opacity-100"
-        x-transition:leave-end="opacity-0"
-        class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
-        @click.self="showArchiveModal = false"
-    >
-        <div
-            x-show="showArchiveModal"
-            x-transition:enter="transition ease-out duration-200"
-            x-transition:enter-start="opacity-0 scale-95"
-            x-transition:enter-end="opacity-100 scale-100"
-            x-transition:leave="transition ease-in duration-150"
-            x-transition:leave-start="opacity-100 scale-100"
-            x-transition:leave-end="opacity-0 scale-95"
-            class="w-full max-w-md rounded-xl border border-slate-200 bg-white shadow-xl overflow-hidden"
-        >
-            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
-                <h3 class="text-lg font-semibold text-slate-900">Archive campaign</h3>
-                <button @click="showArchiveModal = false" class="text-slate-400 hover:text-slate-600">
-                    <x-icon name="x" class="size-5" />
-                </button>
-            </div>
-            <div class="px-6 py-6 space-y-4">
-                <p class="text-sm text-slate-700">Are you sure you want to archive <strong>{{ $campaign->name }}</strong>? This will hide the campaign from public view but keep all donation records.</p>
-                <p class="text-sm text-slate-500">You can reactivate the campaign at any time.</p>
-            </div>
-            <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-200 bg-slate-50">
-                <button @click="showArchiveModal = false" class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">Cancel</button>
-                <button wire:click="archive" wire:loading.attr="disabled" class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 transition disabled:opacity-50">
-                    <span wire:loading.remove>Archive campaign</span>
-                    <span wire:loading>Archiving...</span>
-                </button>
-            </div>
-        </div>
     </div>
 </div>

@@ -28,7 +28,6 @@ $showGoal = $pageConfig['show_goal_amount'] ?? true;
 $showDays = $pageConfig['show_days_left'] ?? true;
 $showRecent = $pageConfig['show_recent_supporters'] ?? true;
 $showDetails = $pageConfig['show_campaign_details'] ?? true;
-$showEmbed = $pageConfig['show_embed_code'] ?? true;
 $showBottom = $pageConfig['show_bottom_cta'] ?? true;
 
 $showAnon = $pageConfig['show_anonymous_donors'] ?? true;
@@ -204,27 +203,6 @@ $showAvatars = $pageConfig['show_donor_avatars'] ?? true;
                                 <span class="font-medium text-slate-900">{{ $campaign->end_date?->format('M d, Y') ?? 'Ongoing' }}</span>
                             </div>
                         </div>
-                    </div>
-                    @endif
-
-                    @if($showEmbed)
-                    {{-- Embed Code --}}
-                    <div class="rounded-xl border border-slate-200 bg-white p-6">
-                        <h3 class="text-sm font-semibold text-slate-900 uppercase tracking-wider">Embed this campaign</h3>
-                        <p class="mt-2 text-xs text-slate-500">Add this donation form to your website.</p>
-                        <div class="mt-3">
-                            <pre class="rounded-lg bg-slate-50 border border-slate-200 p-3 text-xs text-slate-700 overflow-x-auto whitespace-pre-wrap">&lt;iframe
-  src="{{ config('app.url') }}/embed/{{ $campaign->slug }}?v={{ $campaign->updated_at->timestamp }}"
-  width="100%"
-  height="650"
-  frameborder="0"
-  style="border: none; border-radius: 12px;"
-  title="Donate to {{ $campaign->name }}"
-&gt;&lt;/iframe&gt;</pre>
-                        </div>
-                        <button onclick="navigator.clipboard.writeText(this.previousElementSibling.querySelector('pre').innerText).then(() => { this.innerText = 'Copied!'; setTimeout(() => this.innerText = 'Copy code', 2000); })" class="mt-3 w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-                            Copy code
-                        </button>
                     </div>
                     @endif
 

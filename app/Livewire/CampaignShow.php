@@ -3,13 +3,17 @@
 namespace App\Livewire;
 
 use App\Models\Campaign;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 class CampaignShow extends Component
 {
     public Campaign $campaign;
 
-    public bool $showArchiveModal = false;
+    // Settings: General
+    public bool $hasEndDate = false;
+
+    public ?string $endDate = null;
 
     // Settings: Payment Methods
     public array $paymentMethods = [];
@@ -50,8 +54,6 @@ class CampaignShow extends Component
     public bool $pageShowRecentSupporters = true;
 
     public bool $pageShowCampaignDetails = true;
-
-    public bool $pageShowEmbedCode = true;
 
     public bool $pageShowBottomCta = true;
 
@@ -98,6 +100,10 @@ class CampaignShow extends Component
     public function mount(Campaign $campaign): void
     {
         $this->campaign = $campaign->loadCount('donations');
+
+        // General
+        $this->hasEndDate = $campaign->end_date !== null;
+        $this->endDate = $campaign->end_date?->format('Y-m-d');
 
         $settings = $campaign->settings ?? [];
 
@@ -173,7 +179,6 @@ class CampaignShow extends Component
         $this->pageShowDaysLeft = $pageConfig['show_days_left'] ?? true;
         $this->pageShowRecentSupporters = $pageConfig['show_recent_supporters'] ?? true;
         $this->pageShowCampaignDetails = $pageConfig['show_campaign_details'] ?? true;
-        $this->pageShowEmbedCode = $pageConfig['show_embed_code'] ?? true;
         $this->pageShowBottomCta = $pageConfig['show_bottom_cta'] ?? true;
 
         // Text
@@ -203,11 +208,58 @@ class CampaignShow extends Component
         $this->pageRedirectAfterDonation = $pageConfig['redirect_after_donation'] ?? null;
     }
 
-    public function archive(): void
+    public function toggleStatus(): void
     {
-        $this->campaign->update(['status' => 'archived']);
-        $this->showArchiveModal = false;
-        $this->dispatch('toast', message: 'Campaign archived.', type: 'success');
+        $newStatus = $this->campaign->status === 'active' ? 'paused' : 'active';
+        $this->campaign->update(['status' => $newStatus]);
+        $this->dispatch('toast', message: 'Campaign '.($newStatus === 'active' ? 'enabled' : 'disabled').'.', type: 'success');
+    }
+
+    public function cloneCampaign(): void
+    {
+        $slug = $this->generateUniqueSlug($this->campaign->name);
+
+        $campaign = Campaign::create([
+            'name' => $this->campaign->name.' Copy',
+            'slug' => $slug,
+            'status' => $this->campaign->status,
+            'goal_amount_cents' => $this->campaign->goal_amount_cents,
+            'description' => $this->campaign->description,
+            'start_date' => $this->campaign->start_date,
+            'end_date' => $this->campaign->end_date,
+            'currency' => $this->campaign->currency,
+            'settings' => $this->campaign->settings,
+        ]);
+
+        $this->dispatch('toast', message: 'Campaign cloned.', type: 'success');
+        $this->redirect(route('campaigns.edit', $campaign), navigate: true);
+    }
+
+    protected function generateUniqueSlug(string $name): string
+    {
+        $base = Str::slug($name);
+        $slug = $base;
+        $counter = 1;
+
+        while (Campaign::where('slug', $slug)->exists()) {
+            $slug = $base.'-'.$counter;
+            $counter++;
+        }
+
+        return $slug;
+    }
+
+    public function saveGeneral(): void
+    {
+        $validated = $this->validate([
+            'endDate' => 'nullable|date',
+        ]);
+
+        $this->campaign->update([
+            'end_date' => $this->hasEndDate ? $validated['endDate'] : null,
+        ]);
+
+        $this->dispatch('toast', message: 'General settings saved.', type: 'success');
     }
 
     public function savePaymentMethods(): void
@@ -312,7 +364,6 @@ class CampaignShow extends Component
             'show_days_left' => $this->pageShowDaysLeft,
             'show_recent_supporters' => $this->pageShowRecentSupporters,
             'show_campaign_details' => $this->pageShowCampaignDetails,
-            'show_embed_code' => $this->pageShowEmbedCode,
             'show_bottom_cta' => $this->pageShowBottomCta,
             'hero_headline' => $this->pageHeroHeadline,
             'hero_subheadline' => $this->pageHeroSubheadline,

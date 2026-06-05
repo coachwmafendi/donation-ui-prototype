@@ -1,8 +1,6 @@
 <?php
 
 use App\Http\Controllers\ProfileSettingsController;
-use App\Livewire\CampaignCreate;
-use App\Livewire\CampaignEdit;
 use App\Livewire\CampaignIndex;
 use App\Livewire\CampaignPublic;
 use App\Livewire\CampaignShow;
@@ -70,9 +68,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/supporters/{supporter:public_id}', SupporterShow::class)->name('supporters.show');
     Route::get('/recurring', RecurringIndex::class)->name('recurring.index');
     Route::get('/campaigns', CampaignIndex::class)->name('campaigns.index');
-    Route::get('/campaigns/create', CampaignCreate::class)->name('campaigns.create');
-    Route::get('/campaigns/{campaign:public_id}', CampaignShow::class)->name('campaigns.show');
-    Route::get('/campaigns/{campaign:public_id}/edit', CampaignEdit::class)->name('campaigns.edit');
+    Route::get('/campaigns/{campaign:public_id}', CampaignShow::class)->name('campaigns.edit');
 
     Route::get('/settings', [ProfileSettingsController::class, 'show'])->name('settings');
     Route::put('/settings/profile', [ProfileSettingsController::class, 'updateProfile'])->name('settings.profile');
